@@ -12,8 +12,6 @@ import { render as renderCard } from '../components/card.js';
  * @returns {string} HTML string
  */
 export function render(state) {
-  const currentPlayer = state.players[state.currentPlayerIndex]?.name ?? '';
-
   const boardContent = state.winner
     ? `
       <div class="phase4__winner">
@@ -43,9 +41,9 @@ export function render(state) {
 
   return `
     <div class="screen screen--phase" data-phase="4">
-      ${renderPhaseHeader({ phase: '4', label: 'Phase 4 — Eulogy', currentPlayer })}
+      ${renderPhaseHeader({ phase: '4', label: 'Phase 4 - EULOGY' })}
       ${renderPlayerList(state.players, { funeralDirector: state.funeralDirector })}
-      ${renderGameboard(state, boardContent)}
+      ${renderGameboard(boardContent)}
     </div>
   `;
 }

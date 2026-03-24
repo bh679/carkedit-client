@@ -32,7 +32,7 @@ function addPlayer() {
   if (!name) return;
   const state = getState();
   if (state.players.some((p) => p.name === name)) return;
-  setState({ players: [...state.players, { name }] });
+  setState({ players: [...state.players, { name, score: 0 }] });
   showScreen('lobby');
 }
 
