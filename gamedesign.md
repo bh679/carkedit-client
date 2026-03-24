@@ -1,7 +1,7 @@
 # Game Design — Carked It! Online
 
 ## Design Layout
-The gmae is designed for mobile first.
+The game is designed for mobile first.
 On larger screens, layout width is capped at the mobile breakpoint width to preserve the mobile layout.
 
 ## Card Dimensions
