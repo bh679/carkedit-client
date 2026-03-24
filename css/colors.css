@@ -21,6 +21,17 @@
   --color-card-placeholder-start: rgba(255, 255, 255, 0.05);
   --color-card-placeholder-end:   rgba(255, 255, 255, 0.01);
 
+  /* ── Player list (chip redesign) ─────────────────────── */
+  --color-shadow-sm:            rgba(0, 0, 0, 0.1);
+  --color-player-list-bg:       #ffffff;
+  --color-player-list-label:    #364153;
+  --color-player-list-empty:    #6b7280;
+  --color-chip-bg:              #f9fafb;
+  --color-chip-director-bg:     #fef9c2;
+  --color-chip-director-border: #fdc700;
+  --color-player-name:          #1e2939;
+  --color-score:                #4a5565;
+
   /* ── Deck accents ─────────────────────────────────────── */
   --color-die:  #f5c518;
   --color-live: #4caf50;

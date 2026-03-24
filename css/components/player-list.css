@@ -1,44 +1,74 @@
 /* CarkedIt Online — Player List Component */
 
+.player-list-container {
+  background: var(--color-player-list-bg);
+  border-radius: 10px;
+  padding: 8px;
+  box-shadow: 0 4px 6px var(--color-shadow-sm), 0 2px 4px var(--color-shadow-sm);
+}
+
+.player-list-container__label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-player-list-label);
+  margin-bottom: 8px;
+}
+
 .player-list {
-  list-style: none;
   display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.player-list::-webkit-scrollbar {
+  display: none;
 }
 
 .player-list--empty {
-  color: var(--color-text-muted);
-  font-size: 0.9rem;
-  text-align: center;
-  padding: var(--space-sm) 0;
+  color: var(--color-player-list-empty);
+  font-size: 12px;
 }
 
-.player-list__item {
+.player-list__chip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 10px;
+  background: var(--color-chip-bg);
+  border: 1px solid transparent;
+  flex-shrink: 0;
+}
+
+.player-list__chip--director {
+  background: var(--color-chip-director-bg);
+  border-color: var(--color-chip-director-border);
+}
+
+.player-list__icon {
+  width: 10px;
+  height: 10px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--space-xs) var(--space-sm);
-  background: var(--color-surface);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-}
-
-.player-list__item--director {
-  border-color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .player-list__name {
-  font-size: 0.9rem;
+  font-size: 12px;
   font-weight: 500;
+  color: var(--color-player-name);
+  white-space: nowrap;
 }
 
-.player-list__badge {
-  font-size: 0.7rem;
+.player-list__score {
+  font-size: 12px;
   font-weight: 700;
-  color: var(--color-primary);
-  background: var(--color-primary-subtle);
-  padding: 2px 6px;
-  border-radius: 4px;
-  letter-spacing: 0.05em;
+  color: var(--color-score);
 }

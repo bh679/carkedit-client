@@ -1,39 +1,53 @@
 /* CarkedIt Online — Phase Screens (shared: phase 1, 2/3, 4) */
 
 .screen--phase {
+  background: linear-gradient(101.87deg, #615fff 8.5%, #9810fa 91.5%);
   gap: var(--space-sm);
+  padding: var(--space-sm);
 }
 
-/* Deck accent colours via data-phase attribute */
-.screen--phase[data-phase="1"] { --phase-accent: var(--color-die); }
-.screen--phase[data-phase="2"] { --phase-accent: var(--color-live); }
-.screen--phase[data-phase="3"] { --phase-accent: var(--color-bye); }
-.screen--phase[data-phase="4"] { --phase-accent: var(--color-bye); }
+/* ── Prompt card (shown in gameboard) ───────────────────── */
 
-.phase__prompt {
-  color: var(--color-text-muted);
-  text-align: center;
-  padding: var(--space-xl) 0;
-  font-size: 1.1rem;
-}
-
-.phase__draw {
+.prompt-card {
+  position: relative;
+  background: #000000;
+  border: 2px solid #000000;
+  border-radius: 14px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  padding: 32px;
+  min-height: 280px;
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.prompt-card--empty {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.15);
+  align-items: center;
   justify-content: center;
 }
 
-.phase__actions {
-  display: flex;
-  gap: var(--space-sm);
-  margin-top: auto;
-  padding-top: var(--space-md);
+.prompt-card__text {
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1.375;
+  letter-spacing: -0.44px;
 }
 
-.phase__actions .btn {
-  flex: 1;
+.prompt-card__watermark {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: -0.15px;
+  text-align: center;
 }
 
-/* Phase 4 winner reveal */
+/* ── Phase 4 winner reveal ──────────────────────────────── */
+
 .phase4__winner {
   display: flex;
   flex-direction: column;
@@ -52,4 +66,16 @@
 .phase4__winner-name {
   font-size: 1.5rem;
   font-weight: 700;
+}
+
+/* ── Phase action buttons ───────────────────────────────── */
+
+.phase__actions {
+  display: flex;
+  gap: var(--space-sm);
+  padding-top: var(--space-md);
+}
+
+.phase__actions .btn {
+  flex: 1;
 }
