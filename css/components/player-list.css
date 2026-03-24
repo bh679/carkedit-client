@@ -1,10 +1,65 @@
 /* CarkedIt Online — Player List Component */
 
 .player-list {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+  padding: 8px;
+}
+
+.player-list__heading {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  line-height: 16px;
+  margin-bottom: 6px;
+}
+
+.player-list__chips {
   list-style: none;
   display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.player-list__chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px;
+  background: var(--color-chip-bg);
+  border-radius: 10px;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+}
+
+.player-list__chip--active {
+  background: var(--color-active-bg);
+  border-color: var(--color-active-border);
+}
+
+.player-list__icon {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+}
+
+.player-list__name {
+  font-size: 12px;
+  font-weight: 500;
+  color: #1E2939;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.player-list__score {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  line-height: 16px;
+  white-space: nowrap;
 }
 
 .player-list--empty {
@@ -12,33 +67,4 @@
   font-size: 0.9rem;
   text-align: center;
   padding: var(--space-sm) 0;
-}
-
-.player-list__item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-xs) var(--space-sm);
-  background: var(--color-surface);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-}
-
-.player-list__item--director {
-  border-color: var(--color-primary);
-}
-
-.player-list__name {
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.player-list__badge {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  background: rgba(233, 69, 96, 0.15);
-  padding: 2px 6px;
-  border-radius: 4px;
-  letter-spacing: 0.05em;
 }

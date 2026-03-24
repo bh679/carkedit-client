@@ -2,15 +2,18 @@
 'use strict';
 
 /**
- * @param {object} state - current game state
- * @param {string} content - inner HTML to render inside the board
+ * @param {{ promptText: string, instruction: string }} options
  * @returns {string} HTML string
  */
-export function render(state = {}, content = '') {
+export function render({ promptText = '', instruction = '' } = {}) {
   return `
     <div class="gameboard">
       <div class="gameboard__content">
-        ${content}
+        <div class="gameboard__prompt-card">
+          <p class="gameboard__prompt-text">${promptText}</p>
+          <p class="gameboard__prompt-label">PROMPT</p>
+        </div>
+        ${instruction ? `<p class="gameboard__instruction">${instruction}</p>` : ''}
       </div>
     </div>
   `;

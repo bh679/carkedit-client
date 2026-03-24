@@ -2,7 +2,7 @@
 'use strict';
 
 /**
- * @param {Array<{ id: string, title: string }>} cards
+ * @param {Array<{ id: string, text: string }>} cards
  * @returns {string} HTML string
  */
 export function render(cards = []) {
@@ -11,10 +11,14 @@ export function render(cards = []) {
   }
 
   const cardEls = cards.map((c) => `
-    <div class="hand__card" data-card-id="${c.id}">
-      <span class="hand__card-title">${c.title}</span>
+    <div class="hand__card" data-card-id="${c.id}" onclick="window.game.selectCard('${c.id}')">
+      <p class="hand__card-text">${c.text}</p>
     </div>
   `).join('');
 
-  return `<div class="hand">${cardEls}</div>`;
+  return `
+    <div class="hand">
+      <div class="hand__cards">${cardEls}</div>
+    </div>
+  `;
 }

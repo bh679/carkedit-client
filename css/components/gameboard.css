@@ -1,16 +1,61 @@
 /* CarkedIt Online — Gameboard Component */
 
 .gameboard {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  padding: var(--space-md);
+  background: linear-gradient(180deg, #F9FAFB 0%, rgba(97, 97, 97, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+  padding: 16px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .gameboard__content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-  height: 100%;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  flex: 1;
+}
+
+/* Prompt card — the black card shown on the gameboard */
+.gameboard__prompt-card {
+  background: #000;
+  border: 2px solid #000;
+  border-radius: 14px;
+  box-shadow: var(--shadow-card-lg);
+  width: 100%;
+  max-width: 328px;
+  aspect-ratio: var(--card-aspect);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 32px;
+}
+
+.gameboard__prompt-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.375;
+  letter-spacing: -0.44px;
+}
+
+.gameboard__prompt-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  opacity: 0.5;
+  text-align: center;
+  letter-spacing: -0.15px;
+}
+
+.gameboard__instruction {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: 16px;
 }

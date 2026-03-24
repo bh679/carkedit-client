@@ -37,10 +37,17 @@ function addPlayer() {
 }
 
 function drawCard(deck) {
-  // Placeholder — card draw logic to be implemented
   setState({ currentCard: { title: `${deck} card`, description: '', prompt: '', image: '' } });
   const state = getState();
   showScreen(state.screen);
+}
+
+function selectCard(cardId) {
+  const app = document.getElementById('app');
+  const cards = app.querySelectorAll('.hand__card');
+  cards.forEach((el) => {
+    el.classList.toggle('hand__card--selected', el.dataset.cardId === cardId);
+  });
 }
 
 function revealWinner() {
@@ -51,8 +58,31 @@ function revealWinner() {
 }
 
 // Expose game API for inline onclick handlers
-window.game = { showScreen, addPlayer, drawCard, revealWinner };
+window.game = { showScreen, addPlayer, drawCard, selectCard, revealWinner };
+
+// Demo data for development — jump straight to Phase 2
+const DEMO_PLAYERS = [
+  { name: 'You', score: 0 },
+  { name: 'Alice', score: 0 },
+  { name: 'Bob', score: 0 },
+  { name: 'Charlie', score: 0 },
+];
+
+const DEMO_HAND = [
+  { id: '1', text: 'Being a motherfucking sorcerer' },
+  { id: '2', text: 'Being a motherfucking sorcerer' },
+  { id: '3', text: 'Being a motherfucking sorcerer' },
+  { id: '4', text: 'Being a motherfucking sorcerer' },
+  { id: '5', text: 'Tell everyone you hate to fuck off' },
+];
 
 document.addEventListener('DOMContentLoaded', () => {
-  showScreen('menu');
+  // Seed demo state and show Phase 2 for development
+  setState({
+    players: DEMO_PLAYERS,
+    currentPlayerIndex: 3,
+    hand: DEMO_HAND,
+    funeralDirector: 'You',
+  });
+  showScreen('phase2');
 });

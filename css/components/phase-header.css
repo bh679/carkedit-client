@@ -4,18 +4,45 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-surface);
-  border-radius: var(--radius-sm);
-  border-left: 4px solid var(--phase-accent, var(--color-primary));
+  height: 40px;
+  padding: 0 12px;
+  background: var(--color-brand-gradient);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
 }
 
-.phase-header__label {
+.phase-header__brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.phase-header__title {
+  font-size: 18px;
   font-weight: 700;
-  font-size: 0.95rem;
+  color: #fff;
+  letter-spacing: -0.44px;
+  line-height: 28px;
 }
 
-.phase-header__player {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
+.phase-header__subtitle {
+  font-size: 12px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 16px;
+}
+
+.phase-header__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-text-dark);
+  text-decoration: none;
 }

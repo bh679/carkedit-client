@@ -10,10 +10,26 @@
   --color-secondary: #0f3460;
   --color-border: rgba(255, 255, 255, 0.1);
 
+  /* Brand — from Figma */
+  --color-brand-gradient: linear-gradient(102deg, #615FFF 8.5%, #9810FA 91.5%);
+
   /* Deck accent colours */
   --color-die: #f5c518;
   --color-live: #4caf50;
   --color-bye: #2196f3;
+
+  /* Figma design tokens */
+  --color-chip-bg: #F9FAFB;
+  --color-active-bg: #FEF9C2;
+  --color-active-border: #FDC700;
+  --color-text-dark: #364153;
+  --color-text-secondary: #4A5565;
+  --color-card-border: #E5E7EB;
+
+  /* Shadows */
+  --shadow-card: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.1);
+  --shadow-card-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-up: 0 -4px 6px rgba(0,0,0,0.1), 0 -2px 4px rgba(0,0,0,0.1);
 
   /* Card aspect ratio (5:7) */
   --card-aspect: 5 / 7;

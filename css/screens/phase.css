@@ -2,6 +2,9 @@
 
 .screen--phase {
   gap: var(--space-sm);
+  padding-bottom: 240px; /* space for fixed hand at bottom */
+  background: var(--color-brand-gradient);
+  min-height: 100vh;
 }
 
 /* Deck accent colours via data-phase attribute */
