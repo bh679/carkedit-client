@@ -1,0 +1,28 @@
+/* CarkedIt Online — Game Color Palette
+ * ALL colors must be defined here. Never hardcode color values in other CSS files.
+ * Reference colors via var(--color-*) throughout the codebase.
+ */
+
+:root {
+  /* ── Core theme ───────────────────────────────────────── */
+  --color-bg:             #1a1a2e;
+  --color-surface:        #16213e;
+  --color-text:           #eee;
+  --color-text-muted:     #aaa;
+  --color-white:          #fff;
+  --color-primary:        #e94560;
+  --color-primary-subtle: rgba(233, 69, 96, 0.15);
+  --color-secondary:      #0f3460;
+  --color-border:         rgba(255, 255, 255, 0.1);
+  --color-input-bg:       rgba(255, 255, 255, 0.06);
+
+  /* ── Card overlays ───────────────────────────────────── */
+  --color-card-image-bg:          rgba(255, 255, 255, 0.04);
+  --color-card-placeholder-start: rgba(255, 255, 255, 0.05);
+  --color-card-placeholder-end:   rgba(255, 255, 255, 0.01);
+
+  /* ── Deck accents ─────────────────────────────────────── */
+  --color-die:  #f5c518;
+  --color-live: #4caf50;
+  --color-bye:  #2196f3;
+}
