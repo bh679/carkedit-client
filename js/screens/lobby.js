@@ -1,6 +1,7 @@
 // CarkedIt Online — Lobby Screen
 'use strict';
 
+import { render as renderPhaseHeader } from '../components/phase-header.js';
 import { render as renderGameboard } from '../components/gameboard.js';
 import { render as renderPlayerList } from '../components/player-list.js';
 
@@ -31,8 +32,9 @@ export function render(state) {
 
   return `
     <div class="screen screen--lobby">
-      ${renderGameboard(boardContent)}
+      ${renderPhaseHeader({ phase: '', label: 'Lobby' })}
       ${renderPlayerList(state.players, { funeralDirector: state.funeralDirector })}
+      ${renderGameboard(boardContent)}
       <div class="lobby__actions">
         <button
           class="btn btn--primary"
