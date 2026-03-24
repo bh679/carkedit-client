@@ -31,7 +31,7 @@ export function render(state) {
 
   return `
     <div class="screen screen--lobby">
-      ${renderGameboard(state, boardContent)}
+      ${renderGameboard(boardContent)}
       ${renderPlayerList(state.players, { funeralDirector: state.funeralDirector })}
       <div class="lobby__actions">
         <button

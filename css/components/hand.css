@@ -1,33 +1,53 @@
 /* CarkedIt Online — Hand Component */
 
 .hand {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: var(--space-xs);
-  overflow-x: auto;
-  padding-bottom: var(--space-xs);
-  -webkit-overflow-scrolling: touch;
+  position: sticky;
+  bottom: 0;
+  background: #ffffff;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1), 0 -2px 4px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  z-index: 10;
 }
 
 .hand--empty {
-  min-height: 40px;
+  position: sticky;
+  bottom: 0;
+  height: 48px;
+}
+
+.hand__fan {
+  position: relative;
+  height: 197.5px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.hand__fan::-webkit-scrollbar {
+  display: none;
 }
 
 .hand__card {
-  flex-shrink: 0;
-  padding: var(--space-xs) var(--space-sm);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  position: absolute;
+  top: 6px;
+  width: 135px;
+  height: 197.5px;
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 18px 12px 2px;
   cursor: pointer;
-  transition: border-color 0.15s;
 }
 
 .hand__card:hover {
-  border-color: var(--color-primary);
+  border-color: #9842ff;
 }
 
 .hand__card-title {
-  font-size: 0.75rem;
-  white-space: nowrap;
+  font-size: 9px;
+  line-height: 1.35;
+  color: #000000;
+  font-weight: 500;
 }

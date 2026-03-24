@@ -2,16 +2,17 @@
 'use strict';
 
 /**
- * @param {object} state - current game state
- * @param {string} content - inner HTML to render inside the board
+ * @param {string} promptCard - HTML for the prompt card
+ * @param {string} hint - hint text shown below the card
  * @returns {string} HTML string
  */
-export function render(state = {}, content = '') {
+export function render(promptCard = '', hint = '') {
   return `
     <div class="gameboard">
-      <div class="gameboard__content">
-        ${content}
+      <div class="gameboard__card-area">
+        ${promptCard}
       </div>
+      ${hint ? `<p class="gameboard__hint">${hint}</p>` : ''}
     </div>
   `;
 }
