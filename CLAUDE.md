@@ -19,6 +19,17 @@ human oversight at each stage.
 
 ---
 
+## Mandatory Reading
+
+Before making ANY code changes, you MUST read the following files:
+- **`gamedesign.md`** — Technical design constraints, card dimensions, screen layouts, architecture
+- **`gamerules.md`** — Complete game rules, phases, scoring, card mechanics
+- **`visualstyle.md`** — Colour palette, typography, card design, UI patterns
+
+These files are the source of truth for game behaviour, UI decisions, and visual design.
+
+---
+
 ## Core Workflow
 
 <!-- Source: github.com/bh679/claude-templates/standards/workflow.md -->
