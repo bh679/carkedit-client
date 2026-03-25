@@ -5,7 +5,8 @@
       "name": "carkedit-server",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["start"],
-      "port": 4600
+      "port": 4600,
+      "autoPort": true
     }
   ]
 }
