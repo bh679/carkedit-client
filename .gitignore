@@ -4,3 +4,4 @@ playwright-report/
 .env
 ports/*.json
 assets/illustrations/
+deploy-status.json
