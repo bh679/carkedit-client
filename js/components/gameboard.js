@@ -1,6 +1,8 @@
 // CarkedIt Online — Gameboard Component
 'use strict';
 
+import { render as renderCard } from './card.js';
+
 /**
  * Seed-based pseudo-random for consistent card positions per player name.
  */
@@ -41,13 +43,12 @@ export function render(promptCard = '', hint = '', {
     const cardEls = playerNames.map((name, index) => {
       const card = playedCards[name];
       const rng = seededRandom(name + index);
-      const rotation = (rng() - 0.5) * 90; // -45 to 45 degrees
+      const rotation = (rng() - 0.5) * 90;
       const offsetX = rng() * 60 - 30;
       const offsetY = rng() * 60 - 30;
       const isPitching = name === pitchingPlayer;
 
       if (isPitching) {
-        // Show pitching player's card full-size in center
         return '';
       }
 
@@ -56,7 +57,7 @@ export function render(promptCard = '', hint = '', {
           <div class="gameboard__played-card gameboard__played-card--revealed"
                style="transform: rotate(${rotation}deg) translate(${offsetX}px, ${offsetY}px)"
                data-player="${name}">
-            <span class="gameboard__played-card-title">${card.title}</span>
+            ${renderCard({ ...card, deckType: card.deckType || deckType })}
             <span class="gameboard__played-card-player">${name}</span>
           </div>
         `;
@@ -80,8 +81,7 @@ export function render(promptCard = '', hint = '', {
     const card = playedCards[pitchingPlayer];
     mainCardHtml = `
       <div class="gameboard__pitch-card">
-        <span class="gameboard__pitch-card-title">${card.title}</span>
-        ${card.description ? `<p class="gameboard__pitch-card-desc">${card.description}</p>` : ''}
+        ${renderCard({ ...card, deckType: card.deckType || deckType })}
         <span class="gameboard__pitch-card-player">${pitchingPlayer}'s card</span>
       </div>
     `;

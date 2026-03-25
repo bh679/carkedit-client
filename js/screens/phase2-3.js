@@ -5,6 +5,7 @@ import { render as renderPhaseHeader } from '../components/phase-header.js';
 import { render as renderPlayerList } from '../components/player-list.js';
 import { render as renderGameboard } from '../components/gameboard.js';
 import { render as renderHand } from '../components/hand.js';
+import { render as renderCard } from '../components/card.js';
 
 const PHASE_CONFIG = {
   live: { number: '2', label: 'Phase 2 - LIVE', deckType: 'live', nextScreen: 'phase3' },
@@ -74,19 +75,13 @@ function getPitchingPlayerName(state) {
   return nonDeadPlayers[state.pitchingPlayerIndex]?.name ?? null;
 }
 
-function renderDieCard(card, livingDeadName) {
+function renderDieCard(card) {
   if (!card) return '';
-  return `
-    <div class="prompt-card prompt-card--die">
-      <p class="prompt-card__text">${card.title}</p>
-      ${card.prompt ? `<p class="prompt-card__prompt">${card.prompt}</p>` : ''}
-      <span class="prompt-card__watermark">${livingDeadName}'s Death</span>
-    </div>
-  `;
+  return renderCard({ ...card, deckType: 'die' });
 }
 
 function renderLivingDeadScreen(config, state, playerListOptions, livingDeadName) {
-  const promptCardHtml = renderDieCard(state.currentCard, livingDeadName);
+  const promptCardHtml = renderDieCard(state.currentCard);
 
   const round = state.phase23Round + 1;
   const hint = `Round ${round} — ${livingDeadName} is The Living Dead`;
@@ -135,7 +130,7 @@ function renderSelectingScreen(config, state, playerListOptions) {
   const playerName = currentPlayer?.name ?? '';
   const livingDeadName = state.players[state.livingDeadIndex]?.name ?? '';
 
-  const promptCardHtml = renderDieCard(state.currentCard, livingDeadName);
+  const promptCardHtml = renderDieCard(state.currentCard);
 
   const hint = `${playerName}, select your best card to play`;
 
@@ -148,14 +143,14 @@ function renderSelectingScreen(config, state, playerListOptions) {
         revealed: false,
         deckType: config.deckType,
       })}
-      ${renderHand(state.hand ?? [], { selectedCard: state.selectedCard })}
+      ${renderHand(state.hand ?? [], { selectedCard: state.selectedCard, deckType: config.deckType })}
     </div>
   `;
 }
 
 function renderAllSubmittedScreen(config, state, playerListOptions) {
   const livingDeadName = state.players[state.livingDeadIndex]?.name ?? '';
-  const promptCardHtml = renderDieCard(state.currentCard, livingDeadName);
+  const promptCardHtml = renderDieCard(state.currentCard);
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
@@ -177,7 +172,7 @@ function renderAllSubmittedScreen(config, state, playerListOptions) {
 
 function renderRevealedScreen(config, state, playerListOptions) {
   const livingDeadName = state.players[state.livingDeadIndex]?.name ?? '';
-  const promptCardHtml = renderDieCard(state.currentCard, livingDeadName);
+  const promptCardHtml = renderDieCard(state.currentCard);
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
@@ -211,7 +206,7 @@ function renderPitchingScreen(config, state, playerListOptions, nonDeadPlayers) 
         deckType: config.deckType,
         pitchingPlayer: pitcherName,
       })}
-      ${renderHand(state.hand ?? [], { dimmed: true })}
+      ${renderHand(state.hand ?? [], { dimmed: true, deckType: config.deckType })}
       <div class="phase-actions">
         <button class="btn btn--primary" onclick="window.game.donePitching()">
           Done Pitching
@@ -229,10 +224,10 @@ function renderJudgingScreen(config, state, playerListOptions, nonDeadPlayers) {
     const card = (state.submittedCards ?? {})[p.name];
     if (!card) return '';
     return `
-      <button class="btn btn--judge" onclick="window.game.pickWinner('${p.name}')">
-        <span class="btn__card-title">${card.title}</span>
-        <span class="btn__player-name">${p.name}'s card</span>
-      </button>
+      <div class="judging__card-option" onclick="window.game.pickWinner('${p.name}')">
+        ${renderCard({ ...card, deckType: card.deckType || config.deckType })}
+        <span class="judging__card-player">${p.name}'s card</span>
+      </div>
     `;
   }).join('');
 

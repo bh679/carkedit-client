@@ -78,59 +78,52 @@
 }
 
 .gameboard__played-card--revealed {
-  background: var(--color-hand-card-bg);
+  background: transparent;
   pointer-events: auto;
   cursor: pointer;
+  border: none;
+  padding: 0;
+  overflow: hidden;
 }
 
-.gameboard__played-card-title {
-  font-size: 9px;
-  font-weight: 500;
-  line-height: 1.35;
-  color: var(--color-hand-card-title);
+.gameboard__played-card--revealed .card {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
 }
 
 .gameboard__played-card-player {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
   font-size: 8px;
   font-weight: 600;
   color: var(--color-score);
-  margin-top: auto;
   text-transform: uppercase;
+  text-align: center;
+  z-index: 1;
 }
 
 /* Pitch card — full-size in gameboard center */
 .gameboard__pitch-card {
-  background: var(--color-hand-card-bg);
-  border: 2px solid var(--color-hand-card-border);
-  border-radius: 14px;
-  box-shadow: 0 10px 15px var(--color-shadow-sm), 0 4px 6px var(--color-shadow-sm);
   width: 100%;
   max-width: 327px;
-  min-height: 400px;
-  padding: 32px 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
-.gameboard__pitch-card-title {
-  font-size: 25px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--color-hand-card-title);
-}
-
-.gameboard__pitch-card-desc {
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--color-score);
+.gameboard__pitch-card .card {
+  border-radius: 14px;
+  box-shadow: 0 10px 15px var(--color-shadow-sm), 0 4px 6px var(--color-shadow-sm);
 }
 
 .gameboard__pitch-card-player {
   font-size: 12px;
   font-weight: 600;
   color: var(--color-score);
-  margin-top: auto;
   text-transform: uppercase;
+  text-align: center;
   opacity: 0.6;
 }

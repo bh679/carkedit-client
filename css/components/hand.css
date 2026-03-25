@@ -33,23 +33,20 @@
   top: 6px;
   width: 135px;
   height: 197.5px;
-  background: var(--color-hand-card-bg);
-  border: 2px solid var(--color-hand-card-border);
+  cursor: pointer;
+  overflow: hidden;
   border-radius: 14px;
   box-shadow: 0 10px 15px var(--color-shadow-sm), 0 4px 6px var(--color-shadow-sm);
-  padding: 18px 12px 2px;
-  cursor: pointer;
 }
 
-.hand__card:hover {
+.hand__card .card {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+}
+
+.hand__card:hover .card {
   border-color: var(--color-primary);
-}
-
-.hand__card-title {
-  font-size: 9px;
-  line-height: 1.35;
-  color: var(--color-hand-card-title);
-  font-weight: 500;
 }
 
 /* Dimmed hand — used during pitching / judging */
@@ -95,34 +92,19 @@
   padding: 20px;
 }
 
-.hand__inspect-card {
-  background: var(--color-hand-card-bg);
-  border: 2px solid var(--color-hand-card-border);
-  border-radius: 14px;
-  box-shadow: 0 10px 15px var(--color-shadow-sm), 0 4px 6px var(--color-shadow-sm);
+.hand__inspect-card-wrapper {
   width: 320px;
-  min-height: 465px;
-  padding: 32px 24px;
   transform: rotate(-3deg);
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.hand__inspect-title {
-  font-size: 30px;
-  font-weight: 500;
-  line-height: 1.3;
-  color: var(--color-hand-card-title);
-}
-
-.hand__inspect-desc {
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--color-score);
+.hand__inspect-card-wrapper .card {
+  border-radius: 14px;
+  box-shadow: 0 10px 15px var(--color-shadow-sm), 0 4px 6px var(--color-shadow-sm);
 }
 
 .hand__submit-btn {
-  margin-top: auto;
   width: 100%;
 }

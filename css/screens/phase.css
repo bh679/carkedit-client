@@ -185,35 +185,32 @@
   flex: 1;
 }
 
-.btn--judge {
-  background: var(--color-hand-card-bg);
-  border: 2px solid var(--color-hand-card-border);
-  border-radius: 14px;
-  padding: 16px 20px;
-  text-align: left;
+.judging__card-option {
   cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  box-shadow: 0 4px 6px var(--color-shadow-sm);
+  border-radius: 14px;
+  overflow: hidden;
 }
 
-.btn--judge:hover {
+.judging__card-option:hover .card {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px var(--color-primary);
 }
 
-.btn__card-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-hand-card-title);
+.judging__card-option .card {
+  border-radius: 14px;
+  box-shadow: 0 4px 6px var(--color-shadow-sm);
 }
 
-.btn__player-name {
+.judging__card-player {
   font-size: 11px;
   font-weight: 500;
   color: var(--color-score);
   text-transform: uppercase;
+  text-align: center;
+  padding: 4px 0;
 }
 
 /* ── Winner announcement ─────────────────────────────── */
@@ -265,8 +262,3 @@
   margin-top: var(--space-sm);
 }
 
-/* ── Die card variant (Living Dead's death card) ─────── */
-
-.prompt-card--die {
-  border-color: var(--color-die);
-}
