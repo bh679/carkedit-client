@@ -8,7 +8,14 @@ import { render as renderLobby } from './screens/lobby.js';
 import { render as renderPhase1 } from './screens/phase1.js';
 import { render as renderPhase23 } from './screens/phase2-3.js';
 import { render as renderPhase4 } from './screens/phase4.js';
-import { startPhase1, doneDying, revealCard } from './managers/game-manager.js';
+import {
+  startPhase1, doneDying, revealCard,
+  startPhase2, startPhase3,
+  showPlayerHand, readyToSelect,
+  inspectCard, dismissInspect, submitCard,
+  revealCards, startPitching, donePitching,
+  pickWinner, nextRound,
+} from './managers/game-manager.js';
 
 const SCREENS = {
   menu:   (state) => renderMenu(state),
@@ -112,7 +119,29 @@ function revealWinner() {
 }
 
 // Expose game API for inline onclick handlers
-window.game = { showScreen, addPlayer, selectPlayerRemoval, removePlayer, startPhase1, doneDying, revealCard, revealWinner };
+window.game = {
+  showScreen,
+  addPlayer,
+  selectPlayerRemoval,
+  removePlayer,
+  startPhase1,
+  doneDying,
+  revealCard,
+  revealWinner,
+  // Phase 2/3 actions
+  startPhase2,
+  startPhase3,
+  showPlayerHand,
+  readyToSelect,
+  inspectCard,
+  dismissInspect,
+  submitCard,
+  revealCards,
+  startPitching,
+  donePitching,
+  pickWinner,
+  nextRound,
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   showScreen('menu');

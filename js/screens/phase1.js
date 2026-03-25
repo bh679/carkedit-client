@@ -25,7 +25,7 @@ export function render(state) {
           <p class="phase__prompt">Everyone has met their fate!</p>
         </div>
         <div class="phase__actions">
-          <button class="btn btn--primary" onclick="window.game.showScreen('phase2')">
+          <button class="btn btn--primary" onclick="window.game.startPhase2()">
             Next Phase &rarr;
           </button>
         </div>

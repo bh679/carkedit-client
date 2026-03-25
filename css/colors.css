@@ -67,4 +67,13 @@
   /* ── Screen gradients ───────────────────────────────── */
   --color-gradient-start:     #4B35B5;
   --color-gradient-end:       #9842FF;
+
+  /* ── Living Dead / Phase 2-3 ───────────────────────── */
+  --color-chip-dead-bg:              #000000;
+  --color-chip-dead-text:            #ffffff;
+  --color-chip-submitted-bg:         #c2fecb;
+  --color-living-dead-msg-bg:        #fefce8;
+  --color-living-dead-msg-border:    #fdc700;
+  --color-living-dead-msg-text:      #894b00;
+  --color-played-card-back:          #30aa30;
 }
