@@ -80,6 +80,12 @@ function render() {
       </div>
     </div>
   `;
+
+  const cardEl = app.querySelector('.card-test__card');
+  if (cardEl) {
+    cardEl.addEventListener('click', nextCard);
+    cardEl.style.cursor = 'pointer';
+  }
 }
 
 function switchDeck(deckType) {
@@ -91,8 +97,15 @@ function switchDeck(deckType) {
 function nextCard() {
   const deck = currentDeck();
   if (!deck.length) return;
-  state.index = (state.index + 1) % deck.length;
-  render();
+
+  if (state.index < deck.length - 1) {
+    state.index = state.index + 1;
+    render();
+  } else {
+    const currentDeckIndex = DECK_TYPES.indexOf(state.deckType);
+    const nextDeckType = DECK_TYPES[(currentDeckIndex + 1) % DECK_TYPES.length];
+    switchDeck(nextDeckType);
+  }
 }
 
 function prevCard() {
