@@ -76,6 +76,22 @@ function addPlayer() {
   showScreen('lobby');
 }
 
+function selectPlayerRemoval(name) {
+  const state = getState();
+  const next = state.selectedPlayerForRemoval === name ? null : name;
+  setState({ selectedPlayerForRemoval: next });
+  showScreen('lobby');
+}
+
+function removePlayer(name) {
+  const state = getState();
+  setState({
+    players: state.players.filter((p) => p.name !== name),
+    selectedPlayerForRemoval: null,
+  });
+  showScreen('lobby');
+}
+
 function revealWinner() {
   const state = getState();
   const winner = state.players[Math.floor(Math.random() * state.players.length)]?.name ?? '';
@@ -84,7 +100,7 @@ function revealWinner() {
 }
 
 // Expose game API for inline onclick handlers
-window.game = { showScreen, addPlayer, startPhase1, doneDying, revealWinner };
+window.game = { showScreen, addPlayer, selectPlayerRemoval, removePlayer, startPhase1, doneDying, revealWinner };
 
 document.addEventListener('DOMContentLoaded', () => {
   showScreen('menu');

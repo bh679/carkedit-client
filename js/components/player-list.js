@@ -12,10 +12,10 @@ const STAR_ICON = `<svg width="10" height="10" viewBox="0 0 10 10" fill="#fdc700
 
 /**
  * @param {Array<{ name: string, score: number }>} players
- * @param {{ funeralDirector: string|null }} options
+ * @param {{ funeralDirector: string|null, activePlayerIndex: number, allowRemove: boolean, selectedForRemoval: string|null }} options
  * @returns {string} HTML string
  */
-export function render(players = [], { funeralDirector = null, activePlayerIndex = -1 } = {}) {
+export function render(players = [], { funeralDirector = null, activePlayerIndex = -1, allowRemove = false, selectedForRemoval = null } = {}) {
   if (!players.length) {
     return `
       <div class="player-list-container">
@@ -28,17 +28,26 @@ export function render(players = [], { funeralDirector = null, activePlayerIndex
   const chips = players.map((p, index) => {
     const isDirector = p.name === funeralDirector;
     const isActive = index === activePlayerIndex;
+    const isSelected = allowRemove && p.name === selectedForRemoval;
     const icon = isDirector ? STAR_ICON : PERSON_ICON;
     const score = p.score ?? 0;
     const modifiers = [
       isDirector ? ' player-list__chip--director' : '',
       isActive ? ' player-list__chip--active' : '',
     ].join('');
+    const escapedName = p.name.replace(/'/g, "\\'");
+    const clickAttr = allowRemove
+      ? ` onclick="window.game.selectPlayerRemoval('${escapedName}')" style="cursor:pointer"`
+      : '';
+    const removeBtn = isSelected
+      ? `<button class="player-list__remove-btn" onclick="event.stopPropagation(); window.game.removePlayer('${escapedName}')" aria-label="Remove ${p.name}">✕</button>`
+      : '';
     return `
-      <div class="player-list__chip${modifiers}">
+      <div class="player-list__chip${modifiers}"${clickAttr}>
         <span class="player-list__icon">${icon}</span>
         <span class="player-list__name">${p.name}</span>
         <span class="player-list__score">${score}</span>
+        ${removeBtn}
       </div>
     `;
   }).join('');
