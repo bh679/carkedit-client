@@ -42,7 +42,7 @@ export function render(state) {
       <div class="lobby__actions">
         <button
           class="btn btn--primary"
-          onclick="window.game.showScreen('phase1')"
+          onclick="window.game.startPhase1()"
           ${canStart ? '' : 'disabled'}
         >
           ${state.preloadComplete ? 'Start Game' : 'Loading\u2026'}
