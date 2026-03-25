@@ -161,7 +161,7 @@ const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function renderContribGraph(data) {
   if (!data || !data.length) return '<p class="dash-empty">No contribution data available.</p>';
 
-  // Group weeks by the month of their Sunday date
+  // Group weeks by the month of their Sunday date, keep only last 3 months
   const groups = new Map(); // monthKey -> { label, weeks[] }
   for (const week of data) {
     const weekTs = week.week * 1000;
@@ -173,7 +173,9 @@ function renderContribGraph(data) {
     groups.get(monthKey).weeks.push(week);
   }
 
-  const monthGroupsHtml = [...groups.values()].map(({ label, weeks }) => {
+  const recentGroups = [...groups.values()].slice(-3);
+
+  const monthGroupsHtml = recentGroups.map(({ label, weeks }) => {
     const weekRowsHtml = weeks.map(week => {
       const cellsHtml = Array.from({ length: 7 }, (_, d) => {
         const count = week.days[d];
