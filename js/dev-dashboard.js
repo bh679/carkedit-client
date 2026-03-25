@@ -155,44 +155,47 @@ function mergeContribData(datasets) {
   return merged;
 }
 
-const CONTRIB_WEEKS = 9; // ~2 months
+const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 function renderContribGraph(data) {
   if (!data || !data.length) return '<p class="dash-empty">No contribution data available.</p>';
 
-  // Only show last ~2 months (9 weeks)
-  const recentWeeks = data.slice(-CONTRIB_WEEKS);
-  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
-  const cells = [];
-  for (const week of recentWeeks) {
-    for (let d = 0; d < 7; d++) {
-      const count = week.days[d];
-      let level = 0;
-      if (count >= 1) level = 1;
-      if (count >= 3) level = 2;
-      if (count >= 5) level = 3;
-      if (count >= 8) level = 4;
-      // Calculate the actual date for this cell
-      const weekTs = week.week * 1000;
-      const cellDate = new Date(weekTs + d * 86400000);
-      const dateStr = cellDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-      cells.push(`<div class="contrib-cell contrib-cell--${level}" title="${count} commit${count !== 1 ? 's' : ''} on ${dateStr} (${dayNames[d]})"></div>`);
+  // Group weeks by the month of their Sunday date
+  const groups = new Map(); // monthKey -> { label, weeks[] }
+  for (const week of data) {
+    const weekTs = week.week * 1000;
+    const sunday = new Date(weekTs);
+    const monthKey = `${sunday.getFullYear()}-${sunday.getMonth()}`;
+    if (!groups.has(monthKey)) {
+      groups.set(monthKey, { label: monthNames[sunday.getMonth()], weeks: [] });
     }
+    groups.get(monthKey).weeks.push(week);
   }
 
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const now = new Date();
-  const monthLabels = [];
-  for (let i = 2; i >= 0; i--) {
-    const m = (now.getMonth() - i + 12) % 12;
-    monthLabels.push(`<span style="flex:1;text-align:center">${monthNames[m]}</span>`);
-  }
+  const monthGroupsHtml = [...groups.values()].map(({ label, weeks }) => {
+    const weekRowsHtml = weeks.map(week => {
+      const cellsHtml = Array.from({ length: 7 }, (_, d) => {
+        const count = week.days[d];
+        let level = 0;
+        if (count >= 1) level = 1;
+        if (count >= 3) level = 2;
+        if (count >= 5) level = 3;
+        if (count >= 8) level = 4;
+        const weekTs = week.week * 1000;
+        const cellDate = new Date(weekTs + d * 86400000);
+        const dateStr = cellDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        const tooltip = `${count} commit${count !== 1 ? 's' : ''} · ${dayNames[d]} ${dateStr}`;
+        return `<div class="contrib-cell contrib-cell--${level}" data-tooltip="${tooltip}"></div>`;
+      }).join('');
+      return `<div class="contrib-week-row">${cellsHtml}</div>`;
+    }).join('');
+    return `<div class="contrib-month-group"><div class="contrib-month-label">${label}</div>${weekRowsHtml}</div>`;
+  }).join('');
 
   return `
     <div class="contrib-wrapper">
-      <div class="contrib-grid">${cells.join('')}</div>
-      <div class="contrib-months">${monthLabels.join('')}</div>
+      ${monthGroupsHtml}
     </div>
     <div class="contrib-legend">
       Less
