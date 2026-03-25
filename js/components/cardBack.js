@@ -24,7 +24,14 @@ export function render({ deckType = 'die' } = {}) {
 
   return `
     <div class="card-back card-back--${deckType}">
-      ${words}
+      <img class="card-back__image"
+           src="assets/card-backs/${deckType}-back.jpg"
+           alt="${deckType} deck back"
+           onload="this.closest('.card-back').querySelector('.card-back__fallback').style.display='none'"
+           onerror="this.style.display='none'">
+      <div class="card-back__fallback">
+        ${words}
+      </div>
     </div>
   `;
 }
