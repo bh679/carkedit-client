@@ -3,6 +3,7 @@
 
 import { getState, setState } from './state.js';
 import { loadDeck } from './data/cardTypes.js';
+import { preloadCards } from './preloader.js';
 import { render as renderMenu } from './screens/menu.js';
 import { render as renderLobby } from './screens/lobby.js';
 import { render as renderPhase1 } from './screens/phase1.js';
@@ -25,6 +26,35 @@ export function showScreen(name, updates = {}) {
   const renderFn = SCREENS[name];
   if (!renderFn) throw new Error(`Unknown screen: ${name}`);
   app.innerHTML = renderFn(state);
+
+  // Start preloading cards when entering the lobby
+  if (name === 'lobby' && !state.preloadComplete) {
+    startPreload();
+  }
+}
+
+let _preloadPromise = null;
+
+function startPreload() {
+  if (_preloadPromise) return; // already in progress
+  _preloadPromise = preloadCards((loaded, total) => {
+    const el = document.getElementById('preload-progress');
+    if (el) el.textContent = `Loading cards\u2026 ${loaded}/${total}`;
+  }).then(({ decks }) => {
+    const state = getState();
+    setState({
+      decks: {
+        die: shuffle(decks.die ?? []),
+        live: shuffle(decks.live ?? []),
+        bye: shuffle(decks.bye ?? []),
+      },
+      preloadComplete: true,
+    });
+    // Re-render lobby to enable Start button
+    if (getState().screen === 'lobby') {
+      showScreen('lobby');
+    }
+  });
 }
 
 function addPlayer() {

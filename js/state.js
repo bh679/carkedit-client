@@ -11,6 +11,7 @@ let _state = {
   hand: [],
   winner: null,
   decks: { die: null, live: null, bye: null },
+  preloadComplete: false,
 };
 
 export function getState() {
