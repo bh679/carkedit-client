@@ -33,7 +33,7 @@ function render() {
   const imagePath = card ? `assets/illustrations/${card.typeId}/${card.illustrationKey}.jpg` : '';
 
   const cardHtml = card
-    ? `<div class="card-test__card" style="width:220px">
+    ? `<div class="card-test__card" style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;width:100%">
         ${renderCard({ title: card.title, description: card.description ?? '', prompt: card.prompt ?? '', image: imagePath, deckType: state.deckType })}
       </div>`
     : '<p style="color:var(--color-text-muted)">No cards loaded.</p>';
@@ -56,24 +56,28 @@ function render() {
     : '';
 
   app.innerHTML = `
-    <div class="card-test" style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;padding:2rem;min-height:100vh;background:var(--color-background)">
-      <h1 style="color:var(--color-text);font-family:var(--font-display);margin:0">Card Test</h1>
+    <div style="background:var(--color-background)">
+      <div class="card-test" style="display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1rem;height:100vh;overflow:hidden;box-sizing:border-box">
+        <h1 style="color:var(--color-text);font-family:var(--font-display);margin:0;flex-shrink:0">Card Test</h1>
 
-      <div style="display:flex;gap:0.75rem">
-        ${deckButtons}
+        <div style="display:flex;gap:0.75rem;flex-shrink:0">
+          ${deckButtons}
+        </div>
+
+        ${cardHtml}
+
+        <div style="display:flex;align-items:center;gap:1rem;flex-shrink:0">
+          <button class="btn btn--secondary" onclick="window.cardTest.prevCard()" ${!deck.length ? 'disabled' : ''}>&larr;</button>
+          <span style="color:var(--color-text-muted);font-size:0.875rem">
+            Card ${deck.length ? state.index + 1 : 0} / ${deck.length}
+          </span>
+          <button class="btn btn--secondary" onclick="window.cardTest.nextCard()" ${!deck.length ? 'disabled' : ''}>&rarr;</button>
+        </div>
       </div>
 
-      ${cardHtml}
-
-      <div style="display:flex;align-items:center;gap:1rem">
-        <button class="btn btn--secondary" onclick="window.cardTest.prevCard()" ${!deck.length ? 'disabled' : ''}>&larr;</button>
-        <span style="color:var(--color-text-muted);font-size:0.875rem">
-          Card ${deck.length ? state.index + 1 : 0} / ${deck.length}
-        </span>
-        <button class="btn btn--secondary" onclick="window.cardTest.nextCard()" ${!deck.length ? 'disabled' : ''}>&rarr;</button>
+      <div style="padding:2rem;display:flex;flex-direction:column;align-items:center">
+        ${jsonHtml}
       </div>
-
-      ${jsonHtml}
     </div>
   `;
 }
