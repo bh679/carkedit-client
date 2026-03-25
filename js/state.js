@@ -15,6 +15,18 @@ let _state = {
   winner: null,
   decks: { die: null, live: null, bye: null },
   preloadComplete: false,
+
+  // Phase 2/3 state
+  livingDeadIndex: 0,
+  phase23Round: 0,
+  playerHands: {},
+  submittedCards: {},
+  revealedCards: false,
+  pitchingPlayerIndex: 0,
+  selectedCard: null,
+  phase2SubState: 'living-dead',
+  currentNonDeadIndex: 0,
+  roundWinner: null,
 };
 
 export function getState() {

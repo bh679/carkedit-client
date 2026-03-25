@@ -118,3 +118,149 @@
 .phase__actions .btn {
   flex: 1;
 }
+
+/* ── Phase 2/3 action buttons ─────────────────────────── */
+
+.phase-actions {
+  padding: var(--space-sm) 0;
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.phase-actions .btn {
+  flex: 1;
+}
+
+/* ── Pass the phone screen ────────────────────────────── */
+
+.pass-phone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  padding: var(--space-xl) var(--space-md);
+}
+
+.pass-phone__message {
+  text-align: center;
+}
+
+.pass-phone__title {
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: var(--space-sm);
+}
+
+.pass-phone__name {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--color-white);
+}
+
+/* ── Judging screen ──────────────────────────────────── */
+
+.judging {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md) 0;
+}
+
+.judging__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-white);
+  text-align: center;
+}
+
+.judging__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.btn--judge {
+  background: var(--color-hand-card-bg);
+  border: 2px solid var(--color-hand-card-border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 4px 6px var(--color-shadow-sm);
+}
+
+.btn--judge:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.btn__card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-hand-card-title);
+}
+
+.btn__player-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-score);
+  text-transform: uppercase;
+}
+
+/* ── Winner announcement ─────────────────────────────── */
+
+.winner-announcement {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  padding: var(--space-xl) var(--space-md);
+}
+
+.winner-announcement__card {
+  background: var(--color-hand-card-bg);
+  border-radius: 14px;
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 10px 15px var(--color-shadow-sm);
+  width: 100%;
+  max-width: 300px;
+}
+
+.winner-announcement__title {
+  font-size: 48px;
+  margin-bottom: var(--space-sm);
+}
+
+.winner-announcement__name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-hand-card-title);
+  margin-bottom: var(--space-xs);
+}
+
+.winner-announcement__points {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-live);
+}
+
+/* ── Prompt card prompt text ─────────────────────────── */
+
+.prompt-card__prompt {
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: var(--space-sm);
+}
