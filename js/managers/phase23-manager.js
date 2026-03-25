@@ -48,13 +48,16 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     return { playerHands: hands, ...setDeck(deck) };
   }
 
+  function getLivingDeadDieCard(state, livingDeadIndex) {
+    const player = state.players[livingDeadIndex];
+    const dieCard = player ? state.playerDieCards[player.name] : null;
+    return dieCard ? { ...dieCard, deckType: 'die' } : null;
+  }
+
   function start() {
     const state = getState();
 
-    // Draw a prompt card from the deck for the Living Dead
     const deck = [...getDeck()];
-    const promptCard = deck.length > 0 ? { ...deck.shift(), deckType } : null;
-
     const handUpdates = dealHandsFromDeck(deck, state);
 
     onStateChange({
@@ -67,7 +70,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
       phase2SubState: 'living-dead',
       currentNonDeadIndex: 0,
       roundWinner: null,
-      currentCard: promptCard,
+      currentCard: getLivingDeadDieCard(state, 0),
       ...handUpdates,
     });
   }
@@ -234,9 +237,6 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
       }
 
       // Start next round (all players are Living Dead again)
-      const deck = [...getDeck()];
-      const promptCard = deck.length > 0 ? { ...deck.shift(), deckType } : null;
-
       onStateChange({
         phase23Round: nextPhaseRound,
         livingDeadIndex: 0,
@@ -246,15 +246,11 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
         pitchingPlayerIndex: 0,
         selectedCard: null,
         roundWinner: null,
-        currentCard: promptCard,
+        currentCard: getLivingDeadDieCard(state, 0),
         phase2SubState: 'living-dead',
-        ...setDeck(deck),
       });
     } else {
       // Next player becomes Living Dead
-      const deck = [...getDeck()];
-      const promptCard = deck.length > 0 ? { ...deck.shift(), deckType } : null;
-
       onStateChange({
         livingDeadIndex: nextLivingDead,
         currentNonDeadIndex: 0,
@@ -263,9 +259,8 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
         pitchingPlayerIndex: 0,
         selectedCard: null,
         roundWinner: null,
-        currentCard: promptCard,
+        currentCard: getLivingDeadDieCard(state, nextLivingDead),
         phase2SubState: 'living-dead',
-        ...setDeck(deck),
       });
     }
   }

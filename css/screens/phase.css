@@ -264,3 +264,9 @@
   color: rgba(255, 255, 255, 0.7);
   margin-top: var(--space-sm);
 }
+
+/* ── Die card variant (Living Dead's death card) ─────── */
+
+.prompt-card--die {
+  border-color: var(--color-die);
+}

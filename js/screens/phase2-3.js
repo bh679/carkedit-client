@@ -74,16 +74,19 @@ function getPitchingPlayerName(state) {
   return nonDeadPlayers[state.pitchingPlayerIndex]?.name ?? null;
 }
 
+function renderDieCard(card, livingDeadName) {
+  if (!card) return '';
+  return `
+    <div class="prompt-card prompt-card--die">
+      <p class="prompt-card__text">${card.title}</p>
+      ${card.prompt ? `<p class="prompt-card__prompt">${card.prompt}</p>` : ''}
+      <span class="prompt-card__watermark">${livingDeadName}'s Death</span>
+    </div>
+  `;
+}
+
 function renderLivingDeadScreen(config, state, playerListOptions, livingDeadName) {
-  const promptCardHtml = state.currentCard
-    ? `
-      <div class="prompt-card">
-        <p class="prompt-card__text">${state.currentCard.title}</p>
-        ${state.currentCard.prompt ? `<p class="prompt-card__prompt">${state.currentCard.prompt}</p>` : ''}
-        <span class="prompt-card__watermark">PROMPT</span>
-      </div>
-    `
-    : '';
+  const promptCardHtml = renderDieCard(state.currentCard, livingDeadName);
 
   const round = state.phase23Round + 1;
   const hint = `Round ${round} — ${livingDeadName} is The Living Dead`;
@@ -130,16 +133,9 @@ function renderPassPhoneScreen(config, state, playerListOptions, nonDeadIndices)
 function renderSelectingScreen(config, state, playerListOptions) {
   const currentPlayer = state.players[state.currentPlayerIndex];
   const playerName = currentPlayer?.name ?? '';
+  const livingDeadName = state.players[state.livingDeadIndex]?.name ?? '';
 
-  const promptCardHtml = state.currentCard
-    ? `
-      <div class="prompt-card">
-        <p class="prompt-card__text">${state.currentCard.title}</p>
-        ${state.currentCard.prompt ? `<p class="prompt-card__prompt">${state.currentCard.prompt}</p>` : ''}
-        <span class="prompt-card__watermark">PROMPT</span>
-      </div>
-    `
-    : '';
+  const promptCardHtml = renderDieCard(state.currentCard, livingDeadName);
 
   const hint = `${playerName}, select your best card to play`;
 
@@ -158,14 +154,8 @@ function renderSelectingScreen(config, state, playerListOptions) {
 }
 
 function renderAllSubmittedScreen(config, state, playerListOptions) {
-  const promptCardHtml = state.currentCard
-    ? `
-      <div class="prompt-card">
-        <p class="prompt-card__text">${state.currentCard.title}</p>
-        <span class="prompt-card__watermark">PROMPT</span>
-      </div>
-    `
-    : '';
+  const livingDeadName = state.players[state.livingDeadIndex]?.name ?? '';
+  const promptCardHtml = renderDieCard(state.currentCard, livingDeadName);
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
@@ -186,14 +176,8 @@ function renderAllSubmittedScreen(config, state, playerListOptions) {
 }
 
 function renderRevealedScreen(config, state, playerListOptions) {
-  const promptCardHtml = state.currentCard
-    ? `
-      <div class="prompt-card">
-        <p class="prompt-card__text">${state.currentCard.title}</p>
-        <span class="prompt-card__watermark">PROMPT</span>
-      </div>
-    `
-    : '';
+  const livingDeadName = state.players[state.livingDeadIndex]?.name ?? '';
+  const promptCardHtml = renderDieCard(state.currentCard, livingDeadName);
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
