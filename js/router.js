@@ -66,10 +66,22 @@ function startPreload() {
   });
 }
 
+// TODO (dev only): placeholder names for quick testing — remove or replace with proper UX before shipping
+const DEV_NAME_POOL = ['Brennan', 'Simon', 'Leonie', 'Danikah', 'Lowe', 'Hatton', 'Sanderson'];
+
 function addPlayer() {
   const input = document.getElementById('player-name-input');
-  const name = input?.value?.trim();
-  if (!name) return;
+  let name = input?.value?.trim();
+
+  if (!name) {
+    // TODO (dev only): auto-fill a random name when the field is empty
+    const state = getState();
+    const taken = new Set(state.players.map((p) => p.name));
+    const available = DEV_NAME_POOL.filter((n) => !taken.has(n));
+    if (available.length === 0) return;
+    name = available[Math.floor(Math.random() * available.length)];
+  }
+
   const state = getState();
   if (state.players.some((p) => p.name === name)) return;
   setState({ players: [...state.players, { name, score: 0 }] });
