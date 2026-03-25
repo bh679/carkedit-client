@@ -3,11 +3,11 @@
 .gameboard {
   background: linear-gradient(
     180deg,
-    #f9fafb 0%,
+    var(--color-chip-bg) 0%,
     rgba(0, 0, 0, 0) 100%
   );
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--color-shadow-sm), 0 2px 4px var(--color-shadow-sm);
   padding: 16px;
   flex: 1;
   display: flex;
@@ -29,7 +29,7 @@
 .gameboard__hint {
   font-size: 12px;
   font-weight: 500;
-  color: #4a5565;
+  color: var(--color-score);
   text-align: center;
   padding-top: 16px;
   flex-shrink: 0;

@@ -3,9 +3,9 @@
 .hand {
   position: sticky;
   bottom: 0;
-  background: #ffffff;
+  background: var(--color-hand-bg);
   border-radius: 10px 10px 0 0;
-  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1), 0 -2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -4px 6px var(--color-shadow-sm), 0 -2px 4px var(--color-shadow-sm);
   padding: 12px;
   z-index: 10;
 }
@@ -33,21 +33,21 @@
   top: 6px;
   width: 135px;
   height: 197.5px;
-  background: #ffffff;
-  border: 2px solid #e5e7eb;
+  background: var(--color-hand-card-bg);
+  border: 2px solid var(--color-hand-card-border);
   border-radius: 14px;
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 15px var(--color-shadow-sm), 0 4px 6px var(--color-shadow-sm);
   padding: 18px 12px 2px;
   cursor: pointer;
 }
 
 .hand__card:hover {
-  border-color: #9842ff;
+  border-color: var(--color-primary);
 }
 
 .hand__card-title {
   font-size: 9px;
   line-height: 1.35;
-  color: #000000;
+  color: var(--color-hand-card-title);
   font-weight: 500;
 }

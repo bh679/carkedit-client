@@ -1,7 +1,7 @@
 /* CarkedIt Online — Phase Screens (shared: phase 1, 2/3, 4) */
 
 .screen--phase {
-  background: linear-gradient(101.87deg, #615fff 8.5%, #9810fa 91.5%);
+  background: linear-gradient(101.87deg, var(--color-gradient-start) 8.5%, var(--color-gradient-end) 91.5%);
   gap: var(--space-sm);
   padding: var(--space-sm);
 }
@@ -10,10 +10,10 @@
 
 .prompt-card {
   position: relative;
-  background: #000000;
-  border: 2px solid #000000;
+  background: var(--color-prompt-bg);
+  border: 2px solid var(--color-prompt-border);
   border-radius: 14px;
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 15px var(--color-shadow-sm), 0 4px 6px var(--color-shadow-sm);
   width: 100%;
   padding: 32px;
   min-height: 280px;
@@ -23,8 +23,8 @@
 }
 
 .prompt-card--empty {
-  background: rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: var(--color-prompt-empty-bg);
+  border-color: var(--color-prompt-empty-border);
   align-items: center;
   justify-content: center;
 }
@@ -32,7 +32,7 @@
 .prompt-card__text {
   font-size: 18px;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--color-white);
   line-height: 1.375;
   letter-spacing: -0.44px;
 }
@@ -41,7 +41,7 @@
   display: block;
   font-size: 14px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-prompt-watermark);
   letter-spacing: -0.15px;
   text-align: center;
 }
