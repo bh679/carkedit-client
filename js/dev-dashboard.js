@@ -668,17 +668,17 @@ function renderDashboard(sections) {
 
       <div class="dash-grid">
 
+        <div class="dash-card dash-card--full">
+          <div class="dash-card__title">Design Docs</div>
+          <div id="section-design-docs">${sections.designDocs}</div>
+        </div>
+
         <div class="dash-card">
           <div class="dash-card__title">Contribution Graph</div>
           <div id="section-contrib">${sections.contrib}</div>
         </div>
 
         <div class="dash-card">
-          <div class="dash-card__title">Design Docs</div>
-          <div id="section-design-docs">${sections.designDocs}</div>
-        </div>
-
-        <div class="dash-card dash-card--full">
           <div class="dash-card__title">Recent Commits</div>
           <div id="section-commits">${sections.commits}</div>
         </div>
