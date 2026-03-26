@@ -56,12 +56,13 @@ export function render(state) {
 
   const wildcardSubSettings = enableEulogy ? `
     <div class="lobby__advanced-subsection">
-      <label class="lobby__checkbox-row ${forceWildcards ? 'lobby__checkbox-row--active' : ''}">
-        <input type="checkbox" ${forceWildcards ? 'checked' : ''}
-          onchange="window.game.toggleSetting('forceWildcards')">
-        <span class="lobby__checkbox-label">Force Wildcards</span>
-        <span class="lobby__checkbox-hint">(everyone gets one, none in deck)</span>
-      </label>
+      <div class="lobby__stepper-row">
+        <span class="lobby__stepper-label">Force Wildcards <span class="lobby__stepper-hint">(everyone gets one)</span></span>
+        <button class="btn lobby__stepper-btn ${forceWildcards ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('forceWildcards')">
+          ${forceWildcards ? 'On' : 'Off'}
+        </button>
+      </div>
       <div class="lobby__stepper-row ${forceWildcards ? 'lobby__stepper-row--disabled' : ''}">
         <span class="lobby__stepper-label">Wildcards in Deck</span>
         <button class="btn btn--secondary lobby__stepper-btn"
@@ -100,25 +101,31 @@ export function render(state) {
       </div>
       <div class="lobby__advanced-divider"></div>
       <p class="lobby__advanced-section-label">Phases</p>
-      <label class="lobby__checkbox-row lobby__checkbox-row--disabled">
-        <input type="checkbox" checked disabled>
-        <span class="lobby__checkbox-label">DIE</span>
-      </label>
-      <label class="lobby__checkbox-row ${enableLive ? 'lobby__checkbox-row--active' : ''}">
-        <input type="checkbox" ${enableLive ? 'checked' : ''}
-          onchange="window.game.toggleSetting('enableLive')">
-        <span class="lobby__checkbox-label">LIVE</span>
-      </label>
-      <label class="lobby__checkbox-row ${enableBye ? 'lobby__checkbox-row--active' : ''}">
-        <input type="checkbox" ${enableBye ? 'checked' : ''}
-          onchange="window.game.toggleSetting('enableBye')">
-        <span class="lobby__checkbox-label">BYE</span>
-      </label>
-      <label class="lobby__checkbox-row ${enableEulogy ? 'lobby__checkbox-row--active' : ''}">
-        <input type="checkbox" ${enableEulogy ? 'checked' : ''}
-          onchange="window.game.toggleSetting('enableEulogy')">
-        <span class="lobby__checkbox-label">EULOGY</span>
-      </label>
+      <div class="lobby__stepper-row lobby__stepper-row--disabled">
+        <span class="lobby__stepper-label">DIE</span>
+        <button class="btn lobby__stepper-btn btn--primary" disabled>On</button>
+      </div>
+      <div class="lobby__stepper-row">
+        <span class="lobby__stepper-label">LIVE</span>
+        <button class="btn lobby__stepper-btn ${enableLive ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('enableLive')">
+          ${enableLive ? 'On' : 'Off'}
+        </button>
+      </div>
+      <div class="lobby__stepper-row">
+        <span class="lobby__stepper-label">BYE</span>
+        <button class="btn lobby__stepper-btn ${enableBye ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('enableBye')">
+          ${enableBye ? 'On' : 'Off'}
+        </button>
+      </div>
+      <div class="lobby__stepper-row">
+        <span class="lobby__stepper-label">EULOGY</span>
+        <button class="btn lobby__stepper-btn ${enableEulogy ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('enableEulogy')">
+          ${enableEulogy ? 'On' : 'Off'}
+        </button>
+      </div>
       ${wildcardSubSettings}
       <div class="lobby__advanced-divider"></div>
       <div class="lobby__select-row">
