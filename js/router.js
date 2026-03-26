@@ -16,6 +16,8 @@ import {
   revealCards, startPitching, donePitching,
   pickWinner, nextRound,
   inspectJudgingCard, prevJudgingCard, nextJudgingCard, confirmWinner,
+  startPhase4, startEulogyRound, selectEulogist, confirmEulogists,
+  startEulogy, doneEulogy, pickBestEulogy, nextWildcard,
 } from './managers/game-manager.js';
 
 const SCREENS = {
@@ -123,8 +125,9 @@ function removePlayer(name) {
 
 function revealWinner() {
   const state = getState();
-  const winner = state.players[Math.floor(Math.random() * state.players.length)]?.name ?? '';
-  setState({ winner });
+  const sorted = [...state.players].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+  const winner = sorted[0]?.name ?? '';
+  setState({ winner, phase4SubState: 'winner' });
   showScreen('phase4');
 }
 
@@ -157,6 +160,15 @@ window.game = {
   prevJudgingCard,
   nextJudgingCard,
   confirmWinner,
+  // Phase 4 actions
+  startPhase4,
+  startEulogyRound,
+  selectEulogist,
+  confirmEulogists,
+  startEulogy,
+  doneEulogy,
+  pickBestEulogy,
+  nextWildcard,
   setRounds(n) {
     setState({ totalRounds: Math.max(1, Math.min(10, n)) });
     showScreen('lobby');

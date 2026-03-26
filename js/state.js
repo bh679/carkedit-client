@@ -10,6 +10,7 @@ let _state = {
   currentPlayerIndex: 0,
   turnStatus: 'idle',
   playerDieCards: {},
+  playerChosenCards: {},  // { [playerName]: card[] } — cards chosen by each Living Dead across phases
   phaseComplete: false,
   cardRevealed: false,
   hand: [],
@@ -31,6 +32,17 @@ let _state = {
   currentNonDeadIndex: 0,
   roundWinner: null,
   roundWinnerCard: null,
+
+  // Wildcard cards held aside during Phase 3
+  wildcardCards: {},
+
+  // Phase 4 state
+  phase4SubState: 'wildcard-intro',
+  wildcardPlayers: [],
+  currentWildcardIndex: 0,
+  selectedEulogists: [],
+  currentEulogistIndex: 0,
+  bestEulogist: null,
 };
 
 export function getState() {

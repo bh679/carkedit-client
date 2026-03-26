@@ -78,17 +78,37 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
   function dealHandsFromDeck(deck, state) {
     const deckCopy = [...deck];
     const hands = { ...state.playerHands };
+    const wildcardCards = { ...(state.wildcardCards ?? {}) };
 
     for (const player of state.players) {
       const currentHand = hands[player.name] ?? [];
       const needed = HAND_SIZE - currentHand.length;
       if (needed > 0 && deckCopy.length > 0) {
         const dealt = deckCopy.splice(0, Math.min(needed, deckCopy.length));
-        hands[player.name] = [...currentHand, ...dealt];
+
+        // For bye deck: separate wildcard cards so they're held for Phase 4
+        if (deckType === 'bye') {
+          const regular = [];
+          for (const card of dealt) {
+            if (card.special === 'Wildcard') {
+              const existing = wildcardCards[player.name] ?? [];
+              wildcardCards[player.name] = [...existing, card];
+            } else {
+              regular.push(card);
+            }
+          }
+          hands[player.name] = [...currentHand, ...regular];
+        } else {
+          hands[player.name] = [...currentHand, ...dealt];
+        }
       }
     }
 
-    return { playerHands: hands, ...setDeck(deckCopy) };
+    const result = { playerHands: hands, ...setDeck(deckCopy) };
+    if (deckType === 'bye') {
+      result.wildcardCards = wildcardCards;
+    }
+    return result;
   }
 
   function showPlayerHand() {
@@ -263,6 +283,13 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
       }
     }
 
+    // Store the winning card on the Living Dead's tableau
+    const livingDeadName = state.players[state.livingDeadIndex].name;
+    const winningCard = state.submittedCards[playerName];
+    const playerChosenCards = { ...(state.playerChosenCards ?? {}) };
+    const existing = playerChosenCards[livingDeadName] ?? [];
+    playerChosenCards[livingDeadName] = [...existing, { ...winningCard, deckType }];
+
     // Draw players back up to 5 cards
     const hands = { ...state.playerHands };
     for (const player of players) {
@@ -277,6 +304,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     onStateChange({
       players,
       playerHands: hands,
+      playerChosenCards,
       roundWinner: playerName,
       roundWinnerCard: state.submittedCards[playerName] ?? null,
       phase2SubState: 'winner-announced',
