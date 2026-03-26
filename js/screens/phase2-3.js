@@ -134,13 +134,17 @@ function renderSelectingScreen(config, state, playerListOptions) {
 
   const hint = `${playerName}, select your best card to play`;
 
-  const hasRedrawn = (state.handRedrawnPlayers ?? {})[playerName];
+  const handRedraws = state.gameSettings?.handRedraws ?? 'once_per_phase';
+  const hasRedrawn = !!(state.handRedrawnPlayers ?? {})[playerName];
   const hasPlayed = !!(state.hasPlayedCardPlayers ?? {})[playerName];
-  const redrawButton = (hasRedrawn || hasPlayed) ? '' : `
+  const showRedraw = handRedraws !== 'off'
+    && (handRedraws === 'unlimited' || !hasRedrawn)
+    && (handRedraws === 'once_per_round' || handRedraws === 'unlimited' || !hasPlayed);
+  const redrawButton = showRedraw ? `
     <button class="btn btn--secondary hand__redraw-btn" onclick="window.game.redrawHand()">
       Redraw Hand
     </button>
-  `;
+  ` : '';
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">

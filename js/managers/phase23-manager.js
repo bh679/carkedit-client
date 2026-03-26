@@ -344,6 +344,11 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
   function nextRound() {
     const state = getState();
     const nextLivingDead = state.livingDeadIndex + 1;
+    const handRedraws = state.gameSettings?.handRedraws ?? 'once_per_phase';
+    const resetRedrawTracking = handRedraws === 'once_per_round' || handRedraws === 'unlimited';
+    const redrawReset = resetRedrawTracking
+      ? { handRedrawnPlayers: {}, hasPlayedCardPlayers: {} }
+      : {};
 
     if (nextLivingDead >= state.players.length) {
       // All players have been Living Dead this round
@@ -368,6 +373,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
         roundWinner: null,
         currentCard: getLivingDeadDieCard(state, 0),
         phase2SubState: 'living-dead',
+        ...redrawReset,
       });
     } else {
       // Next player becomes Living Dead
@@ -381,6 +387,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
         roundWinner: null,
         currentCard: getLivingDeadDieCard(state, nextLivingDead),
         phase2SubState: 'living-dead',
+        ...redrawReset,
       });
     }
   }

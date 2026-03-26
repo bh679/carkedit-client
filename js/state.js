@@ -18,7 +18,7 @@ let _state = {
   decks: { die: null, live: null, bye: null },
   preloadComplete: false,
   selectedPlayerForRemoval: null,
-  gameSettings: { rounds: 2, handSize: 5 },
+  gameSettings: { rounds: 2, handSize: 5, handRedraws: 'once_per_phase' },
   showAdvancedSettings: false,
 
   // Phase 2/3 state

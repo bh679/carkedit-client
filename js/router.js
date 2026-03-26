@@ -143,6 +143,14 @@ function toggleAdvancedSettings() {
   showScreen('lobby');
 }
 
+function setHandRedraws(value) {
+  const allowed = ['off', 'once_per_phase', 'once_per_round', 'unlimited'];
+  if (!allowed.includes(value)) return;
+  const state = getState();
+  setState({ gameSettings: { ...state.gameSettings, handRedraws: value } });
+  showScreen('lobby');
+}
+
 function revealWinner() {
   const state = getState();
   const sorted = [...state.players].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
@@ -160,6 +168,7 @@ window.game = {
   updateSetting,
   setGameMode,
   toggleAdvancedSettings,
+  setHandRedraws,
   startPhase1,
   doneDying,
   revealCard,
