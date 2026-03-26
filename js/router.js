@@ -143,6 +143,10 @@ window.game = {
   donePitching,
   pickWinner,
   nextRound,
+  setRounds(n) {
+    setState({ totalRounds: Math.max(1, Math.min(10, n)) });
+    showScreen('lobby');
+  },
 };
 
 document.addEventListener('DOMContentLoaded', () => {
