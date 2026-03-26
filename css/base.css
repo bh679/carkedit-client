@@ -30,7 +30,9 @@
 body {
   touch-action: manipulation;
   font-family: system-ui, -apple-system, sans-serif;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   background: var(--color-bg);
   color: var(--color-text);
   display: flex;
@@ -40,7 +42,8 @@ body {
 #app {
   width: 100%;
   max-width: var(--max-width);
-  min-height: 100vh;
+  height: 100%;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
