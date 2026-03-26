@@ -30,6 +30,8 @@ let _state = {
   currentNonDeadIndex: 0,
   roundWinner: null,
   roundWinnerCard: null,
+  handRedrawnPlayers: {},
+  hasPlayedCardPlayers: {},
 };
 
 export function getState() {

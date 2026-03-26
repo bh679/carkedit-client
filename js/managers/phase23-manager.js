@@ -70,8 +70,31 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
       phase2SubState: 'living-dead',
       currentNonDeadIndex: 0,
       roundWinner: null,
+      handRedrawnPlayers: {},
+      hasPlayedCardPlayers: {},
       currentCard: getLivingDeadDieCard(state, 0),
       ...handUpdates,
+    });
+  }
+
+  function redrawHand() {
+    const state = getState();
+    const player = state.players[state.currentPlayerIndex];
+    if (!player) return;
+    if ((state.handRedrawnPlayers ?? {})[player.name]) return;
+
+    const currentHand = state.playerHands[player.name] ?? [];
+    const deck = [...getDeck(), ...currentHand];
+
+    const newHand = deck.splice(0, Math.min(HAND_SIZE, deck.length));
+    const newPlayerHands = { ...state.playerHands, [player.name]: newHand };
+    const newRedrawnPlayers = { ...(state.handRedrawnPlayers ?? {}), [player.name]: true };
+
+    onStateChange({
+      hand: newHand,
+      playerHands: newPlayerHands,
+      handRedrawnPlayers: newRedrawnPlayers,
+      ...setDeck(deck),
     });
   }
 
@@ -202,6 +225,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     const newHand = hand.filter(c => String(c.id) !== String(cardId));
     const newSubmitted = { ...state.submittedCards, [player.name]: card };
     const newHands = { ...state.playerHands, [player.name]: newHand };
+    const newHasPlayed = { ...(state.hasPlayedCardPlayers ?? {}), [player.name]: true };
 
     const nextNonDeadIndex = state.currentNonDeadIndex + 1;
     const allSubmitted = nextNonDeadIndex >= nonDeadIndices.length;
@@ -209,6 +233,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     onStateChange({
       submittedCards: newSubmitted,
       playerHands: newHands,
+      hasPlayedCardPlayers: newHasPlayed,
       selectedCard: null,
       hand: [],
       currentNonDeadIndex: nextNonDeadIndex,
@@ -334,6 +359,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     start,
     showPlayerHand,
     readyToSelect,
+    redrawHand,
     inspectCard,
     prevCard,
     nextCard,

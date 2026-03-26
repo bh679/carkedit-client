@@ -135,7 +135,7 @@ function renderSelectingScreen(config, state, playerListOptions) {
   const hint = `${playerName}, select your best card to play`;
 
   const hasRedrawn = (state.handRedrawnPlayers ?? {})[playerName];
-  const hasPlayed = !!(state.submittedCards ?? {})[playerName];
+  const hasPlayed = !!(state.hasPlayedCardPlayers ?? {})[playerName];
   const redrawButton = (hasRedrawn || hasPlayed) ? '' : `
     <button class="btn btn--secondary hand__redraw-btn" onclick="window.game.redrawHand()">
       Redraw Hand
