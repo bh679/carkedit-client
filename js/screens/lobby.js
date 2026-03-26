@@ -25,8 +25,8 @@ function formatDuration(minutes) {
 }
 
 function timeEstimate(players, rounds) {
-  const upper = players * rounds * 10;
-  const lower = Math.round(upper / 2);
+  const lower = Math.round(players * (rounds + 1) * 10 / 3);
+  const upper = lower * 2;
   return `${formatDuration(lower)}\u2013${formatDuration(upper)}`;
 }
 
