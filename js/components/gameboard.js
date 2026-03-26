@@ -29,6 +29,30 @@ function seededRandom(seed) {
  * @param {string|null} options.pitchingPlayer - Player currently pitching (show their card big)
  * @returns {string} HTML string
  */
+/**
+ * Renders the standard "active card" layout used whenever one card is the
+ * primary focus in the gameboard (Phase 1 die card, Phase 2/3 pitching, etc.)
+ *
+ * @param {string} cardHtml - rendered .card or .card-back HTML
+ * @param {object} options
+ * @param {string} options.label - optional label below the card (e.g. "Alice's death")
+ * @param {string} options.extraHtml - optional HTML between slot and label (e.g. discussion prompt)
+ * @param {string} options.onClick - optional onclick handler string (for clickable card backs)
+ * @returns {string} HTML string
+ */
+export function renderActiveCard(cardHtml, { label = '', extraHtml = '', onClick = '' } = {}) {
+  const clickAttr = onClick ? ` onclick="${onClick}"` : '';
+  return `
+    <div class="gameboard__active-card"${clickAttr}>
+      <div class="gameboard__active-card__slot">
+        ${cardHtml}
+      </div>
+      ${extraHtml}
+      ${label ? `<span class="gameboard__active-card__label">${label}</span>` : ''}
+    </div>
+  `;
+}
+
 export function render(promptCard = '', hint = '', {
   playedCards = {},
   revealed = false,
@@ -79,12 +103,10 @@ export function render(promptCard = '', hint = '', {
   let mainCardHtml = promptCard;
   if (pitchingPlayer && playedCards[pitchingPlayer]) {
     const card = playedCards[pitchingPlayer];
-    mainCardHtml = `
-      <div class="gameboard__pitch-card">
-        ${renderCard({ ...card, deckType: card.deckType || deckType })}
-        <span class="gameboard__pitch-card-player">${pitchingPlayer}'s card</span>
-      </div>
-    `;
+    mainCardHtml = renderActiveCard(
+      renderCard({ ...card, deckType: card.deckType || deckType }),
+      { label: `${pitchingPlayer}'s card` },
+    );
   }
 
   return `
