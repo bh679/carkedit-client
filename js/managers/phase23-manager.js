@@ -80,12 +80,17 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     const state = getState();
     const player = state.players[state.currentPlayerIndex];
     if (!player) return;
-    if ((state.handRedrawnPlayers ?? {})[player.name]) return;
 
+    const handRedraws = state.gameSettings?.handRedraws ?? 'once_per_phase';
+    const alreadyRedrawn = !!(state.handRedrawnPlayers ?? {})[player.name];
+    if (handRedraws === 'off') return;
+    if (handRedraws !== 'unlimited' && alreadyRedrawn) return;
+
+    const handSize = state.gameSettings?.handSize ?? HAND_SIZE;
     const currentHand = state.playerHands[player.name] ?? [];
     const deck = [...getDeck(), ...currentHand];
 
-    const newHand = deck.splice(0, Math.min(HAND_SIZE, deck.length));
+    const newHand = deck.splice(0, Math.min(handSize, deck.length));
     const newPlayerHands = { ...state.playerHands, [player.name]: newHand };
     const newRedrawnPlayers = { ...(state.handRedrawnPlayers ?? {}), [player.name]: true };
 
