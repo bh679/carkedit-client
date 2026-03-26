@@ -30,6 +30,10 @@ let _state = {
   currentNonDeadIndex: 0,
   roundWinner: null,
   roundWinnerCard: null,
+
+  // Pitching timer
+  pitchDuration: 120,     // configurable via settings (seconds)
+  pitchTimerSeconds: 120, // live countdown (updated each tick)
 };
 
 export function getState() {

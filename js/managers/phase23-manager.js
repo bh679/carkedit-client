@@ -4,6 +4,9 @@
 import { getState } from '../state.js';
 
 const HAND_SIZE = 5;
+const DEFAULT_PITCH_DURATION = 120; // seconds — overridable via state.pitchDuration
+
+let _pitchTimer = null;
 
 /**
  * @param {{ deckType: 'live'|'bye', onStateChange: (updates: object) => void, onPhaseComplete: () => void }} config
@@ -223,17 +226,43 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     });
   }
 
+  function startPitchTimer() {
+    clearPitchTimer();
+    _pitchTimer = setInterval(() => {
+      const remaining = getState().pitchTimerSeconds - 1;
+      if (remaining <= 0) {
+        clearPitchTimer();
+        donePitching();
+      } else {
+        onStateChange({ pitchTimerSeconds: remaining });
+      }
+    }, 1000);
+  }
+
+  function clearPitchTimer() {
+    if (_pitchTimer !== null) {
+      clearInterval(_pitchTimer);
+      _pitchTimer = null;
+    }
+  }
+
   function startPitching() {
+    const state = getState();
+    const duration = state.pitchDuration ?? DEFAULT_PITCH_DURATION;
     onStateChange({
       phase2SubState: 'pitching',
       pitchingPlayerIndex: 0,
+      pitchTimerSeconds: duration,
     });
+    startPitchTimer();
   }
 
   function donePitching() {
+    clearPitchTimer();
     const state = getState();
     const nonDeadPlayers = getNonDeadPlayers();
     const nextIndex = state.pitchingPlayerIndex + 1;
+    const duration = state.pitchDuration ?? DEFAULT_PITCH_DURATION;
 
     if (nextIndex >= nonDeadPlayers.length) {
       onStateChange({
@@ -242,7 +271,9 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     } else {
       onStateChange({
         pitchingPlayerIndex: nextIndex,
+        pitchTimerSeconds: duration,
       });
+      startPitchTimer();
     }
   }
 
@@ -288,6 +319,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
   }
 
   function nextRound() {
+    clearPitchTimer();
     const state = getState();
     const nextLivingDead = state.livingDeadIndex + 1;
 
