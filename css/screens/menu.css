@@ -7,7 +7,17 @@
 }
 
 .menu__logo {
+  position: relative;
   text-align: center;
+}
+
+.menu__logo-img {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  padding-bottom: var(--space-md);
 }
 
 .menu__title {
