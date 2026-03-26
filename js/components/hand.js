@@ -33,16 +33,21 @@ export function render(cards = [], { dimmed = false, selectedCard = null, living
   const fanWidth = (cards.length - 1) * CARD_OFFSET + CARD_WIDTH;
   const dimmedClass = dimmed ? ' hand--dimmed' : '';
 
-  const cardEls = cards.map((c, index) => `
-    <div class="hand__card" style="left: ${index * CARD_OFFSET}px"
+  const cardEls = cards.map((c, index) => {
+    const isSelected = selectedCard && String(c.id) === String(selectedCard.id);
+    const selectedClass = isSelected ? ' hand__card--selected' : '';
+    return `
+    <div class="hand__card${selectedClass}" style="left: ${index * CARD_OFFSET}px"
          data-card-id="${c.id}"
          onclick="window.game.inspectCard('${c.id}')">
       ${renderCard({ ...c, deckType: c.deckType || deckType })}
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   const inspectOverlay = selectedCard ? `
     <div class="hand__inspect-overlay" onclick="window.game.dismissInspect()">
+      <button class="hand__nav-btn hand__nav-btn--prev" onclick="event.stopPropagation(); window.game.prevCard('${selectedCard.id}')">&#8249;</button>
       <div class="hand__inspect-card-wrapper" onclick="event.stopPropagation()">
         ${renderCard({ ...selectedCard, deckType: selectedCard.deckType || deckType })}
         <button class="btn btn--primary hand__submit-btn"
@@ -50,6 +55,7 @@ export function render(cards = [], { dimmed = false, selectedCard = null, living
           Play This Card
         </button>
       </div>
+      <button class="hand__nav-btn hand__nav-btn--next" onclick="event.stopPropagation(); window.game.nextCard('${selectedCard.id}')">&#8250;</button>
     </div>
   ` : '';
 
