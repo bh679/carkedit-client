@@ -9,6 +9,12 @@ export function render(state) {
   return `
     <div class="screen screen--menu">
       <div class="menu__logo">
+        <img
+          class="menu__logo-img"
+          src="assets/CarkedIt-skull.webp"
+          alt=""
+          onerror="this.style.display='none'"
+        />
         <h1 class="menu__title">Carked It!</h1>
         <p class="menu__subtitle">Online</p>
       </div>
