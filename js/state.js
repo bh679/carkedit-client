@@ -23,6 +23,7 @@ let _state = {
     handSize: 5,
     handRedraws: 'once_per_phase',
     timerEnabled: false,
+    timerCountUp: false,
     pitchDuration: 120,
     timerVisible: true,
     timerAutoAdvance: true,
