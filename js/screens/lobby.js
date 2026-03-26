@@ -35,10 +35,31 @@ function timeEstimate(players, rounds) {
  * @returns {string} HTML string
  */
 export function render(state) {
-  const { rounds, handSize } = state.gameSettings;
+  const { rounds, handSize, enableLive, enableBye, enableEulogy, forceWildcards, wildcardCount } = state.gameSettings;
   const playerCount = Math.max(state.players.length, 2);
   const estimate = timeEstimate(playerCount, rounds);
   const prompt = ROUND_PROMPTS[rounds] ?? ROUND_PROMPTS[10];
+
+  const wildcardSubSettings = enableEulogy ? `
+    <div class="lobby__advanced-subsection">
+      <label class="lobby__checkbox-row ${forceWildcards ? 'lobby__checkbox-row--active' : ''}">
+        <input type="checkbox" ${forceWildcards ? 'checked' : ''}
+          onchange="window.game.toggleSetting('forceWildcards')">
+        <span class="lobby__checkbox-label">Force Wildcards</span>
+        <span class="lobby__checkbox-hint">(everyone gets one, none in deck)</span>
+      </label>
+      <div class="lobby__stepper-row ${forceWildcards ? 'lobby__stepper-row--disabled' : ''}">
+        <span class="lobby__stepper-label">Wildcards in Deck</span>
+        <button class="btn btn--secondary lobby__stepper-btn"
+          onclick="window.game.updateSetting('wildcardCount', ${wildcardCount - 1})"
+          ${wildcardCount <= 0 || forceWildcards ? 'disabled' : ''}>&minus;</button>
+        <span class="lobby__stepper-value">${wildcardCount}</span>
+        <button class="btn btn--secondary lobby__stepper-btn"
+          onclick="window.game.updateSetting('wildcardCount', ${wildcardCount + 1})"
+          ${wildcardCount >= 10 || forceWildcards ? 'disabled' : ''}>+</button>
+      </div>
+    </div>
+  ` : '';
 
   const advancedPanel = state.showAdvancedSettings ? `
     <div class="lobby__advanced-panel">
@@ -63,6 +84,28 @@ export function render(state) {
           onclick="window.game.updateSetting('handSize', ${handSize + 1})"
           ${handSize >= 68 ? 'disabled' : ''}>+</button>
       </div>
+      <div class="lobby__advanced-divider"></div>
+      <p class="lobby__advanced-section-label">Phases</p>
+      <label class="lobby__checkbox-row lobby__checkbox-row--disabled">
+        <input type="checkbox" checked disabled>
+        <span class="lobby__checkbox-label">DIE</span>
+      </label>
+      <label class="lobby__checkbox-row ${enableLive ? 'lobby__checkbox-row--active' : ''}">
+        <input type="checkbox" ${enableLive ? 'checked' : ''}
+          onchange="window.game.toggleSetting('enableLive')">
+        <span class="lobby__checkbox-label">LIVE</span>
+      </label>
+      <label class="lobby__checkbox-row ${enableBye ? 'lobby__checkbox-row--active' : ''}">
+        <input type="checkbox" ${enableBye ? 'checked' : ''}
+          onchange="window.game.toggleSetting('enableBye')">
+        <span class="lobby__checkbox-label">BYE</span>
+      </label>
+      <label class="lobby__checkbox-row ${enableEulogy ? 'lobby__checkbox-row--active' : ''}">
+        <input type="checkbox" ${enableEulogy ? 'checked' : ''}
+          onchange="window.game.toggleSetting('enableEulogy')">
+        <span class="lobby__checkbox-label">EULOGY</span>
+      </label>
+      ${wildcardSubSettings}
     </div>
   ` : '';
 

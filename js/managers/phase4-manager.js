@@ -10,6 +10,9 @@ export function createPhase4Manager({ onStateChange, onPhaseComplete }) {
 
   function detectWildcardPlayers() {
     const state = getState();
+    if (state.gameSettings?.forceWildcards) {
+      return state.players;
+    }
     const wildcardCards = state.wildcardCards ?? {};
     return state.players.filter(p => {
       const cards = wildcardCards[p.name] ?? [];

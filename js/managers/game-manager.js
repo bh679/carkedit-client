@@ -101,6 +101,14 @@ export function startPhase3() {
     hand: [],
   });
 
+  // Apply wildcard count setting to bye deck
+  const { forceWildcards, wildcardCount } = getState().gameSettings;
+  const byeDeck = getState().decks.bye ?? [];
+  const wildcards = byeDeck.filter(c => c.special === 'Wildcard');
+  const nonWildcards = byeDeck.filter(c => c.special !== 'Wildcard');
+  const keepWildcards = forceWildcards ? [] : wildcards.slice(0, wildcardCount);
+  setState({ decks: { ...getState().decks, bye: [...nonWildcards, ...keepWildcards] } });
+
   currentPhaseManager = createPhase23Manager({
     deckType: 'bye',
     onStateChange: (updates) => {

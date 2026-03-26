@@ -124,10 +124,17 @@ function removePlayer(name) {
 }
 
 function updateSetting(key, rawValue) {
-  const max = key === 'rounds' ? 10 : 68;
-  const value = Math.max(1, Math.min(max, parseInt(rawValue, 10) || 1));
+  const max = key === 'rounds' ? 10 : key === 'wildcardCount' ? 10 : 68;
+  const min = key === 'wildcardCount' ? 0 : 1;
+  const value = Math.max(min, Math.min(max, parseInt(rawValue, 10) || 0));
   const state = getState();
   setState({ gameSettings: { ...state.gameSettings, [key]: value } });
+  showScreen('lobby');
+}
+
+function toggleSetting(key) {
+  const state = getState();
+  setState({ gameSettings: { ...state.gameSettings, [key]: !state.gameSettings[key] } });
   showScreen('lobby');
 }
 
@@ -151,6 +158,7 @@ window.game = {
   selectPlayerRemoval,
   removePlayer,
   updateSetting,
+  toggleSetting,
   toggleAdvancedSettings,
   startPhase1,
   doneDying,
