@@ -66,7 +66,9 @@ export function render(state) {
     </div>
   ` : '';
 
+
   const boardContent = `
+    <div class="lobby__board-content">
     <div class="lobby__setup">
       <h2 class="lobby__heading">Player Setup</h2>
       <div class="lobby__add-player">
