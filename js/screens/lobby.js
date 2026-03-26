@@ -7,8 +7,8 @@ import { render as renderPlayerList } from '../components/player-list.js';
 
 const ROUND_PROMPTS = {
   1:  'A quick death is a good death.',
-  2:  'Standard Game.',
-  3:  "You're in for a long game.",
+  2:  'Standard Death.',
+  3:  "You're in for a long death.",
   4:  'This is going to take a while\u2026',
   5:  'Are you sure about this?',
   6:  'You might want to order pizza.',
