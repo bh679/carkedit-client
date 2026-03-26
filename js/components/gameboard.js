@@ -2,6 +2,7 @@
 'use strict';
 
 import { render as renderCard } from './card.js';
+import { render as renderCardBack } from './cardBack.js';
 import { render as renderCardGrid } from './card-grid.js';
 
 /**
@@ -68,14 +69,15 @@ export function render(promptCard = '', hint = '', {
   if (hasPlayedCards && !pitchingPlayer) {
     const cardEls = playerNames.map((name) => {
       return `
-        <div class="gameboard__played-card gameboard__played-card--facedown gameboard__played-card--${deckType}"
-             data-player="${name}">
+        <div class="gameboard__played-card" data-player="${name}">
+          ${renderCardBack({ deckType })}
           <span class="gameboard__played-card-label">${name}</span>
         </div>
       `;
     }).join('');
 
-    playedCardsHtml = `<div class="gameboard__played-cards">${cardEls}</div>`;
+    const colClass = playerNames.length >= 4 ? 'gameboard__played-cards--cols-4' : '';
+    playedCardsHtml = `<div class="gameboard__played-cards ${colClass}">${cardEls}</div>`;
   }
 
   // During pitching, show the pitching player's card in the main card area
@@ -88,9 +90,13 @@ export function render(promptCard = '', hint = '', {
     );
   }
 
+  const cardAreaClass = playedCardsHtml
+    ? 'gameboard__card-area gameboard__card-area--has-played'
+    : 'gameboard__card-area';
+
   return `
     <div class="gameboard">
-      <div class="gameboard__card-area">
+      <div class="${cardAreaClass}">
         ${mainCardHtml}
         ${playedCardsHtml}
       </div>
