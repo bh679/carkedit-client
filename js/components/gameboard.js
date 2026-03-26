@@ -79,19 +79,15 @@ export function render(promptCard = '', hint = '', {
     `;
   }
 
-  // Face-down overlay or pitching overlay
+  // Face-down overlay — hidden during pitching (only the active card is shown)
   let playedCardsHtml = '';
-  if (hasPlayedCards) {
+  if (hasPlayedCards && !pitchingPlayer) {
     const cardEls = playerNames.map((name, index) => {
       const card = playedCards[name];
       const rng = seededRandom(name + index);
       const rotation = (rng() - 0.5) * 90;
       const offsetX = rng() * 60 - 30;
       const offsetY = rng() * 60 - 30;
-
-      if (name === pitchingPlayer) {
-        return '';
-      }
 
       if (revealed) {
         return `
