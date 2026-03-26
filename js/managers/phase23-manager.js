@@ -3,6 +3,9 @@
 
 import { getState } from '../state.js';
 
+const DEFAULT_PITCH_DURATION = 120; // seconds — overridable via state.pitchDuration
+
+let _pitchTimer = null;
 
 /**
  * @param {{ deckType: 'live'|'bye', onStateChange: (updates: object) => void, onPhaseComplete: () => void }} config
@@ -34,10 +37,11 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     const state = getState();
     const deck = [...getDeck()];
     const hands = { ...state.playerHands };
+    const handSize = state.gameSettings?.handSize ?? 5;
 
     for (const player of state.players) {
       const currentHand = hands[player.name] ?? [];
-      const needed = HAND_SIZE - currentHand.length;
+      const needed = handSize - currentHand.length;
       if (needed > 0 && deck.length > 0) {
         const dealt = deck.splice(0, Math.min(needed, deck.length));
         hands[player.name] = [...currentHand, ...dealt];
@@ -273,17 +277,49 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     });
   }
 
+  function startPitchTimer() {
+    clearPitchTimer();
+    _pitchTimer = setInterval(() => {
+      const remaining = getState().pitchTimerSeconds - 1;
+      if (remaining <= 0) {
+        clearPitchTimer();
+        if (getState().gameSettings?.timerAutoAdvance ?? true) {
+          donePitching();
+        } else {
+          onStateChange({ pitchTimerSeconds: 0 });
+        }
+      } else {
+        onStateChange({ pitchTimerSeconds: remaining });
+      }
+    }, 1000);
+  }
+
+  function clearPitchTimer() {
+    if (_pitchTimer !== null) {
+      clearInterval(_pitchTimer);
+      _pitchTimer = null;
+    }
+  }
+
   function startPitching() {
+    const state = getState();
+    const duration = state.gameSettings?.pitchDuration ?? DEFAULT_PITCH_DURATION;
     onStateChange({
       phase2SubState: 'pitching',
       pitchingPlayerIndex: 0,
+      pitchTimerSeconds: duration,
     });
+    if (state.gameSettings?.timerEnabled) {
+      startPitchTimer();
+    }
   }
 
   function donePitching() {
+    clearPitchTimer();
     const state = getState();
     const nonDeadPlayers = getNonDeadPlayers();
     const nextIndex = state.pitchingPlayerIndex + 1;
+    const duration = state.gameSettings?.pitchDuration ?? DEFAULT_PITCH_DURATION;
 
     if (nextIndex >= nonDeadPlayers.length) {
       onStateChange({
@@ -292,7 +328,11 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     } else {
       onStateChange({
         pitchingPlayerIndex: nextIndex,
+        pitchTimerSeconds: duration,
       });
+      if (getState().gameSettings?.timerEnabled) {
+        startPitchTimer();
+      }
     }
   }
 
@@ -347,6 +387,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
   }
 
   function nextRound() {
+    clearPitchTimer();
     const state = getState();
     const nextLivingDead = state.livingDeadIndex + 1;
     const handRedraws = state.gameSettings?.handRedraws ?? 'once_per_phase';

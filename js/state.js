@@ -18,7 +18,15 @@ let _state = {
   decks: { die: null, live: null, bye: null },
   preloadComplete: false,
   selectedPlayerForRemoval: null,
-  gameSettings: { rounds: 2, handSize: 5, handRedraws: 'once_per_phase' },
+  gameSettings: {
+    rounds: 2,
+    handSize: 5,
+    handRedraws: 'once_per_phase',
+    timerEnabled: false,
+    pitchDuration: 120,
+    timerVisible: true,
+    timerAutoAdvance: true,
+  },
   showAdvancedSettings: false,
 
   // Phase 2/3 state
@@ -36,6 +44,9 @@ let _state = {
   roundWinnerCard: null,
   handRedrawnPlayers: {},
   hasPlayedCardPlayers: {},
+
+  // Pitching timer (live countdown — not a setting)
+  pitchTimerSeconds: 120,
 
   // Wildcard cards held aside during Phase 3
   wildcardCards: {},
