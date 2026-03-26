@@ -22,6 +22,7 @@ let _state = {
     rounds: 2,
     handSize: 5,
     timerEnabled: false,
+    timerCountUp: false,
     pitchDuration: 120,
     timerVisible: true,
     timerAutoAdvance: true,

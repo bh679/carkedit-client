@@ -199,9 +199,9 @@ function formatTime(seconds) {
 function renderPitchingScreen(config, state, playerListOptions, nonDeadPlayers) {
   const pitcher = nonDeadPlayers[state.pitchingPlayerIndex];
   const pitcherName = pitcher?.name ?? '';
-  const { timerEnabled, timerVisible } = state.gameSettings ?? {};
-  const seconds = state.pitchTimerSeconds ?? 120;
-  const timerClass = seconds < 30 ? 'pitch-timer pitch-timer--warning' : 'pitch-timer';
+  const { timerEnabled, timerVisible, timerCountUp } = state.gameSettings ?? {};
+  const seconds = state.pitchTimerSeconds ?? (timerCountUp ? 0 : 120);
+  const timerClass = (!timerCountUp && seconds < 30) ? 'pitch-timer pitch-timer--warning' : 'pitch-timer';
   const timerHtml = (timerEnabled && timerVisible)
     ? `<div class="${timerClass}"><span class="pitch-timer__time">${formatTime(seconds)}</span></div>`
     : '';

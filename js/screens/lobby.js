@@ -42,7 +42,7 @@ function formatPitchDuration(seconds) {
 }
 
 export function render(state) {
-  const { rounds, handSize, timerEnabled, pitchDuration, timerVisible, timerAutoAdvance } = state.gameSettings;
+  const { rounds, handSize, timerEnabled, timerCountUp, pitchDuration, timerVisible, timerAutoAdvance } = state.gameSettings;
   const playerCount = Math.max(state.players.length, 2);
   const estimate = timeEstimate(playerCount, rounds);
   const prompt = ROUND_PROMPTS[rounds] ?? ROUND_PROMPTS[10];
@@ -79,27 +79,36 @@ export function render(state) {
       </div>
       ${timerEnabled ? `
       <div class="lobby__stepper-row lobby__stepper-row--sub">
+        <span class="lobby__stepper-label">Count Up</span>
+        <button class="btn lobby__stepper-btn ${timerCountUp ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('timerCountUp')">
+          ${timerCountUp ? 'On' : 'Off'}
+        </button>
+      </div>
+      <div class="lobby__stepper-row lobby__stepper-row--sub${timerCountUp ? ' lobby__stepper-row--disabled' : ''}">
         <span class="lobby__stepper-label">Duration</span>
         <button class="btn btn--secondary lobby__stepper-btn"
           onclick="window.game.cyclePitchDuration(-1)"
-          ${PITCH_DURATIONS.indexOf(pitchDuration) <= 0 ? 'disabled' : ''}>&minus;</button>
+          ${timerCountUp || PITCH_DURATIONS.indexOf(pitchDuration) <= 0 ? 'disabled' : ''}>&minus;</button>
         <span class="lobby__stepper-value lobby__stepper-value--wide">${formatPitchDuration(pitchDuration)}</span>
         <button class="btn btn--secondary lobby__stepper-btn"
           onclick="window.game.cyclePitchDuration(1)"
-          ${PITCH_DURATIONS.indexOf(pitchDuration) >= PITCH_DURATIONS.length - 1 ? 'disabled' : ''}>+</button>
+          ${timerCountUp || PITCH_DURATIONS.indexOf(pitchDuration) >= PITCH_DURATIONS.length - 1 ? 'disabled' : ''}>+</button>
       </div>
-      <div class="lobby__stepper-row lobby__stepper-row--sub">
-        <span class="lobby__stepper-label">Show Countdown</span>
-        <button class="btn lobby__stepper-btn ${timerVisible ? 'btn--primary' : 'btn--secondary'}"
-          onclick="window.game.toggleSetting('timerVisible')">
-          ${timerVisible ? 'On' : 'Off'}
+      <div class="lobby__stepper-row lobby__stepper-row--sub${timerCountUp ? ' lobby__stepper-row--disabled' : ''}">
+        <span class="lobby__stepper-label">Show Timer</span>
+        <button class="btn lobby__stepper-btn ${timerCountUp ? 'btn--primary' : timerVisible ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('timerVisible')"
+          ${timerCountUp ? 'disabled' : ''}>
+          ${timerCountUp ? 'On' : timerVisible ? 'On' : 'Off'}
         </button>
       </div>
-      <div class="lobby__stepper-row lobby__stepper-row--sub">
+      <div class="lobby__stepper-row lobby__stepper-row--sub${timerCountUp ? ' lobby__stepper-row--disabled' : ''}">
         <span class="lobby__stepper-label">Auto-advance</span>
-        <button class="btn lobby__stepper-btn ${timerAutoAdvance ? 'btn--primary' : 'btn--secondary'}"
-          onclick="window.game.toggleSetting('timerAutoAdvance')">
-          ${timerAutoAdvance ? 'On' : 'Off'}
+        <button class="btn lobby__stepper-btn ${!timerCountUp && timerAutoAdvance ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('timerAutoAdvance')"
+          ${timerCountUp ? 'disabled' : ''}>
+          ${timerCountUp ? 'Off' : timerAutoAdvance ? 'On' : 'Off'}
         </button>
       </div>
       ` : ''}
