@@ -4,7 +4,6 @@
 import { render as renderCard } from './card.js';
 
 const CARD_WIDTH = 135;
-const CARD_OFFSET = 43;
 
 /**
  * @param {Array<{ id: string|number, title: string, deckType: string }>} cards
@@ -30,16 +29,21 @@ export function render(cards = [], { dimmed = false, selectedCard = null, living
     return '<div class="hand hand--empty"></div>';
   }
 
-  const fanWidth = (cards.length - 1) * CARD_OFFSET + CARD_WIDTH;
   const dimmedClass = dimmed ? ' hand--dimmed' : '';
+  const count = cards.length;
 
-  const cardEls = cards.map((c, index) => `
-    <div class="hand__card" style="left: ${index * CARD_OFFSET}px"
+  const cardEls = cards.map((c, index) => {
+    const leftStyle = count === 1
+      ? 'left: 0'
+      : `left: calc((100% - ${CARD_WIDTH}px) * ${index} / ${count - 1})`;
+    return `
+    <div class="hand__card" style="${leftStyle}"
          data-card-id="${c.id}"
          onclick="window.game.inspectCard('${c.id}')">
       ${renderCard({ ...c, deckType: c.deckType || deckType })}
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   const inspectOverlay = selectedCard ? `
     <div class="hand__inspect-overlay" onclick="window.game.dismissInspect()">
@@ -55,7 +59,7 @@ export function render(cards = [], { dimmed = false, selectedCard = null, living
 
   return `
     <div class="hand${dimmedClass}">
-      <div class="hand__fan" style="min-width: ${fanWidth}px">
+      <div class="hand__fan">
         ${cardEls}
       </div>
     </div>
