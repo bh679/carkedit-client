@@ -51,6 +51,7 @@ function formatPitchDuration(seconds) {
 export function render(state) {
   const { rounds, handSize, handRedraws = 'once_per_phase', timerEnabled, timerCountUp, pitchDuration, timerVisible, timerAutoAdvance } = state.gameSettings;
   const playerCount = Math.max(state.players.length, 2);
+  const maxHandSize = Math.max(1, Math.floor(68 / playerCount));
   const estimate = timeEstimate(playerCount, rounds);
   const prompt = ROUND_PROMPTS[rounds] ?? ROUND_PROMPTS[10];
 
@@ -75,8 +76,9 @@ export function render(state) {
         <span class="lobby__stepper-value">${handSize}</span>
         <button class="btn btn--secondary lobby__stepper-btn"
           onclick="window.game.updateSetting('handSize', ${handSize + 1})"
-          ${handSize >= 68 ? 'disabled' : ''}>+</button>
+          ${handSize >= maxHandSize ? 'disabled' : ''}>+</button>
       </div>
+      <p class="lobby__setting-meta">Max ${maxHandSize} cards with ${playerCount} players</p>
       <div class="lobby__select-row">
         <span class="lobby__stepper-label">Hand Redraws</span>
         <div class="lobby__segmented">

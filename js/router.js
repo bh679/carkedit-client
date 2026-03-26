@@ -103,7 +103,14 @@ function addPlayer() {
 
   const state = getState();
   if (state.players.some((p) => p.name === name)) return;
-  setState({ players: [...state.players, { name, score: 0 }] });
+  const newPlayers = [...state.players, { name, score: 0 }];
+  const newPlayerCount = Math.max(newPlayers.length, 2);
+  const maxHandSize = Math.max(1, Math.floor(68 / newPlayerCount));
+  const currentHandSize = state.gameSettings?.handSize ?? 5;
+  setState({
+    players: newPlayers,
+    gameSettings: { ...state.gameSettings, handSize: Math.min(currentHandSize, maxHandSize) },
+  });
   showScreen('lobby');
 }
 
@@ -124,9 +131,17 @@ function removePlayer(name) {
 }
 
 function updateSetting(key, rawValue) {
-  const max = key === 'rounds' ? 10 : 68;
-  const value = Math.max(1, Math.min(max, parseInt(rawValue, 10) || 1));
   const state = getState();
+  let max;
+  if (key === 'rounds') {
+    max = 10;
+  } else if (key === 'handSize') {
+    const playerCount = Math.max(state.players.length, 2);
+    max = Math.max(1, Math.floor(68 / playerCount));
+  } else {
+    max = 68;
+  }
+  const value = Math.max(1, Math.min(max, parseInt(rawValue, 10) || 1));
   setState({ gameSettings: { ...state.gameSettings, [key]: value } });
   showScreen('lobby');
 }
