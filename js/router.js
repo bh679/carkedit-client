@@ -11,7 +11,7 @@ import { render as renderPhase4 } from './screens/phase4.js';
 import {
   startPhase1, doneDying, revealCard,
   startPhase2, startPhase3,
-  showPlayerHand, readyToSelect,
+  showPlayerHand, readyToSelect, redrawHand,
   inspectCard, prevCard, nextCard, dismissInspect, submitCard,
   revealCards, startPitching, donePitching,
   pickWinner, nextRound,
@@ -134,6 +134,7 @@ window.game = {
   startPhase3,
   showPlayerHand,
   readyToSelect,
+  redrawHand,
   inspectCard,
   prevCard,
   nextCard,
