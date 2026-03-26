@@ -19,13 +19,18 @@ export function render(state) {
   let handContent;
 
   if (state.phaseComplete) {
+    const { enableLive, enableBye, enableEulogy } = state.gameSettings ?? {};
+    const nextAction = enableLive ? 'window.game.startPhase2()'
+      : enableBye ? 'window.game.startPhase3()'
+      : enableEulogy ? 'window.game.startPhase4()'
+      : 'window.game.revealWinner()';
     boardContent = `
       <div class="phase1__layout">
         <div class="phase1__complete">
           <p class="phase__prompt">Everyone has met their fate!</p>
         </div>
         <div class="phase__actions">
-          <button class="btn btn--primary" onclick="window.game.startPhase2()">
+          <button class="btn btn--primary" onclick="${nextAction}">
             Next Phase &rarr;
           </button>
         </div>

@@ -151,17 +151,25 @@ function removePlayer(name) {
 
 function updateSetting(key, rawValue) {
   const state = getState();
-  let max;
+  let max, min;
   if (key === 'rounds') {
-    max = 10;
+    max = 10; min = 1;
+  } else if (key === 'wildcardCount') {
+    max = 10; min = 0;
   } else if (key === 'handSize') {
     const playerCount = Math.max(state.players.length, 2);
-    max = Math.max(1, Math.floor(68 / playerCount));
+    max = Math.max(1, Math.floor(68 / playerCount)); min = 1;
   } else {
-    max = 68;
+    max = 68; min = 1;
   }
-  const value = Math.max(1, Math.min(max, parseInt(rawValue, 10) || 1));
+  const value = Math.max(min, Math.min(max, parseInt(rawValue, 10) || min));
   setState({ gameSettings: { ...state.gameSettings, [key]: value } });
+  showScreen('lobby');
+}
+
+function toggleSetting(key) {
+  const state = getState();
+  setState({ gameSettings: { ...state.gameSettings, [key]: !state.gameSettings[key] } });
   showScreen('lobby');
 }
 
@@ -182,12 +190,6 @@ function setHandRedraws(value) {
   if (!allowed.includes(value)) return;
   const state = getState();
   setState({ gameSettings: { ...state.gameSettings, handRedraws: value } });
-  showScreen('lobby');
-}
-
-function toggleSetting(key) {
-  const state = getState();
-  setState({ gameSettings: { ...state.gameSettings, [key]: !state.gameSettings[key] } });
   showScreen('lobby');
 }
 
@@ -217,10 +219,10 @@ window.game = {
   selectPlayerRemoval,
   removePlayer,
   updateSetting,
+  toggleSetting,
   setGameMode,
   toggleAdvancedSettings,
   setHandRedraws,
-  toggleSetting,
   cyclePitchDuration,
   startPhase1,
   doneDying,

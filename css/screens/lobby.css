@@ -4,6 +4,7 @@
   background: color-mix(in srgb, var(--color-white) 1%, transparent);
   gap: var(--space-sm);
   padding: var(--space-sm);
+  overflow: hidden;
 }
 
 .lobby__heading {
@@ -76,6 +77,16 @@
   width: 100%;
 }
 
+.screen--lobby .gameboard {
+  min-height: 0;
+}
+
+.screen--lobby .gameboard__card-area {
+  overflow-y: auto;
+  align-items: stretch;
+  container-type: normal;
+}
+
 .lobby__stepper-row {
   display: flex;
   align-items: center;
@@ -146,8 +157,8 @@
 }
 
 .lobby__actions {
-  margin-top: auto;
-  padding-top: var(--space-md);
+  flex-shrink: 0;
+  padding-top: var(--space-sm);
 }
 
 .lobby__actions .btn {

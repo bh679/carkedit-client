@@ -21,6 +21,12 @@ let _state = {
   gameSettings: {
     rounds: 2,
     handSize: 5,
+    enableDie: true,
+    enableLive: true,
+    enableBye: true,
+    enableEulogy: true,
+    forceWildcards: false,
+    wildcardCount: 2,
     handRedraws: 'once_per_phase',
     timerEnabled: false,
     timerCountUp: false,
