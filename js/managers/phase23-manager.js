@@ -3,7 +3,6 @@
 
 import { getState } from '../state.js';
 
-const HAND_SIZE = 5;
 
 /**
  * @param {{ deckType: 'live'|'bye', onStateChange: (updates: object) => void, onPhaseComplete: () => void }} config
@@ -76,12 +75,13 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
   }
 
   function dealHandsFromDeck(deck, state) {
+    const handSize = state.gameSettings?.handSize ?? 5;
     const deckCopy = [...deck];
     const hands = { ...state.playerHands };
 
     for (const player of state.players) {
       const currentHand = hands[player.name] ?? [];
-      const needed = HAND_SIZE - currentHand.length;
+      const needed = handSize - currentHand.length;
       if (needed > 0 && deckCopy.length > 0) {
         const dealt = deckCopy.splice(0, Math.min(needed, deckCopy.length));
         hands[player.name] = [...currentHand, ...dealt];
@@ -263,11 +263,12 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
       }
     }
 
-    // Draw players back up to 5 cards
+    // Draw players back up to hand size
+    const handSize = state.gameSettings?.handSize ?? 5;
     const hands = { ...state.playerHands };
     for (const player of players) {
       const currentHand = hands[player.name] ?? [];
-      const needed = HAND_SIZE - currentHand.length;
+      const needed = handSize - currentHand.length;
       if (needed > 0 && deck.length > 0) {
         const dealt = deck.splice(0, Math.min(needed, deck.length));
         hands[player.name] = [...currentHand, ...dealt];
@@ -295,7 +296,8 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
       // All players have been Living Dead this round
       const nextPhaseRound = state.phase23Round + 1;
 
-      if (nextPhaseRound >= 2) {
+      const maxRounds = getState().gameSettings?.rounds ?? 2;
+      if (nextPhaseRound >= maxRounds) {
         // Phase complete — both rounds done
         onPhaseComplete();
         return;

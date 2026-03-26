@@ -17,6 +17,8 @@ let _state = {
   decks: { die: null, live: null, bye: null },
   preloadComplete: false,
   selectedPlayerForRemoval: null,
+  gameSettings: { rounds: 2, handSize: 5 },
+  showAdvancedSettings: false,
 
   // Phase 2/3 state
   livingDeadIndex: 0,
