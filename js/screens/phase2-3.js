@@ -129,11 +129,17 @@ function renderPassPhoneScreen(config, state, playerListOptions, nonDeadIndices)
 function renderSelectingScreen(config, state, playerListOptions) {
   const currentPlayer = state.players[state.currentPlayerIndex];
   const playerName = currentPlayer?.name ?? '';
-  const livingDeadName = state.players[state.livingDeadIndex]?.name ?? '';
 
   const promptCardHtml = renderDieCard(state.currentCard);
 
   const hint = `${playerName}, select your best card to play`;
+
+  const hasRedrawn = (state.handRedrawnPlayers ?? {})[playerName];
+  const redrawButton = hasRedrawn ? '' : `
+    <button class="btn btn--secondary hand__redraw-btn" onclick="window.game.redrawHand()">
+      Redraw Hand
+    </button>
+  `;
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
@@ -144,7 +150,7 @@ function renderSelectingScreen(config, state, playerListOptions) {
         revealed: false,
         deckType: config.deckType,
       })}
-      ${renderHand(state.hand ?? [], { selectedCard: state.selectedCard, deckType: config.deckType })}
+      ${renderHand(state.hand ?? [], { selectedCard: state.selectedCard, deckType: config.deckType, footer: redrawButton })}
     </div>
   `;
 }
