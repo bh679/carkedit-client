@@ -35,6 +35,15 @@ export function showScreen(name, updates = {}) {
   if (!renderFn) throw new Error(`Unknown screen: ${name}`);
   app.innerHTML = renderFn(state);
 
+  // Show player list label only when the list overflows (more players than fit on screen)
+  requestAnimationFrame(() => {
+    const list = document.querySelector('.player-list');
+    const container = document.querySelector('.player-list-container');
+    if (list && container) {
+      container.classList.toggle('player-list-container--scrollable', list.scrollWidth > list.clientWidth);
+    }
+  });
+
   // Start preloading cards when entering the lobby
   if (name === 'lobby' && !state.preloadComplete) {
     startPreload();
