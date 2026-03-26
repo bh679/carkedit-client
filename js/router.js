@@ -126,7 +126,9 @@ function removePlayer(name) {
 function updateSetting(key, rawValue) {
   const max = key === 'rounds' ? 10 : key === 'wildcardCount' ? 10 : 68;
   const min = key === 'wildcardCount' ? 0 : 1;
-  const value = Math.max(min, Math.min(max, parseInt(rawValue, 10) || 0));
+  const parsed = parseInt(rawValue, 10);
+  const fallback = min;
+  const value = Math.max(min, Math.min(max, isNaN(parsed) ? fallback : parsed));
   const state = getState();
   setState({ gameSettings: { ...state.gameSettings, [key]: value } });
   showScreen('lobby');

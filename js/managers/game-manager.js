@@ -106,7 +106,14 @@ export function startPhase3() {
   const byeDeck = getState().decks.bye ?? [];
   const wildcards = byeDeck.filter(c => c.special === 'Wildcard');
   const nonWildcards = byeDeck.filter(c => c.special !== 'Wildcard');
-  const keepWildcards = forceWildcards ? [] : wildcards.slice(0, wildcardCount);
+  let keepWildcards = [];
+  if (!forceWildcards && wildcardCount > 0) {
+    const template = wildcards[0] ?? { title: 'Wildcard Eulogy', description: 'Save this card until the end, for a chance at bonus points!', special: 'Wildcard', illustrationKey: 'wildcard-eulogy' };
+    keepWildcards = Array.from({ length: wildcardCount }, (_, i) => ({
+      ...template,
+      id: `wildcard-${i}`,
+    }));
+  }
   setState({ decks: { ...getState().decks, bye: [...nonWildcards, ...keepWildcards] } });
 
   currentPhaseManager = createPhase23Manager({
