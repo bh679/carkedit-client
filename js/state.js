@@ -27,6 +27,12 @@ let _state = {
     enableEulogy: true,
     forceWildcards: false,
     wildcardCount: 2,
+    handRedraws: 'once_per_phase',
+    timerEnabled: false,
+    timerCountUp: false,
+    pitchDuration: 120,
+    timerVisible: true,
+    timerAutoAdvance: true,
   },
   showAdvancedSettings: false,
 
@@ -43,6 +49,11 @@ let _state = {
   currentNonDeadIndex: 0,
   roundWinner: null,
   roundWinnerCard: null,
+  handRedrawnPlayers: {},
+  hasPlayedCardPlayers: {},
+
+  // Pitching timer (live countdown — not a setting)
+  pitchTimerSeconds: 120,
 
   // Wildcard cards held aside during Phase 3
   wildcardCards: {},

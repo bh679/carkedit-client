@@ -11,7 +11,7 @@ import { render as renderPhase4 } from './screens/phase4.js';
 import {
   startPhase1, doneDying, revealCard,
   startPhase2, startPhase3,
-  showPlayerHand, readyToSelect,
+  showPlayerHand, readyToSelect, redrawHand,
   inspectCard, prevCard, nextCard, dismissInspect, submitCard,
   revealCards, startPitching, donePitching,
   pickWinner, nextRound,
@@ -152,6 +152,31 @@ function toggleAdvancedSettings() {
   showScreen('lobby');
 }
 
+function setHandRedraws(value) {
+  const allowed = ['off', 'once_per_phase', 'once_per_round', 'unlimited'];
+  if (!allowed.includes(value)) return;
+  const state = getState();
+  setState({ gameSettings: { ...state.gameSettings, handRedraws: value } });
+  showScreen('lobby');
+}
+
+function toggleSetting(key) {
+  const state = getState();
+  setState({ gameSettings: { ...state.gameSettings, [key]: !state.gameSettings[key] } });
+  showScreen('lobby');
+}
+
+const PITCH_DURATIONS = [30, 60, 120, 180, 240, 300, 600, 900, 1800, 3600];
+
+function cyclePitchDuration(dir) {
+  const state = getState();
+  const current = state.gameSettings.pitchDuration ?? 120;
+  const idx = PITCH_DURATIONS.indexOf(current);
+  const next = PITCH_DURATIONS[Math.max(0, Math.min(PITCH_DURATIONS.length - 1, idx + dir))];
+  setState({ gameSettings: { ...state.gameSettings, pitchDuration: next } });
+  showScreen('lobby');
+}
+
 function revealWinner() {
   const state = getState();
   const sorted = [...state.players].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
@@ -170,6 +195,9 @@ window.game = {
   toggleSetting,
   setGameMode,
   toggleAdvancedSettings,
+  setHandRedraws,
+  toggleSetting,
+  cyclePitchDuration,
   startPhase1,
   doneDying,
   revealCard,
@@ -179,6 +207,7 @@ window.game = {
   startPhase3,
   showPlayerHand,
   readyToSelect,
+  redrawHand,
   inspectCard,
   prevCard,
   nextCard,

@@ -129,11 +129,22 @@ function renderPassPhoneScreen(config, state, playerListOptions, nonDeadIndices)
 function renderSelectingScreen(config, state, playerListOptions) {
   const currentPlayer = state.players[state.currentPlayerIndex];
   const playerName = currentPlayer?.name ?? '';
-  const livingDeadName = state.players[state.livingDeadIndex]?.name ?? '';
 
   const promptCardHtml = renderDieCard(state.currentCard);
 
   const hint = `${playerName}, select your best card to play`;
+
+  const handRedraws = state.gameSettings?.handRedraws ?? 'once_per_phase';
+  const hasRedrawn = !!(state.handRedrawnPlayers ?? {})[playerName];
+  const hasPlayed = !!(state.hasPlayedCardPlayers ?? {})[playerName];
+  const showRedraw = handRedraws !== 'off'
+    && (handRedraws === 'unlimited' || !hasRedrawn)
+    && (handRedraws === 'once_per_round' || handRedraws === 'unlimited' || !hasPlayed);
+  const redrawButton = showRedraw ? `
+    <button class="btn btn--secondary hand__redraw-btn" onclick="window.game.redrawHand()">
+      Redraw Hand
+    </button>
+  ` : '';
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
@@ -144,7 +155,7 @@ function renderSelectingScreen(config, state, playerListOptions) {
         revealed: false,
         deckType: config.deckType,
       })}
-      ${renderHand(state.hand ?? [], { selectedCard: state.selectedCard, deckType: config.deckType })}
+      ${renderHand(state.hand ?? [], { selectedCard: state.selectedCard, deckType: config.deckType, footer: redrawButton })}
     </div>
   `;
 }
@@ -190,9 +201,21 @@ function renderRevealedScreen(config, state, playerListOptions) {
   `;
 }
 
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
 function renderPitchingScreen(config, state, playerListOptions, nonDeadPlayers) {
   const pitcher = nonDeadPlayers[state.pitchingPlayerIndex];
   const pitcherName = pitcher?.name ?? '';
+  const { timerEnabled, timerVisible, timerCountUp } = state.gameSettings ?? {};
+  const seconds = state.pitchTimerSeconds ?? (timerCountUp ? 0 : 120);
+  const timerClass = (!timerCountUp && seconds < 30) ? 'pitch-timer pitch-timer--warning' : 'pitch-timer';
+  const timerHtml = (timerEnabled && timerVisible)
+    ? `<div class="${timerClass}"><span class="pitch-timer__time">${formatTime(seconds)}</span></div>`
+    : '';
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
@@ -204,7 +227,7 @@ function renderPitchingScreen(config, state, playerListOptions, nonDeadPlayers) 
         deckType: config.deckType,
         pitchingPlayer: pitcherName,
       })}
-      ${renderHand(state.hand ?? [], { dimmed: true, deckType: config.deckType })}
+      ${timerHtml}
       <div class="phase-actions">
         <button class="btn btn--primary" onclick="window.game.donePitching()">
           Done Pitching

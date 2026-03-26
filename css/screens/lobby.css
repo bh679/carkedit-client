@@ -74,7 +74,10 @@
 
 .lobby__stepper-btn {
   flex-shrink: 0;
-  width: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
   text-align: center;
 }
@@ -86,10 +89,43 @@
   font-size: 1.25rem;
 }
 
+.lobby__stepper-value--wide {
+  min-width: 4ch;
+}
+
+.lobby__stepper-row--sub {
+  padding-left: var(--space-md);
+}
+
+.lobby__stepper-row--disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 .lobby__setting-meta {
   font-size: 0.85rem;
   opacity: 0.7;
   margin-bottom: var(--space-xs);
+}
+
+.lobby__select-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  width: 100%;
+}
+
+.lobby__segmented {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+}
+
+.lobby__seg-btn {
+  flex: 1;
+  font-size: 0.8rem;
+  padding: 6px 4px;
+  white-space: nowrap;
 }
 
 .lobby__actions {
