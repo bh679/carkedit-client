@@ -11,7 +11,7 @@ import { render as renderPhase4 } from './screens/phase4.js';
 import {
   startPhase1, doneDying, revealCard,
   startPhase2, startPhase3,
-  showPlayerHand, readyToSelect,
+  showPlayerHand, readyToSelect, redrawHand,
   inspectCard, prevCard, nextCard, dismissInspect, submitCard,
   revealCards, startPitching, donePitching,
   pickWinner, nextRound,
@@ -122,7 +122,14 @@ function addPlayer() {
   const birthMonth = parseInt(monthEl?.value ?? '', 10) || 0;
   const birthDay = parseInt(dayEl?.value ?? '', 10) || 0;
 
-  setState({ players: [...state.players, { name, score: 0, birthMonth, birthDay }] });
+  const newPlayers = [...state.players, { name, score: 0, birthMonth, birthDay }];
+  const newPlayerCount = Math.max(newPlayers.length, 2);
+  const maxHandSize = Math.max(1, Math.floor(68 / newPlayerCount));
+  const currentHandSize = state.gameSettings?.handSize ?? 5;
+  setState({
+    players: newPlayers,
+    gameSettings: { ...state.gameSettings, handSize: Math.min(currentHandSize, maxHandSize) },
+  });
   showScreen('lobby');
 }
 
@@ -143,15 +150,55 @@ function removePlayer(name) {
 }
 
 function updateSetting(key, rawValue) {
-  const max = key === 'rounds' ? 10 : 68;
-  const value = Math.max(1, Math.min(max, parseInt(rawValue, 10) || 1));
   const state = getState();
+  let max;
+  if (key === 'rounds') {
+    max = 10;
+  } else if (key === 'handSize') {
+    const playerCount = Math.max(state.players.length, 2);
+    max = Math.max(1, Math.floor(68 / playerCount));
+  } else {
+    max = 68;
+  }
+  const value = Math.max(1, Math.min(max, parseInt(rawValue, 10) || 1));
   setState({ gameSettings: { ...state.gameSettings, [key]: value } });
+  showScreen('lobby');
+}
+
+function setGameMode(mode) {
+  const rounds = mode === 'quick' ? 1 : 2;
+  const state = getState();
+  setState({ gameSettings: { ...state.gameSettings, rounds } });
   showScreen('lobby');
 }
 
 function toggleAdvancedSettings() {
   setState({ showAdvancedSettings: !getState().showAdvancedSettings });
+  showScreen('lobby');
+}
+
+function setHandRedraws(value) {
+  const allowed = ['off', 'once_per_phase', 'once_per_round', 'unlimited'];
+  if (!allowed.includes(value)) return;
+  const state = getState();
+  setState({ gameSettings: { ...state.gameSettings, handRedraws: value } });
+  showScreen('lobby');
+}
+
+function toggleSetting(key) {
+  const state = getState();
+  setState({ gameSettings: { ...state.gameSettings, [key]: !state.gameSettings[key] } });
+  showScreen('lobby');
+}
+
+const PITCH_DURATIONS = [30, 60, 120, 180, 240, 300, 600, 900, 1800, 3600];
+
+function cyclePitchDuration(dir) {
+  const state = getState();
+  const current = state.gameSettings.pitchDuration ?? 120;
+  const idx = PITCH_DURATIONS.indexOf(current);
+  const next = PITCH_DURATIONS[Math.max(0, Math.min(PITCH_DURATIONS.length - 1, idx + dir))];
+  setState({ gameSettings: { ...state.gameSettings, pitchDuration: next } });
   showScreen('lobby');
 }
 
@@ -170,7 +217,11 @@ window.game = {
   selectPlayerRemoval,
   removePlayer,
   updateSetting,
+  setGameMode,
   toggleAdvancedSettings,
+  setHandRedraws,
+  toggleSetting,
+  cyclePitchDuration,
   startPhase1,
   doneDying,
   revealCard,
@@ -180,6 +231,7 @@ window.game = {
   startPhase3,
   showPlayerHand,
   readyToSelect,
+  redrawHand,
   inspectCard,
   prevCard,
   nextCard,
