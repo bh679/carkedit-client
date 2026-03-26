@@ -160,12 +160,6 @@ function setHandRedraws(value) {
   showScreen('lobby');
 }
 
-function toggleSetting(key) {
-  const state = getState();
-  setState({ gameSettings: { ...state.gameSettings, [key]: !state.gameSettings[key] } });
-  showScreen('lobby');
-}
-
 const PITCH_DURATIONS = [30, 60, 120, 180, 240, 300, 600, 900, 1800, 3600];
 
 function cyclePitchDuration(dir) {
@@ -196,7 +190,6 @@ window.game = {
   setGameMode,
   toggleAdvancedSettings,
   setHandRedraws,
-  toggleSetting,
   cyclePitchDuration,
   startPhase1,
   doneDying,
