@@ -59,6 +59,10 @@
   width: 100%;
 }
 
+.screen--lobby .gameboard {
+  overflow-y: auto;
+}
+
 .lobby__stepper-row {
   display: flex;
   align-items: center;
