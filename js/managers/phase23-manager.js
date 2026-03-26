@@ -253,7 +253,11 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
       const remaining = getState().pitchTimerSeconds - 1;
       if (remaining <= 0) {
         clearPitchTimer();
-        donePitching();
+        if (getState().gameSettings?.timerAutoAdvance ?? true) {
+          donePitching();
+        } else {
+          onStateChange({ pitchTimerSeconds: 0 });
+        }
       } else {
         onStateChange({ pitchTimerSeconds: remaining });
       }
@@ -269,13 +273,15 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
 
   function startPitching() {
     const state = getState();
-    const duration = state.pitchDuration ?? DEFAULT_PITCH_DURATION;
+    const duration = state.gameSettings?.pitchDuration ?? DEFAULT_PITCH_DURATION;
     onStateChange({
       phase2SubState: 'pitching',
       pitchingPlayerIndex: 0,
       pitchTimerSeconds: duration,
     });
-    startPitchTimer();
+    if (state.gameSettings?.timerEnabled) {
+      startPitchTimer();
+    }
   }
 
   function donePitching() {
@@ -283,7 +289,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     const state = getState();
     const nonDeadPlayers = getNonDeadPlayers();
     const nextIndex = state.pitchingPlayerIndex + 1;
-    const duration = state.pitchDuration ?? DEFAULT_PITCH_DURATION;
+    const duration = state.gameSettings?.pitchDuration ?? DEFAULT_PITCH_DURATION;
 
     if (nextIndex >= nonDeadPlayers.length) {
       onStateChange({
@@ -294,7 +300,9 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
         pitchingPlayerIndex: nextIndex,
         pitchTimerSeconds: duration,
       });
-      startPitchTimer();
+      if (getState().gameSettings?.timerEnabled) {
+        startPitchTimer();
+      }
     }
   }
 

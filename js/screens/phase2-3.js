@@ -199,8 +199,12 @@ function formatTime(seconds) {
 function renderPitchingScreen(config, state, playerListOptions, nonDeadPlayers) {
   const pitcher = nonDeadPlayers[state.pitchingPlayerIndex];
   const pitcherName = pitcher?.name ?? '';
+  const { timerEnabled, timerVisible } = state.gameSettings ?? {};
   const seconds = state.pitchTimerSeconds ?? 120;
   const timerClass = seconds < 30 ? 'pitch-timer pitch-timer--warning' : 'pitch-timer';
+  const timerHtml = (timerEnabled && timerVisible)
+    ? `<div class="${timerClass}"><span class="pitch-timer__time">${formatTime(seconds)}</span></div>`
+    : '';
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
@@ -212,9 +216,7 @@ function renderPitchingScreen(config, state, playerListOptions, nonDeadPlayers) 
         deckType: config.deckType,
         pitchingPlayer: pitcherName,
       })}
-      <div class="${timerClass}">
-        <span class="pitch-timer__time">${formatTime(seconds)}</span>
-      </div>
+      ${timerHtml}
       <div class="phase-actions">
         <button class="btn btn--primary" onclick="window.game.donePitching()">
           Done Pitching
