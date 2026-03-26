@@ -2,6 +2,31 @@
 'use strict';
 
 import { render as renderCard } from './card.js';
+import { render as renderCardGrid } from './card-grid.js';
+
+/**
+ * Renders the standard "active card" layout used whenever one card is the
+ * primary focus in the gameboard (Phase 1 die card, Phase 2/3 pitching, etc.)
+ *
+ * @param {string} cardHtml - rendered .card or .card-back HTML
+ * @param {object} options
+ * @param {string} options.label - optional label below the card (e.g. "Alice's death")
+ * @param {string} options.extraHtml - optional HTML between slot and label (e.g. discussion prompt)
+ * @param {string} options.onClick - optional onclick handler string (for clickable card backs)
+ * @returns {string} HTML string
+ */
+export function renderActiveCard(cardHtml, { label = '', extraHtml = '', onClick = '' } = {}) {
+  const clickAttr = onClick ? ` onclick="${onClick}"` : '';
+  return `
+    <div class="gameboard__active-card"${clickAttr}>
+      <div class="gameboard__active-card__slot">
+        ${cardHtml}
+      </div>
+      ${extraHtml}
+      ${label ? `<span class="gameboard__active-card__label">${label}</span>` : ''}
+    </div>
+  `;
+}
 
 /**
  * @param {string} promptCard - HTML for the prompt card
@@ -22,26 +47,26 @@ export function render(promptCard = '', hint = '', {
   const playerNames = Object.keys(playedCards);
   const hasPlayedCards = playerNames.length > 0;
 
+  // Revealed with no active pitcher — show all cards in a grid
+  if (hasPlayedCards && revealed && !pitchingPlayer) {
+    const entries = playerNames.map(name => ({
+      card: { ...playedCards[name], deckType: playedCards[name].deckType || deckType },
+      label: name,
+    }));
+    return `
+      <div class="gameboard">
+        <div class="gameboard__card-area">
+          ${renderCardGrid(entries)}
+        </div>
+        ${hint ? `<p class="gameboard__hint">${hint}</p>` : ''}
+      </div>
+    `;
+  }
+
+  // Face-down row below prompt card — hidden during pitching
   let playedCardsHtml = '';
-  if (hasPlayedCards) {
+  if (hasPlayedCards && !pitchingPlayer) {
     const cardEls = playerNames.map((name) => {
-      const card = playedCards[name];
-      const isPitching = name === pitchingPlayer;
-
-      if (isPitching) {
-        return '';
-      }
-
-      if (revealed) {
-        return `
-          <div class="gameboard__played-card gameboard__played-card--revealed"
-               data-player="${name}">
-            ${renderCard({ ...card, deckType: card.deckType || deckType })}
-            <span class="gameboard__played-card-player">${name}</span>
-          </div>
-        `;
-      }
-
       return `
         <div class="gameboard__played-card gameboard__played-card--facedown gameboard__played-card--${deckType}"
              data-player="${name}">
@@ -57,12 +82,10 @@ export function render(promptCard = '', hint = '', {
   let mainCardHtml = promptCard;
   if (pitchingPlayer && playedCards[pitchingPlayer]) {
     const card = playedCards[pitchingPlayer];
-    mainCardHtml = `
-      <div class="gameboard__pitch-card">
-        ${renderCard({ ...card, deckType: card.deckType || deckType })}
-        <span class="gameboard__pitch-card-player">${pitchingPlayer}'s card</span>
-      </div>
-    `;
+    mainCardHtml = renderActiveCard(
+      renderCard({ ...card, deckType: card.deckType || deckType }),
+      { label: `${pitchingPlayer}'s card` },
+    );
   }
 
   return `
