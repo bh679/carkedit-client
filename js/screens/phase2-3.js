@@ -190,9 +190,21 @@ function renderRevealedScreen(config, state, playerListOptions) {
   `;
 }
 
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
 function renderPitchingScreen(config, state, playerListOptions, nonDeadPlayers) {
   const pitcher = nonDeadPlayers[state.pitchingPlayerIndex];
   const pitcherName = pitcher?.name ?? '';
+  const { timerEnabled, timerVisible } = state.gameSettings ?? {};
+  const seconds = state.pitchTimerSeconds ?? 120;
+  const timerClass = seconds < 30 ? 'pitch-timer pitch-timer--warning' : 'pitch-timer';
+  const timerHtml = (timerEnabled && timerVisible)
+    ? `<div class="${timerClass}"><span class="pitch-timer__time">${formatTime(seconds)}</span></div>`
+    : '';
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
@@ -204,7 +216,7 @@ function renderPitchingScreen(config, state, playerListOptions, nonDeadPlayers) 
         deckType: config.deckType,
         pitchingPlayer: pitcherName,
       })}
-      ${renderHand(state.hand ?? [], { dimmed: true, deckType: config.deckType })}
+      ${timerHtml}
       <div class="phase-actions">
         <button class="btn btn--primary" onclick="window.game.donePitching()">
           Done Pitching
