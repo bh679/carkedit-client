@@ -4,7 +4,7 @@
 import { render as renderPhaseHeader } from '../components/phase-header.js';
 import { render as renderPlayerList } from '../components/player-list.js';
 import { render as renderGameboard, renderActiveCard } from '../components/gameboard.js';
-import { render as renderHand } from '../components/hand.js';
+import { render as renderHand, renderInspectOverlay } from '../components/hand.js';
 import { render as renderCard } from '../components/card.js';
 import { render as renderCardGrid } from '../components/card-grid.js';
 
@@ -225,10 +225,21 @@ function renderJudgingScreen(config, state, playerListOptions, nonDeadPlayers) {
       return {
         card: { ...card, deckType: card.deckType || config.deckType },
         label: `${p.name}'s card`,
-        onClick: `window.game.pickWinner('${p.name}')`,
+        onClick: `window.game.inspectJudgingCard('${p.name}')`,
       };
     })
     .filter(Boolean);
+
+  const inspectOverlay = state.selectedCard
+    ? renderInspectOverlay({
+        selectedCard: state.selectedCard,
+        deckType: config.deckType,
+        submitLabel: 'Pick This Card',
+        onSubmit: `window.game.confirmWinner()`,
+        onPrev:   `window.game.prevJudgingCard('${state.selectedCard.id}')`,
+        onNext:   `window.game.nextJudgingCard('${state.selectedCard.id}')`,
+      })
+    : '';
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
@@ -238,18 +249,23 @@ function renderJudgingScreen(config, state, playerListOptions, nonDeadPlayers) {
         <h2 class="judging__title">${livingDeadName}, pick your favourite!</h2>
         ${renderCardGrid(entries)}
       </div>
+      ${inspectOverlay}
     </div>
   `;
 }
 
 function renderWinnerScreen(config, state, playerListOptions) {
   const winnerName = state.roundWinner ?? '';
-  const isPhaseComplete = false; // Manager handles completion
+  const winnerCard = state.roundWinnerCard;
+  const activeCardHtml = winnerCard
+    ? renderActiveCard(renderCard({ ...winnerCard, deckType: winnerCard.deckType || config.deckType }))
+    : '';
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
       ${renderPhaseHeader({ phase: config.number, label: config.label })}
       ${renderPlayerList(state.players, playerListOptions)}
+      ${activeCardHtml}
       <div class="winner-announcement">
         <div class="winner-announcement__card">
           <h2 class="winner-announcement__title">🎉</h2>

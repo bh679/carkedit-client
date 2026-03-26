@@ -30,6 +30,7 @@ let _state = {
   phase2SubState: 'living-dead',
   currentNonDeadIndex: 0,
   roundWinner: null,
+  roundWinnerCard: null,
 };
 
 export function getState() {
