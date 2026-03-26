@@ -25,6 +25,13 @@
   flex-shrink: 0;
 }
 
+.lobby__board-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--space-md);
+}
+
 .lobby__settings {
   margin-top: var(--space-md);
 }

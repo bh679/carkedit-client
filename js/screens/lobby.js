@@ -41,6 +41,7 @@ export function render(state) {
   const prompt = ROUND_PROMPTS[rounds] ?? ROUND_PROMPTS[10];
 
   const boardContent = `
+    <div class="lobby__board-content">
     <div class="lobby__setup">
       <h2 class="lobby__heading">Player Setup</h2>
       <div class="lobby__add-player">
@@ -73,6 +74,7 @@ export function render(state) {
         >+</button>
       </div>
       <p class="lobby__settings-meta">${estimate} &mdash; ${prompt}</p>
+    </div>
     </div>
   `;
 
