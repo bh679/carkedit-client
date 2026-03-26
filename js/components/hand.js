@@ -47,8 +47,9 @@ export function render(cards = [], { dimmed = false, selectedCard = null, living
   `;
   }).join('');
 
+  const activedeckType = selectedCard?.deckType || deckType;
   const inspectOverlay = selectedCard ? `
-    <div class="hand__inspect-overlay" onclick="window.game.dismissInspect()">
+    <div class="hand__inspect-overlay hand__inspect-overlay--${activedeckType}" onclick="window.game.dismissInspect()">
       <button class="hand__nav-btn hand__nav-btn--prev" onclick="event.stopPropagation(); window.game.prevCard('${selectedCard.id}')">&#8249;</button>
       <div class="hand__inspect-card-wrapper" onclick="event.stopPropagation()">
         ${renderCard({ ...selectedCard, deckType: selectedCard.deckType || deckType })}
