@@ -244,12 +244,16 @@ function renderJudgingScreen(config, state, playerListOptions, nonDeadPlayers) {
 
 function renderWinnerScreen(config, state, playerListOptions) {
   const winnerName = state.roundWinner ?? '';
-  const isPhaseComplete = false; // Manager handles completion
+  const winnerCard = state.roundWinnerCard;
+  const activeCardHtml = winnerCard
+    ? renderActiveCard(renderCard({ ...winnerCard, deckType: winnerCard.deckType || config.deckType }))
+    : '';
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
       ${renderPhaseHeader({ phase: config.number, label: config.label })}
       ${renderPlayerList(state.players, playerListOptions)}
+      ${activeCardHtml}
       <div class="winner-announcement">
         <div class="winner-announcement__card">
           <h2 class="winner-announcement__title">🎉</h2>

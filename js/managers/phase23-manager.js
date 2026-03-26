@@ -234,6 +234,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
       players,
       playerHands: hands,
       roundWinner: playerName,
+      roundWinnerCard: state.submittedCards[playerName] ?? null,
       phase2SubState: 'winner-announced',
       submittedCards: {},
       revealedCards: false,
