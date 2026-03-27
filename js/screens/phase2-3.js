@@ -181,17 +181,25 @@ function renderSelectingScreen(config, state, playerListOptions) {
 }
 
 function renderAllSubmittedScreen(config, state, playerListOptions) {
-  const livingDeadName = state.players[state.livingDeadIndex]?.name ?? '';
-  const promptCardHtml = renderDieCard(state.currentCard);
+  const livingDead = state.players[state.livingDeadIndex];
+  const livingDeadName = livingDead?.name ?? '';
+  const dieCard = state.playerDieCards?.[livingDeadName]
+    ? { ...state.playerDieCards[livingDeadName], deckType: 'die' }
+    : null;
+  const chosenCards = state.playerChosenCards?.[livingDeadName] ?? [];
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
       ${renderPhaseHeader({ phase: config.number, label: config.label })}
       ${renderPlayerList(state.players, playerListOptions)}
-      ${renderGameboard(promptCardHtml, 'All cards are in!', {
-        playedCards: state.submittedCards ?? {},
-        revealed: false,
+      ${renderLivingDeadProfile({
+        player: livingDead,
+        dieCard,
+        chosenCards,
+        profileInspectCard: state.profileInspectCard ?? null,
         deckType: config.deckType,
+        hint: 'All cards are in!',
+        submittedCards: state.submittedCards ?? {},
       })}
       ${renderHand([], { footer: `
         <button class="btn btn--primary" onclick="window.game.revealCards()">
@@ -203,11 +211,26 @@ function renderAllSubmittedScreen(config, state, playerListOptions) {
 }
 
 function renderRevealedScreen(config, state, playerListOptions) {
+  const livingDead = state.players[state.livingDeadIndex];
+  const livingDeadName = livingDead?.name ?? '';
+  const dieCard = state.playerDieCards?.[livingDeadName]
+    ? { ...state.playerDieCards[livingDeadName], deckType: 'die' }
+    : null;
+  const chosenCards = state.playerChosenCards?.[livingDeadName] ?? [];
+
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
       ${renderPhaseHeader({ phase: config.number, label: config.label })}
       ${renderPlayerList(state.players, playerListOptions)}
-      ${renderGameboard('', 'Cards revealed! Time to pitch.', {
+      ${renderLivingDeadProfile({
+        player: livingDead,
+        dieCard,
+        chosenCards,
+        profileInspectCard: state.profileInspectCard ?? null,
+        deckType: config.deckType,
+        hint: 'Cards revealed! Time to pitch.',
+      })}
+      ${renderGameboard('', '', {
         playedCards: state.submittedCards ?? {},
         revealed: true,
         deckType: config.deckType,
