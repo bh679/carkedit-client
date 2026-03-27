@@ -204,9 +204,10 @@ function updateSetting(key, rawValue) {
 }
 
 function setGameMode(mode) {
-  const rounds = mode === 'quick' ? 1 : 2;
+  const rounds = (mode === 'quick' || mode === 'ultra-quick') ? 1 : 2;
+  const ultraQuickMode = mode === 'ultra-quick';
   const state = getState();
-  setState({ gameSettings: { ...state.gameSettings, rounds } });
+  setState({ gameSettings: { ...state.gameSettings, rounds, ultraQuickMode } });
   refreshAdvancedPanel();
 }
 
@@ -243,6 +244,7 @@ const DEFAULT_GAME_SETTINGS = {
   pitchDuration: 120,
   timerVisible: true,
   timerAutoAdvance: true,
+  ultraQuickMode: false,
 };
 
 function resetSettings() {
@@ -254,6 +256,19 @@ function toggleSetting(key) {
   const state = getState();
   setState({ gameSettings: { ...state.gameSettings, [key]: !state.gameSettings[key] } });
   refreshAdvancedPanel();
+}
+
+function toggleUltraQuickMode() {
+  const state = getState();
+  const enabling = !state.gameSettings.ultraQuickMode;
+  setState({
+    gameSettings: {
+      ...state.gameSettings,
+      ultraQuickMode: enabling,
+      rounds: enabling ? 1 : state.gameSettings.rounds,
+    },
+  });
+  showScreen('lobby');
 }
 
 function cyclePitchDuration(dir) {
@@ -281,6 +296,7 @@ window.game = {
   removePlayer,
   updateSetting,
   toggleSetting,
+  toggleUltraQuickMode,
   setGameMode,
   toggleAdvancedSettings,
   setHandRedraws,
