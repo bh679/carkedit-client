@@ -65,14 +65,14 @@ function refreshAdvancedPanel() {
   }
   const modeToggle = document.getElementById('lobby-mode-toggle');
   if (modeToggle) {
-    const { rounds } = state.gameSettings;
+    const { rounds, ultraQuickMode } = state.gameSettings;
     modeToggle.innerHTML = `
       <button
-        class="btn lobby__mode-btn ${rounds === 1 ? 'btn--primary' : 'btn--secondary'}"
+        class="btn lobby__mode-btn ${!ultraQuickMode && rounds === 1 ? 'btn--primary' : 'btn--secondary'}"
         onclick="window.game.setGameMode('quick')"
       >Quick</button>
       <button
-        class="btn lobby__mode-btn ${rounds !== 1 ? 'btn--primary' : 'btn--secondary'}"
+        class="btn lobby__mode-btn ${!ultraQuickMode && rounds !== 1 ? 'btn--primary' : 'btn--secondary'}"
         onclick="window.game.setGameMode('normal')"
       >Normal</button>
     `;
