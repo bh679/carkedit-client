@@ -145,7 +145,6 @@
 
 /* Footer area — sits inside .hand below the fan */
 .hand__footer {
-  border-top: 1px solid var(--color-hand-card-border);
   padding-top: 12px;
   margin-top: 12px;
 }
