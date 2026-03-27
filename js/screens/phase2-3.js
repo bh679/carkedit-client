@@ -182,11 +182,6 @@ function renderSelectingScreen(config, state, playerListOptions) {
 
 function renderAllSubmittedScreen(config, state, playerListOptions) {
   const livingDead = state.players[state.livingDeadIndex];
-  const livingDeadName = livingDead?.name ?? '';
-  const dieCard = state.playerDieCards?.[livingDeadName]
-    ? { ...state.playerDieCards[livingDeadName], deckType: 'die' }
-    : null;
-  const chosenCards = state.playerChosenCards?.[livingDeadName] ?? [];
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
@@ -194,9 +189,9 @@ function renderAllSubmittedScreen(config, state, playerListOptions) {
       ${renderPlayerList(state.players, playerListOptions)}
       ${renderLivingDeadProfile({
         player: livingDead,
-        dieCard,
-        chosenCards,
-        profileInspectCard: state.profileInspectCard ?? null,
+        dieCard: null,
+        chosenCards: [],
+        profileInspectCard: null,
         deckType: config.deckType,
         hint: 'All cards are in!',
         submittedCards: state.submittedCards ?? {},
@@ -212,11 +207,6 @@ function renderAllSubmittedScreen(config, state, playerListOptions) {
 
 function renderRevealedScreen(config, state, playerListOptions) {
   const livingDead = state.players[state.livingDeadIndex];
-  const livingDeadName = livingDead?.name ?? '';
-  const dieCard = state.playerDieCards?.[livingDeadName]
-    ? { ...state.playerDieCards[livingDeadName], deckType: 'die' }
-    : null;
-  const chosenCards = state.playerChosenCards?.[livingDeadName] ?? [];
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
@@ -224,9 +214,9 @@ function renderRevealedScreen(config, state, playerListOptions) {
       ${renderPlayerList(state.players, playerListOptions)}
       ${renderLivingDeadProfile({
         player: livingDead,
-        dieCard,
-        chosenCards,
-        profileInspectCard: state.profileInspectCard ?? null,
+        dieCard: null,
+        chosenCards: [],
+        profileInspectCard: null,
         deckType: config.deckType,
         hint: 'Cards revealed! Time to pitch.',
       })}
