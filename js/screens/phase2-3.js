@@ -168,7 +168,9 @@ function renderSelectingScreen(config, state, playerListOptions) {
       ${renderPlayerList(state.players, playerListOptions)}
       ${renderLivingDeadProfile({
         player: livingDead,
-        profileInspectCard: null,
+        dieCard,
+        chosenCards,
+        profileInspectCard: state.profileInspectCard ?? null,
         deckType: config.deckType,
         hint,
         submittedCards: state.submittedCards ?? {},
