@@ -482,7 +482,7 @@
 .scoreboard__name {
   font-size: 16px;
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--color-hand-card-title);
 }
 
 .scoreboard__score {
