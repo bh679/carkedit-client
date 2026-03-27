@@ -16,6 +16,7 @@ import {
   revealCards, startPitching, donePitching,
   pickWinner, nextRound,
   inspectJudgingCard, prevJudgingCard, nextJudgingCard, confirmWinner,
+  inspectProfileCard, dismissProfileCard,
   startPhase4, startEulogyRound, selectEulogist, confirmEulogists,
   startEulogy, doneEulogy, pickBestEulogy, nextWildcard,
 } from './managers/game-manager.js';
@@ -246,6 +247,8 @@ window.game = {
   prevJudgingCard,
   nextJudgingCard,
   confirmWinner,
+  inspectProfileCard,
+  dismissProfileCard,
   // Phase 4 actions
   startPhase4,
   startEulogyRound,

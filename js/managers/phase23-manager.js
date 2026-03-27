@@ -70,6 +70,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
       revealedCards: false,
       pitchingPlayerIndex: 0,
       selectedCard: null,
+      profileInspectCard: null,
       phase2SubState: 'living-dead',
       currentNonDeadIndex: 0,
       roundWinner: null,
@@ -147,6 +148,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     onStateChange({
       phase2SubState: 'pass-phone',
       currentNonDeadIndex: 0,
+      profileInspectCard: null,
     });
   }
 
@@ -195,6 +197,31 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
 
   function dismissInspect() {
     onStateChange({ selectedCard: null });
+  }
+
+  function getProfileCards() {
+    const state = getState();
+    const player = state.players[state.livingDeadIndex];
+    if (!player) return [];
+    const cards = [];
+    const dieCard = state.playerDieCards[player.name];
+    if (dieCard) cards.push({ ...dieCard, deckType: 'die' });
+    const chosen = state.playerChosenCards?.[player.name] ?? [];
+    for (const card of chosen) {
+      cards.push({ ...card });
+    }
+    return cards;
+  }
+
+  function inspectProfileCard(index) {
+    const card = getProfileCards()[index];
+    if (card) {
+      onStateChange({ profileInspectCard: card });
+    }
+  }
+
+  function dismissProfileCard() {
+    onStateChange({ profileInspectCard: null });
   }
 
   function getJudgingCardList() {
@@ -424,6 +451,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
         revealedCards: false,
         pitchingPlayerIndex: 0,
         selectedCard: null,
+        profileInspectCard: null,
         roundWinner: null,
         currentCard: getLivingDeadDieCard(state, 0),
         phase2SubState: 'living-dead',
@@ -438,6 +466,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
         revealedCards: false,
         pitchingPlayerIndex: 0,
         selectedCard: null,
+        profileInspectCard: null,
         roundWinner: null,
         currentCard: getLivingDeadDieCard(state, nextLivingDead),
         phase2SubState: 'living-dead',
@@ -465,5 +494,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     prevJudgingCard,
     nextJudgingCard,
     confirmWinner,
+    inspectProfileCard,
+    dismissProfileCard,
   };
 }
