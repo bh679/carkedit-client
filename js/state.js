@@ -30,7 +30,7 @@ let _state = {
     handRedraws: 'once_per_phase',
     timerEnabled: false,
     pitchTimerEnabled: true,
-    playCardTimerEnabled: false,
+    playCardTimerEnabled: true,
     timerCountUp: false,
     pitchDuration: 120,
     timerVisible: true,
