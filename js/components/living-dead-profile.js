@@ -67,14 +67,20 @@ export function render({
 }) {
   const birthday = formatBirthday(player);
 
-  // Build card thumbnails list
+  // Build card thumbnails list: LIVE picks → DIE → BYE picks
   const allProfileCards = [];
+  chosenCards.forEach((card) => {
+    if (card.deckType === 'live') {
+      allProfileCards.push({ card, label: 'LIVE Pick' });
+    }
+  });
   if (dieCard) {
     allProfileCards.push({ card: dieCard, label: 'Their Death' });
   }
   chosenCards.forEach((card) => {
-    const label = card.deckType === 'live' ? 'LIVE Pick' : 'BYE Pick';
-    allProfileCards.push({ card, label });
+    if (card.deckType === 'bye') {
+      allProfileCards.push({ card, label: 'BYE Pick' });
+    }
   });
 
   const thumbsHtml = allProfileCards.map(({ card, label }, index) => {
