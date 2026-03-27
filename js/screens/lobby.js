@@ -278,16 +278,14 @@ export function render(state) {
     <div class="lobby__settings-section">
       <div class="lobby__settings-divider"></div>
       <h2 class="lobby__heading">Game Settings</h2>
-      <div id="lobby-mode-toggle" class="lobby__mode-toggle ${ultraQuickMode ? 'lobby__mode-toggle--disabled' : ''}">
+      <div id="lobby-mode-toggle" class="lobby__mode-toggle">
         <button
           class="btn lobby__mode-btn ${!ultraQuickMode && rounds === 1 ? 'btn--primary' : 'btn--secondary'}"
           onclick="window.game.setGameMode('quick')"
-          ${ultraQuickMode ? 'disabled' : ''}
         >Quick</button>
         <button
           class="btn lobby__mode-btn ${!ultraQuickMode && rounds !== 1 ? 'btn--primary' : 'btn--secondary'}"
           onclick="window.game.setGameMode('normal')"
-          ${ultraQuickMode ? 'disabled' : ''}
         >Normal</button>
       </div>
       <div id="lobby-advanced" class="lobby__advanced">
