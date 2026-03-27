@@ -6,6 +6,16 @@ import { render as renderCardBack } from './cardBack.js';
 
 const MONTH_ABBR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
+/**
+ * Calculates a font size (px) that fits the name on one line.
+ * Uses uppercase bold char width ratio ≈ 0.75em, container ≈ 340px.
+ */
+function calcNameFontSize(name) {
+  const containerPx = 340;
+  const maxFontPx = Math.min(64, containerPx / (name.length * 0.75));
+  return `${Math.max(18, Math.round(maxFontPx))}px`;
+}
+
 function formatBirthday(player) {
   if (!player.birthMonth || !player.birthDay) return '';
   const birth = `${MONTH_ABBR[player.birthMonth - 1]} ${player.birthDay}`;
@@ -104,7 +114,7 @@ export function render({
   return `
     <div class="ld-profile">
       <div class="ld-profile__hero">
-        <h1 class="ld-profile__name">${player.name}</h1>
+        <h1 class="ld-profile__name" style="font-size: ${calcNameFontSize(player.name)}">${player.name}</h1>
         ${birthday ? `<p class="ld-profile__birthday">${birthday}</p>` : ''}
         ${allProfileCards.length > 0 ? `
           <div class="ld-profile__cards">
