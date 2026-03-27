@@ -49,11 +49,33 @@ function formatPitchDuration(seconds) {
 }
 
 export function render(state) {
-  const { rounds, handSize, handRedraws = 'once_per_phase', timerEnabled, timerCountUp, pitchDuration, timerVisible, timerAutoAdvance } = state.gameSettings;
+  const { rounds, handSize, enableLive, enableBye, enableEulogy, forceWildcards, wildcardCount, handRedraws = 'once_per_phase', timerEnabled, timerCountUp, pitchDuration, timerVisible, timerAutoAdvance } = state.gameSettings;
   const playerCount = Math.max(state.players.length, 2);
   const maxHandSize = Math.max(1, Math.floor(68 / playerCount));
   const estimate = timeEstimate(playerCount, rounds);
   const prompt = ROUND_PROMPTS[rounds] ?? ROUND_PROMPTS[10];
+
+  const wildcardSubSettings = enableEulogy ? `
+    <div class="lobby__advanced-subsection">
+      <div class="lobby__stepper-row">
+        <span class="lobby__stepper-label">Force Wildcards <span class="lobby__stepper-hint">(everyone gets one)</span></span>
+        <button class="btn lobby__stepper-btn ${forceWildcards ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('forceWildcards')">
+          ${forceWildcards ? 'On' : 'Off'}
+        </button>
+      </div>
+      <div class="lobby__stepper-row ${forceWildcards ? 'lobby__stepper-row--disabled' : ''}">
+        <span class="lobby__stepper-label">Wildcards in Deck</span>
+        <button class="btn btn--secondary lobby__stepper-btn"
+          onclick="window.game.updateSetting('wildcardCount', ${wildcardCount - 1})"
+          ${wildcardCount <= 0 || forceWildcards ? 'disabled' : ''}>&minus;</button>
+        <span class="lobby__stepper-value">${wildcardCount}</span>
+        <button class="btn btn--secondary lobby__stepper-btn"
+          onclick="window.game.updateSetting('wildcardCount', ${wildcardCount + 1})"
+          ${wildcardCount >= 10 || forceWildcards ? 'disabled' : ''}>+</button>
+      </div>
+    </div>
+  ` : '';
 
   const advancedPanel = state.showAdvancedSettings ? `
     <div class="lobby__advanced-panel">
@@ -79,6 +101,35 @@ export function render(state) {
           ${handSize >= maxHandSize ? 'disabled' : ''}>+</button>
       </div>
       <p class="lobby__setting-meta">Max ${maxHandSize} cards with ${playerCount} players</p>
+      <div class="lobby__advanced-divider"></div>
+      <p class="lobby__advanced-section-label">Phases</p>
+      <div class="lobby__stepper-row lobby__stepper-row--disabled">
+        <span class="lobby__stepper-label">DIE</span>
+        <button class="btn lobby__stepper-btn btn--primary" disabled>On</button>
+      </div>
+      <div class="lobby__stepper-row">
+        <span class="lobby__stepper-label">LIVE</span>
+        <button class="btn lobby__stepper-btn ${enableLive ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('enableLive')">
+          ${enableLive ? 'On' : 'Off'}
+        </button>
+      </div>
+      <div class="lobby__stepper-row">
+        <span class="lobby__stepper-label">BYE</span>
+        <button class="btn lobby__stepper-btn ${enableBye ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('enableBye')">
+          ${enableBye ? 'On' : 'Off'}
+        </button>
+      </div>
+      <div class="lobby__stepper-row">
+        <span class="lobby__stepper-label">EULOGY</span>
+        <button class="btn lobby__stepper-btn ${enableEulogy ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('enableEulogy')">
+          ${enableEulogy ? 'On' : 'Off'}
+        </button>
+      </div>
+      ${wildcardSubSettings}
+      <div class="lobby__advanced-divider"></div>
       <div class="lobby__select-row">
         <span class="lobby__stepper-label">Hand Redraws</span>
         <div class="lobby__segmented">

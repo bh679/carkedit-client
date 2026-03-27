@@ -305,10 +305,13 @@ function renderWinnerScreen(config, state, playerListOptions) {
 
 function renderPhaseCompleteScreen(config, state) {
   const phaseName = config.deckType === 'live' ? 'LIVE' : 'BYE';
+  const { enableBye, enableEulogy } = state.gameSettings ?? {};
   const nextAction = config.deckType === 'live'
-    ? `window.game.startPhase3()`
-    : `window.game.startPhase4()`;
-  const nextLabel = config.deckType === 'live' ? 'Start Phase 3 — BYE' : 'Final Phase';
+    ? (enableBye ? `window.game.startPhase3()` : enableEulogy ? `window.game.startPhase4()` : `window.game.revealWinner()`)
+    : (enableEulogy ? `window.game.startPhase4()` : `window.game.revealWinner()`);
+  const nextLabel = config.deckType === 'live'
+    ? (enableBye ? 'Start Phase 3 — BYE' : enableEulogy ? 'Final Phase' : 'Reveal Winner')
+    : (enableEulogy ? 'Final Phase' : 'Reveal Winner');
 
   // Build scoreboard
   const sortedPlayers = [...state.players].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
