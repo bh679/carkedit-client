@@ -219,11 +219,8 @@ function renderRevealedScreen(config, state, playerListOptions) {
         profileInspectCard: null,
         deckType: config.deckType,
         hint: 'Cards revealed! Time to pitch.',
-      })}
-      ${renderGameboard('', '', {
-        playedCards: state.submittedCards ?? {},
-        revealed: true,
-        deckType: config.deckType,
+        submittedCards: state.submittedCards ?? {},
+        submittedRevealed: true,
       })}
       ${renderHand([], { footer: `
         <button class="btn btn--primary" onclick="window.game.startPitching()">

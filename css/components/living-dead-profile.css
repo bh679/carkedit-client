@@ -141,7 +141,8 @@
 }
 
 /* Card fills column width; max-height:100% lets it shrink when vertical space is tight */
-.ld-profile__submitted-card .card-back {
+.ld-profile__submitted-card .card-back,
+.ld-profile__submitted-card .card {
   width: 100%;
   max-height: 100%;
   border-radius: 6px;

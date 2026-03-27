@@ -52,7 +52,8 @@ function renderViewOverlay(card, deckType) {
  * @param {object|null} options.profileInspectCard - Card currently shown in overlay
  * @param {string} options.deckType - 'live' | 'bye'
  * @param {string} options.hint - Hint text shown below the profile
- * @param {object} options.submittedCards - { [playerName]: card } submitted face-down cards
+ * @param {object} options.submittedCards - { [playerName]: card } submitted cards
+ * @param {boolean} options.submittedRevealed - When true, render card fronts instead of backs
  */
 export function render({
   player,
@@ -62,6 +63,7 @@ export function render({
   deckType = 'live',
   hint = '',
   submittedCards = {},
+  submittedRevealed = false,
 }) {
   const birthday = formatBirthday(player);
 
@@ -92,17 +94,22 @@ export function render({
     `;
   }).join('');
 
-  // Submitted face-down cards row (shown during 'selecting' when others have already played)
+  // Submitted cards row — face-down backs or revealed fronts
   const submittedPlayerNames = Object.keys(submittedCards);
   let submittedHtml = '';
   if (submittedPlayerNames.length > 0) {
     const colClass = submittedPlayerNames.length >= 4 ? 'ld-profile__submitted--cols-4' : '';
-    const cardEls = submittedPlayerNames.map(name => `
-      <div class="ld-profile__submitted-card">
-        ${renderCardBack({ deckType })}
-        <span class="ld-profile__submitted-label">${name}</span>
-      </div>
-    `).join('');
+    const cardEls = submittedPlayerNames.map(name => {
+      const cardHtml = submittedRevealed
+        ? renderCard({ ...submittedCards[name], deckType: submittedCards[name].deckType || deckType })
+        : renderCardBack({ deckType });
+      return `
+        <div class="ld-profile__submitted-card">
+          ${cardHtml}
+          <span class="ld-profile__submitted-label">${name}</span>
+        </div>
+      `;
+    }).join('');
     submittedHtml = `<div class="ld-profile__submitted ${colClass}">${cardEls}</div>`;
   }
 
