@@ -243,7 +243,7 @@ export function renderAdvancedPanel(state) {
 }
 
 export function render(state) {
-  const { rounds, ultraQuickMode } = state.gameSettings;
+  const { rounds, ultraQuickMode, optionalCardPlay } = state.gameSettings;
 
   const months = [
     'Jan','Feb','Mar','Apr','May','Jun',
@@ -286,16 +286,25 @@ export function render(state) {
     <div class="lobby__settings-section">
       <div class="lobby__settings-divider"></div>
       <h2 class="lobby__heading">Game Settings</h2>
-      <div id="lobby-mode-toggle" class="lobby__mode-toggle">
-        <button
-          class="btn lobby__mode-btn ${!ultraQuickMode && rounds === 1 ? 'btn--primary' : 'btn--secondary'}"
-          onclick="window.game.setGameMode('quick')"
-        >Quick</button>
-        <button
-          class="btn lobby__mode-btn ${!ultraQuickMode && rounds !== 1 ? 'btn--primary' : 'btn--secondary'}"
-          onclick="window.game.setGameMode('normal')"
-        >Normal</button>
-      </div>
+      ${(() => {
+        const pc = state.players.length;
+        const isQuick     = !ultraQuickMode && rounds === 1 && !optionalCardPlay;
+        const isNormal    = !ultraQuickMode && rounds !== 1 && !optionalCardPlay;
+        const isBigGroup  = !ultraQuickMode && rounds === 1 &&  optionalCardPlay;
+        const isHugeGroup =  ultraQuickMode &&                  optionalCardPlay;
+        return `
+          <div id="lobby-mode-toggle" class="lobby__mode-toggle">
+            <button class="btn lobby__mode-btn ${isQuick ? 'btn--primary' : 'btn--secondary'}"
+              onclick="window.game.setGameMode('quick')">Quick</button>
+            <button class="btn lobby__mode-btn ${isNormal ? 'btn--primary' : 'btn--secondary'}"
+              onclick="window.game.setGameMode('normal')">Normal</button>
+            ${pc > 8 ? `<button class="btn lobby__mode-btn ${isBigGroup ? 'btn--primary' : 'btn--secondary'}"
+              onclick="window.game.setGameMode('big-group')">Big Group</button>` : ''}
+            ${pc > 12 ? `<button class="btn lobby__mode-btn ${isHugeGroup ? 'btn--primary' : 'btn--secondary'}"
+              onclick="window.game.setGameMode('huge-group')">Huge Group</button>` : ''}
+          </div>
+        `;
+      })()}
       <div id="lobby-advanced" class="lobby__advanced">
         <button
           class="btn btn--secondary lobby__advanced-toggle"
