@@ -142,9 +142,16 @@ function selectPlayerRemoval(name) {
 
 function removePlayer(name) {
   const state = getState();
+  const newPlayers = state.players.filter((p) => p.name !== name);
+  const maxEulogistCount = Math.max(1, newPlayers.length - 1);
+  const currentEulogistCount = state.gameSettings?.eulogistCount ?? 2;
   setState({
-    players: state.players.filter((p) => p.name !== name),
+    players: newPlayers,
     selectedPlayerForRemoval: null,
+    gameSettings: {
+      ...state.gameSettings,
+      eulogistCount: Math.min(currentEulogistCount, maxEulogistCount),
+    },
   });
   showScreen('lobby');
 }
