@@ -298,9 +298,9 @@ export function render(state) {
               onclick="window.game.setGameMode('quick')">Quick</button>
             <button class="btn lobby__mode-btn ${isNormal ? 'btn--primary' : 'btn--secondary'}"
               onclick="window.game.setGameMode('normal')">Normal</button>
-            ${pc > 8 ? `<button class="btn lobby__mode-btn ${isBigGroup ? 'btn--primary' : 'btn--secondary'}"
+            ${pc > 6 ? `<button class="btn lobby__mode-btn ${isBigGroup ? 'btn--primary' : 'btn--secondary'}"
               onclick="window.game.setGameMode('big-group')">Big Group</button>` : ''}
-            ${pc > 12 ? `<button class="btn lobby__mode-btn ${isHugeGroup ? 'btn--primary' : 'btn--secondary'}"
+            ${pc > 9 ? `<button class="btn lobby__mode-btn ${isHugeGroup ? 'btn--primary' : 'btn--secondary'}"
               onclick="window.game.setGameMode('huge-group')">Huge Group</button>` : ''}
           </div>
         `;
