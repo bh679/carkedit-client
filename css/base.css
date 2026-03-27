@@ -92,6 +92,16 @@ body {
   color: var(--color-white);
 }
 
+.btn--ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border: none;
+}
+
+.btn--ghost:hover {
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+}
+
 /* ── Form inputs ─────────────────────────────────────── */
 
 .input {
