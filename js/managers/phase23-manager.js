@@ -119,18 +119,16 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
       if (needed > 0 && deckCopy.length > 0) {
         const dealt = deckCopy.splice(0, Math.min(needed, deckCopy.length));
 
-        // For bye deck: separate wildcard cards so they're held for Phase 4
+        // For bye deck: track wildcards in wildcardCards for Phase 4 detection,
+        // but also keep them in the player's hand so they're visible
         if (deckType === 'bye') {
-          const regular = [];
           for (const card of dealt) {
             if (card.special === 'Wildcard') {
               const existing = wildcardCards[player.name] ?? [];
               wildcardCards[player.name] = [...existing, card];
-            } else {
-              regular.push(card);
             }
           }
-          hands[player.name] = [...currentHand, ...regular];
+          hands[player.name] = [...currentHand, ...dealt];
         } else {
           hands[player.name] = [...currentHand, ...dealt];
         }
@@ -398,11 +396,20 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     // Draw players back up to hand size
     const handSize = state.gameSettings?.handSize ?? 5;
     const hands = { ...state.playerHands };
+    const wildcardCards = { ...(state.wildcardCards ?? {}) };
     for (const player of players) {
       const currentHand = hands[player.name] ?? [];
       const needed = handSize - currentHand.length;
       if (needed > 0 && deck.length > 0) {
         const dealt = deck.splice(0, Math.min(needed, deck.length));
+        if (deckType === 'bye') {
+          for (const card of dealt) {
+            if (card.special === 'Wildcard') {
+              const existing = wildcardCards[player.name] ?? [];
+              wildcardCards[player.name] = [...existing, card];
+            }
+          }
+        }
         hands[player.name] = [...currentHand, ...dealt];
       }
     }
@@ -410,6 +417,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     onStateChange({
       players,
       playerHands: hands,
+      wildcardCards,
       playerChosenCards,
       roundWinner: playerName,
       roundWinnerCard: state.submittedCards[playerName] ?? null,

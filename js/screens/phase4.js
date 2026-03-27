@@ -332,9 +332,11 @@ function renderWinnerScreen(state) {
         <h2 class="phase4__winner-crown">👑</h2>
         <h2 class="phase4__winner-title">Legendary Death Doula!</h2>
         <p class="phase4__winner-name">${winnerName}</p>
-        <div class="scoreboard">
-          <h3 class="scoreboard__title">Final Scores</h3>
-          ${scoreRows}
+        <div class="winner-announcement__card">
+          <div class="scoreboard">
+            <h3 class="scoreboard__title">Final Scores</h3>
+            ${scoreRows}
+          </div>
         </div>
         <button class="btn btn--primary" onclick="window.game.showScreen('menu')">
           Play Again

@@ -106,12 +106,12 @@ function renderLivingDeadScreen(config, state, playerListOptions, livingDeadName
       })}
       ${renderHand([], {
         livingDeadMessage: `You are The Living Dead this round.\nSit back and relax! 👑`,
+        footer: `
+          <button class="btn btn--primary" onclick="window.game.showPlayerHand()">
+            Start Round
+          </button>
+        `,
       })}
-      <div class="phase-actions">
-        <button class="btn btn--primary" onclick="window.game.showPlayerHand()">
-          Start Round
-        </button>
-      </div>
     </div>
   `;
 }
@@ -157,7 +157,7 @@ function renderSelectingScreen(config, state, playerListOptions) {
     && (handRedraws === 'unlimited' || !hasRedrawn)
     && (handRedraws === 'once_per_round' || handRedraws === 'unlimited' || !hasPlayed);
   const redrawButton = showRedraw ? `
-    <button class="btn btn--secondary hand__redraw-btn" onclick="window.game.redrawHand()">
+    <button class="btn btn--secondary" onclick="window.game.redrawHand()">
       Redraw Hand
     </button>
   ` : '';
@@ -193,11 +193,11 @@ function renderAllSubmittedScreen(config, state, playerListOptions) {
         revealed: false,
         deckType: config.deckType,
       })}
-      <div class="phase-actions">
+      ${renderHand([], { footer: `
         <button class="btn btn--primary" onclick="window.game.revealCards()">
           Reveal Cards
         </button>
-      </div>
+      ` })}
     </div>
   `;
 }
@@ -212,11 +212,11 @@ function renderRevealedScreen(config, state, playerListOptions) {
         revealed: true,
         deckType: config.deckType,
       })}
-      <div class="phase-actions">
+      ${renderHand([], { footer: `
         <button class="btn btn--primary" onclick="window.game.startPitching()">
           Start Pitching
         </button>
-      </div>
+      ` })}
     </div>
   `;
 }
@@ -248,11 +248,11 @@ function renderPitchingScreen(config, state, playerListOptions, nonDeadPlayers) 
         pitchingPlayer: pitcherName,
       })}
       ${timerHtml}
-      <div class="phase-actions">
+      ${renderHand([], { footer: `
         <button class="btn btn--primary" onclick="window.game.donePitching()">
           Done Pitching
         </button>
-      </div>
+      ` })}
     </div>
   `;
 }
@@ -325,10 +325,13 @@ function renderWinnerScreen(config, state, playerListOptions) {
 
 function renderPhaseCompleteScreen(config, state) {
   const phaseName = config.deckType === 'live' ? 'LIVE' : 'BYE';
+  const { enableBye, enableEulogy } = state.gameSettings ?? {};
   const nextAction = config.deckType === 'live'
-    ? `window.game.startPhase3()`
-    : `window.game.startPhase4()`;
-  const nextLabel = config.deckType === 'live' ? 'Start Phase 3 — BYE' : 'Final Phase';
+    ? (enableBye ? `window.game.startPhase3()` : enableEulogy ? `window.game.startPhase4()` : `window.game.revealWinner()`)
+    : (enableEulogy ? `window.game.startPhase4()` : `window.game.revealWinner()`);
+  const nextLabel = config.deckType === 'live'
+    ? (enableBye ? 'Start Phase 3 — BYE' : enableEulogy ? 'Final Phase' : 'Reveal Winner')
+    : (enableEulogy ? 'Final Phase' : 'Reveal Winner');
 
   // Build scoreboard
   const sortedPlayers = [...state.players].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));

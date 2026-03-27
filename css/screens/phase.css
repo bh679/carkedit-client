@@ -387,18 +387,6 @@
   flex: 1;
 }
 
-/* ── Phase 2/3 action buttons ─────────────────────────── */
-
-.phase-actions {
-  padding: var(--space-sm) 0;
-  display: flex;
-  gap: var(--space-sm);
-}
-
-.phase-actions .btn {
-  flex: 1;
-}
-
 /* ── Pass the phone screen ────────────────────────────── */
 
 .pass-phone {
@@ -494,7 +482,7 @@
 .scoreboard__name {
   font-size: 16px;
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--color-hand-card-title);
 }
 
 .scoreboard__score {
@@ -523,18 +511,6 @@
   font-style: italic;
   color: rgba(255, 255, 255, 0.7);
   margin-top: var(--space-sm);
-}
-
-/* ── Phase 1 hand action area ───────────────────────────── */
-
-.phase1__hand-actions {
-  display: flex;
-  gap: var(--space-sm);
-  padding: var(--space-sm) 0;
-}
-
-.phase1__hand-actions .btn {
-  flex: 1;
 }
 
 .phase1__card-facedown {

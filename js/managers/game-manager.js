@@ -108,6 +108,26 @@ export function startPhase3() {
     hasPlayedCardPlayers: {},
   });
 
+  // Apply wildcard count setting to bye deck
+  const { forceWildcards, wildcardCount } = getState().gameSettings;
+  const byeDeck = getState().decks.bye ?? [];
+  const wildcards = byeDeck.filter(c => c.special === 'Wildcard');
+  const nonWildcards = byeDeck.filter(c => c.special !== 'Wildcard');
+  let keepWildcards = [];
+  if (!forceWildcards && wildcardCount > 0) {
+    const template = wildcards[0] ?? { title: 'Wildcard Eulogy', description: 'Save this card until the end, for a chance at bonus points!', special: 'Wildcard', illustrationKey: 'wildcard-eulogy' };
+    keepWildcards = Array.from({ length: wildcardCount }, (_, i) => ({
+      ...template,
+      id: `wildcard-${i}`,
+    }));
+  }
+  const combined = [...nonWildcards, ...keepWildcards];
+  for (let i = combined.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [combined[i], combined[j]] = [combined[j], combined[i]];
+  }
+  setState({ decks: { ...getState().decks, bye: combined } });
+
   currentPhaseManager = createPhase23Manager({
     deckType: 'bye',
     onStateChange: (updates) => {

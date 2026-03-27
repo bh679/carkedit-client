@@ -4,7 +4,7 @@
 import { getState, setState } from './state.js';
 import { preloadCards } from './preloader.js';
 import { render as renderMenu } from './screens/menu.js';
-import { render as renderLobby } from './screens/lobby.js';
+import { render as renderLobby, renderAdvancedPanel } from './screens/lobby.js';
 import { render as renderPhase1 } from './screens/phase1.js';
 import { render as renderPhase23 } from './screens/phase2-3.js';
 import { render as renderPhase4 } from './screens/phase4.js';
@@ -50,6 +50,32 @@ export function showScreen(name, updates = {}) {
   // Start preloading cards when entering the lobby
   if (name === 'lobby' && !state.preloadComplete) {
     startPreload();
+  }
+}
+
+function refreshAdvancedPanel() {
+  const state = getState();
+  const panel = document.getElementById('advanced-settings-panel');
+  if (panel) {
+    panel.innerHTML = renderAdvancedPanel(state);
+  }
+  const toggleBtn = document.querySelector('#lobby-advanced .lobby__advanced-toggle');
+  if (toggleBtn) {
+    toggleBtn.textContent = `Advanced Settings ${state.showAdvancedSettings ? '▲' : '▼'}`;
+  }
+  const modeToggle = document.getElementById('lobby-mode-toggle');
+  if (modeToggle) {
+    const { rounds } = state.gameSettings;
+    modeToggle.innerHTML = `
+      <button
+        class="btn lobby__mode-btn ${rounds === 1 ? 'btn--primary' : 'btn--secondary'}"
+        onclick="window.game.setGameMode('quick')"
+      >Quick</button>
+      <button
+        class="btn lobby__mode-btn ${rounds !== 1 ? 'btn--primary' : 'btn--secondary'}"
+        onclick="window.game.setGameMode('normal')"
+      >Normal</button>
+    `;
   }
 }
 
@@ -152,30 +178,32 @@ function removePlayer(name) {
 
 function updateSetting(key, rawValue) {
   const state = getState();
-  let max;
+  let max, min;
   if (key === 'rounds') {
-    max = 10;
+    max = 10; min = 1;
+  } else if (key === 'wildcardCount') {
+    max = 10; min = 0;
   } else if (key === 'handSize') {
     const playerCount = Math.max(state.players.length, 2);
-    max = Math.max(1, Math.floor(68 / playerCount));
+    max = Math.max(1, Math.floor(68 / playerCount)); min = 1;
   } else {
-    max = 68;
+    max = 68; min = 1;
   }
-  const value = Math.max(1, Math.min(max, parseInt(rawValue, 10) || 1));
+  const value = Math.max(min, Math.min(max, parseInt(rawValue, 10) || min));
   setState({ gameSettings: { ...state.gameSettings, [key]: value } });
-  showScreen('lobby');
+  refreshAdvancedPanel();
 }
 
 function setGameMode(mode) {
   const rounds = mode === 'quick' ? 1 : 2;
   const state = getState();
   setState({ gameSettings: { ...state.gameSettings, rounds } });
-  showScreen('lobby');
+  refreshAdvancedPanel();
 }
 
 function toggleAdvancedSettings() {
   setState({ showAdvancedSettings: !getState().showAdvancedSettings });
-  showScreen('lobby');
+  refreshAdvancedPanel();
 }
 
 function setHandRedraws(value) {
@@ -183,16 +211,38 @@ function setHandRedraws(value) {
   if (!allowed.includes(value)) return;
   const state = getState();
   setState({ gameSettings: { ...state.gameSettings, handRedraws: value } });
+  refreshAdvancedPanel();
+}
+
+const PITCH_DURATIONS = [30, 60, 120, 180, 240, 300, 600, 900, 1800, 3600];
+
+const DEFAULT_GAME_SETTINGS = {
+  rounds: 2,
+  handSize: 5,
+  enableDie: true,
+  enableLive: true,
+  enableBye: true,
+  enableEulogy: true,
+  forceWildcards: false,
+  wildcardCount: 2,
+  handRedraws: 'once_per_phase',
+  timerEnabled: false,
+  timerCountUp: false,
+  pitchDuration: 120,
+  timerVisible: true,
+  timerAutoAdvance: true,
+};
+
+function resetSettings() {
+  setState({ gameSettings: { ...DEFAULT_GAME_SETTINGS } });
   showScreen('lobby');
 }
 
 function toggleSetting(key) {
   const state = getState();
   setState({ gameSettings: { ...state.gameSettings, [key]: !state.gameSettings[key] } });
-  showScreen('lobby');
+  refreshAdvancedPanel();
 }
-
-const PITCH_DURATIONS = [30, 60, 120, 180, 240, 300, 600, 900, 1800, 3600];
 
 function cyclePitchDuration(dir) {
   const state = getState();
@@ -200,7 +250,7 @@ function cyclePitchDuration(dir) {
   const idx = PITCH_DURATIONS.indexOf(current);
   const next = PITCH_DURATIONS[Math.max(0, Math.min(PITCH_DURATIONS.length - 1, idx + dir))];
   setState({ gameSettings: { ...state.gameSettings, pitchDuration: next } });
-  showScreen('lobby');
+  refreshAdvancedPanel();
 }
 
 function revealWinner() {
@@ -218,11 +268,12 @@ window.game = {
   selectPlayerRemoval,
   removePlayer,
   updateSetting,
+  toggleSetting,
   setGameMode,
   toggleAdvancedSettings,
   setHandRedraws,
-  toggleSetting,
   cyclePitchDuration,
+  resetSettings,
   startPhase1,
   doneDying,
   revealCard,

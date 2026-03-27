@@ -6,6 +6,7 @@ import { render as renderPlayerList } from '../components/player-list.js';
 import { render as renderGameboard, renderActiveCard } from '../components/gameboard.js';
 import { render as renderCard } from '../components/card.js';
 import { render as renderCardBack } from '../components/cardBack.js';
+import { render as renderHand } from '../components/hand.js';
 
 /**
  * @param {object} state
@@ -19,13 +20,18 @@ export function render(state) {
   let handContent;
 
   if (state.phaseComplete) {
+    const { enableLive, enableBye, enableEulogy } = state.gameSettings ?? {};
+    const nextAction = enableLive ? 'window.game.startPhase2()'
+      : enableBye ? 'window.game.startPhase3()'
+      : enableEulogy ? 'window.game.startPhase4()'
+      : 'window.game.revealWinner()';
     boardContent = `
       <div class="phase1__layout">
         <div class="phase1__complete">
           <p class="phase__prompt">Everyone has met their fate!</p>
         </div>
         <div class="phase__actions">
-          <button class="btn btn--primary" onclick="window.game.startPhase2()">
+          <button class="btn btn--primary" onclick="${nextAction}">
             Next Phase &rarr;
           </button>
         </div>
@@ -41,29 +47,21 @@ export function render(state) {
         renderCard({ ...state.currentCard, deckType: 'die' }),
         { label: `${currentPlayer.name}'s death`, extraHtml: promptHtml },
       );
-      handContent = `
-        <div class="hand">
-          <div class="phase1__hand-actions">
-            <button class="btn btn--primary" onclick="window.game.doneDying()">
-              Done Dying
-            </button>
-          </div>
-        </div>
-      `;
+      handContent = renderHand([], { footer: `
+        <button class="btn btn--primary" onclick="window.game.doneDying()">
+          Done Dying
+        </button>
+      ` });
     } else {
       boardContent = renderActiveCard(
         renderCardBack({ deckType: 'die' }),
         { label: `${currentPlayer.name}'s death`, onClick: 'window.game.revealCard()' },
       );
-      handContent = `
-        <div class="hand">
-          <div class="phase1__hand-actions">
-            <button class="btn btn--primary" onclick="window.game.revealCard()">
-              Flip Card
-            </button>
-          </div>
-        </div>
-      `;
+      handContent = renderHand([], { footer: `
+        <button class="btn btn--primary" onclick="window.game.revealCard()">
+          Flip Card
+        </button>
+      ` });
     }
   } else {
     boardContent = `
