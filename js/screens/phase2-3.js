@@ -146,6 +146,13 @@ function renderSelectingScreen(config, state, playerListOptions) {
     </button>
   ` : '';
 
+  const { timerEnabled, playCardTimerEnabled, timerVisible, timerCountUp } = state.gameSettings ?? {};
+  const playCardSeconds = state.playCardTimerSeconds ?? (timerCountUp ? 0 : 120);
+  const playCardTimerClass = (!timerCountUp && playCardSeconds < 30) ? 'pitch-timer pitch-timer--warning' : 'pitch-timer';
+  const playCardTimerHtml = (timerEnabled && playCardTimerEnabled && timerVisible)
+    ? `<div class="${playCardTimerClass}"><span class="pitch-timer__time">${formatTime(playCardSeconds)}</span></div>`
+    : '';
+
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
       ${renderPhaseHeader({ phase: config.number, label: config.label })}
@@ -155,6 +162,7 @@ function renderSelectingScreen(config, state, playerListOptions) {
         revealed: false,
         deckType: config.deckType,
       })}
+      ${playCardTimerHtml}
       ${renderHand(state.hand ?? [], { selectedCard: state.selectedCard, deckType: config.deckType, footer: redrawButton })}
     </div>
   `;

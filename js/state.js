@@ -29,6 +29,8 @@ let _state = {
     wildcardCount: 2,
     handRedraws: 'once_per_phase',
     timerEnabled: false,
+    pitchTimerEnabled: true,
+    playCardTimerEnabled: false,
     timerCountUp: false,
     pitchDuration: 120,
     timerVisible: true,
@@ -54,6 +56,8 @@ let _state = {
 
   // Pitching timer (live countdown — not a setting)
   pitchTimerSeconds: 120,
+  // Play card timer (live countdown — not a setting)
+  playCardTimerSeconds: 60,
 
   // Wildcard cards held aside during Phase 3
   wildcardCards: {},
