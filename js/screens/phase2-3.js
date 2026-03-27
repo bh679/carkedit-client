@@ -189,17 +189,20 @@ function renderSelectingScreen(config, state, playerListOptions) {
 }
 
 function renderAllSubmittedScreen(config, state, playerListOptions) {
-  const livingDeadName = state.players[state.livingDeadIndex]?.name ?? '';
-  const promptCardHtml = renderDieCard(state.currentCard);
+  const livingDead = state.players[state.livingDeadIndex];
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
       ${renderPhaseHeader({ phase: config.number, label: config.label })}
       ${renderPlayerList(state.players, playerListOptions)}
-      ${renderGameboard(promptCardHtml, 'All cards are in!', {
-        playedCards: state.submittedCards ?? {},
-        revealed: false,
+      ${renderLivingDeadProfile({
+        player: livingDead,
+        dieCard: null,
+        chosenCards: [],
+        profileInspectCard: null,
         deckType: config.deckType,
+        hint: 'All cards are in!',
+        submittedCards: state.submittedCards ?? {},
       })}
       ${renderHand([], { footer: `
         <button class="btn btn--primary" onclick="window.game.revealCards()">
@@ -211,14 +214,21 @@ function renderAllSubmittedScreen(config, state, playerListOptions) {
 }
 
 function renderRevealedScreen(config, state, playerListOptions) {
+  const livingDead = state.players[state.livingDeadIndex];
+
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
       ${renderPhaseHeader({ phase: config.number, label: config.label })}
       ${renderPlayerList(state.players, playerListOptions)}
-      ${renderGameboard('', 'Cards revealed! Time to pitch.', {
-        playedCards: state.submittedCards ?? {},
-        revealed: true,
+      ${renderLivingDeadProfile({
+        player: livingDead,
+        dieCard: null,
+        chosenCards: [],
+        profileInspectCard: null,
         deckType: config.deckType,
+        hint: 'Cards revealed! Time to pitch.',
+        submittedCards: state.submittedCards ?? {},
+        submittedRevealed: true,
       })}
       ${renderHand([], { footer: `
         <button class="btn btn--primary" onclick="window.game.startPitching()">
