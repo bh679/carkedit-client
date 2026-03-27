@@ -26,6 +26,7 @@ let _state = {
     enableBye: true,
     enableEulogy: true,
     forceWildcards: false,
+    playableWildcards: true,
     wildcardCount: 2,
     eulogistCount: 2,
     handRedraws: 'once_per_phase',

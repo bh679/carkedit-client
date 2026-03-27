@@ -231,13 +231,15 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     const state = getState();
     const player = state.players[state.livingDeadIndex];
     if (!player) return [];
-    const cards = [];
     const dieCard = state.playerDieCards[player.name];
-    if (dieCard) cards.push({ ...dieCard, deckType: 'die' });
     const chosen = state.playerChosenCards?.[player.name] ?? [];
-    for (const card of chosen) {
-      cards.push({ ...card });
-    }
+    const liveCards = chosen.filter(c => c.deckType === 'live').map(c => ({ ...c }));
+    const byeCards = chosen.filter(c => c.deckType === 'bye').map(c => ({ ...c }));
+    const cards = [
+      ...liveCards,
+      ...(dieCard ? [{ ...dieCard, deckType: 'die' }] : []),
+      ...byeCards,
+    ];
     return cards;
   }
 
@@ -345,6 +347,9 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     const card = hand.find(c => String(c.id) === String(cardId));
 
     if (!card) return;
+
+    // Block wildcard submission if setting is off
+    if (deckType === 'bye' && card.special === 'Wildcard' && !(state.gameSettings?.playableWildcards ?? true)) return;
 
     const newHand = hand.filter(c => String(c.id) !== String(cardId));
     const newSubmitted = { ...state.submittedCards, [player.name]: card };
@@ -503,6 +508,14 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     const handSize = state.gameSettings?.handSize ?? 5;
     const hands = { ...state.playerHands };
     const wildcardCards = { ...(state.wildcardCards ?? {}) };
+
+    // Transfer wildcard ownership to Living Dead if they picked a wildcard
+    if (deckType === 'bye' && winningCard?.special === 'Wildcard') {
+      const pitcherWildcards = wildcardCards[playerName] ?? [];
+      wildcardCards[playerName] = pitcherWildcards.filter(c => String(c.id) !== String(winningCard.id));
+      const deadWildcards = wildcardCards[livingDeadName] ?? [];
+      wildcardCards[livingDeadName] = [...deadWildcards, winningCard];
+    }
     for (const player of players) {
       const currentHand = hands[player.name] ?? [];
       const needed = handSize - currentHand.length;

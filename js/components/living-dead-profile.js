@@ -3,6 +3,7 @@
 
 import { render as renderCard } from './card.js';
 import { render as renderCardBack } from './cardBack.js';
+import { renderInspectOverlay } from './hand.js';
 
 const MONTH_ABBR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
@@ -26,19 +27,17 @@ function formatBirthday(player) {
 
 /**
  * Simple full-screen view overlay for profile card inspection (no submit action).
+ * Reuses the shared inspect overlay with no nav arrows and a Close button.
  */
 function renderViewOverlay(card, deckType) {
-  const activedeckType = card.deckType || deckType;
-  return `
-    <div class="hand__inspect-overlay hand__inspect-overlay--${activedeckType}" onclick="window.game.dismissProfileCard()">
-      <div class="hand__inspect-card-wrapper" onclick="event.stopPropagation()">
-        ${renderCard({ ...card, deckType: activedeckType })}
-        <button class="btn btn--secondary hand__submit-btn" onclick="window.game.dismissProfileCard()">
-          Close
-        </button>
-      </div>
-    </div>
-  `;
+  return renderInspectOverlay({
+    selectedCard: card,
+    deckType,
+    submitLabel: 'Close',
+    onSubmit: 'window.game.dismissProfileCard()',
+    onDismiss: 'window.game.dismissProfileCard()',
+    btnStyle: 'secondary',
+  });
 }
 
 /**
@@ -67,14 +66,20 @@ export function render({
 }) {
   const birthday = formatBirthday(player);
 
-  // Build card thumbnails list
+  // Build card thumbnails list: LIVE picks → DIE → BYE picks
   const allProfileCards = [];
+  chosenCards.forEach((card) => {
+    if (card.deckType === 'live') {
+      allProfileCards.push({ card, label: 'LIVE Pick' });
+    }
+  });
   if (dieCard) {
     allProfileCards.push({ card: dieCard, label: 'Their Death' });
   }
   chosenCards.forEach((card) => {
-    const label = card.deckType === 'live' ? 'LIVE Pick' : 'BYE Pick';
-    allProfileCards.push({ card, label });
+    if (card.deckType === 'bye') {
+      allProfileCards.push({ card, label: 'BYE Pick' });
+    }
   });
 
   const thumbsHtml = allProfileCards.map(({ card, label }, index) => {

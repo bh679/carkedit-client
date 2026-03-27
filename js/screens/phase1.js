@@ -1,8 +1,7 @@
 // CarkedIt Online — Phase 1 Screen (Die Deck)
 'use strict';
 
-import { render as renderPhaseHeader } from '../components/phase-header.js';
-import { render as renderPlayerList } from '../components/player-list.js';
+import { render as renderPhaseLayout } from '../components/phase-layout.js';
 import { render as renderGameboard, renderActiveCard } from '../components/gameboard.js';
 import { render as renderCard } from '../components/card.js';
 import { render as renderCardBack } from '../components/cardBack.js';
@@ -74,15 +73,14 @@ export function render(state) {
     handContent = '<div class="hand hand--empty"></div>';
   }
 
-  return `
-    <div class="screen screen--phase" data-phase="1">
-      ${renderPhaseHeader({ phase: '1', label: 'Phase 1 - DIE' })}
-      ${renderPlayerList(state.players, {
-        funeralDirector: state.funeralDirector,
-        activePlayerIndex: state.phaseComplete ? -1 : state.currentPlayerIndex,
-      })}
-      ${renderGameboard(boardContent)}
-      ${handContent}
-    </div>
-  `;
+  return renderPhaseLayout({
+    phase: '1',
+    label: 'Phase 1 - DIE',
+    players: state.players,
+    playerListOptions: {
+      funeralDirector: state.funeralDirector,
+      activePlayerIndex: state.phaseComplete ? -1 : state.currentPlayerIndex,
+    },
+    children: `${renderGameboard(boardContent)}${handContent}`,
+  });
 }
