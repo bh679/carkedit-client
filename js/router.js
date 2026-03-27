@@ -266,6 +266,7 @@ function toggleUltraQuickMode() {
       ...state.gameSettings,
       ultraQuickMode: enabling,
       rounds: enabling ? 1 : state.gameSettings.rounds,
+      ...(enabling ? { enableLive: true, enableBye: true } : {}),
     },
   });
   showScreen('lobby');
