@@ -8,7 +8,10 @@ const MONTH_ABBR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct',
 
 function formatBirthday(player) {
   if (!player.birthMonth || !player.birthDay) return '';
-  return `\uD83C\uDF82 ${MONTH_ABBR[player.birthMonth - 1]} ${player.birthDay}`;
+  const birth = `${MONTH_ABBR[player.birthMonth - 1]} ${player.birthDay}`;
+  const now = new Date();
+  const death = `${MONTH_ABBR[now.getMonth()]} ${now.getDate()}`;
+  return `\uD83C\uDF82 ${birth} \u2192 \uD83D\uDC80 ${death}`;
 }
 
 /**
