@@ -138,7 +138,7 @@
 }
 
 /* On/Off toggle buttons get a fixed width for consistency */
-.lobby__stepper-btn:not([disabled]):not([onclick*="updateSetting"]):not([onclick*="cyclePitch"]),
+.lobby__stepper-btn:not([onclick*="updateSetting"]):not([onclick*="cyclePitch"]),
 .lobby__stepper-btn[onclick*="toggleSetting"],
 .lobby__stepper-btn[onclick*="setGameMode"] {
   width: auto;
