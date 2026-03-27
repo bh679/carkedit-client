@@ -162,6 +162,13 @@ function renderSelectingScreen(config, state, playerListOptions) {
     </button>
   ` : '';
 
+  const { timerEnabled, playCardTimerEnabled, timerVisible, timerCountUp } = state.gameSettings ?? {};
+  const playCardSeconds = state.playCardTimerSeconds ?? (timerCountUp ? 0 : 120);
+  const playCardTimerClass = (!timerCountUp && playCardSeconds < 30) ? 'pitch-timer pitch-timer--warning' : 'pitch-timer';
+  const playCardTimerHtml = (timerEnabled && playCardTimerEnabled && timerVisible)
+    ? `<div class="${playCardTimerClass}"><span class="pitch-timer__time">${formatTime(playCardSeconds)}</span></div>`
+    : '';
+
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
       ${renderPhaseHeader({ phase: config.number, label: config.label })}
@@ -175,23 +182,27 @@ function renderSelectingScreen(config, state, playerListOptions) {
         hint,
         submittedCards: state.submittedCards ?? {},
       })}
+      ${playCardTimerHtml}
       ${renderHand(state.hand ?? [], { selectedCard: state.selectedCard, deckType: config.deckType, footer: redrawButton })}
     </div>
   `;
 }
 
 function renderAllSubmittedScreen(config, state, playerListOptions) {
-  const livingDeadName = state.players[state.livingDeadIndex]?.name ?? '';
-  const promptCardHtml = renderDieCard(state.currentCard);
+  const livingDead = state.players[state.livingDeadIndex];
 
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
       ${renderPhaseHeader({ phase: config.number, label: config.label })}
       ${renderPlayerList(state.players, playerListOptions)}
-      ${renderGameboard(promptCardHtml, 'All cards are in!', {
-        playedCards: state.submittedCards ?? {},
-        revealed: false,
+      ${renderLivingDeadProfile({
+        player: livingDead,
+        dieCard: null,
+        chosenCards: [],
+        profileInspectCard: null,
         deckType: config.deckType,
+        hint: 'All cards are in!',
+        submittedCards: state.submittedCards ?? {},
       })}
       ${renderHand([], { footer: `
         <button class="btn btn--primary" onclick="window.game.revealCards()">
@@ -203,14 +214,21 @@ function renderAllSubmittedScreen(config, state, playerListOptions) {
 }
 
 function renderRevealedScreen(config, state, playerListOptions) {
+  const livingDead = state.players[state.livingDeadIndex];
+
   return `
     <div class="screen screen--phase" data-phase="${config.number}">
       ${renderPhaseHeader({ phase: config.number, label: config.label })}
       ${renderPlayerList(state.players, playerListOptions)}
-      ${renderGameboard('', 'Cards revealed! Time to pitch.', {
-        playedCards: state.submittedCards ?? {},
-        revealed: true,
+      ${renderLivingDeadProfile({
+        player: livingDead,
+        dieCard: null,
+        chosenCards: [],
+        profileInspectCard: null,
         deckType: config.deckType,
+        hint: 'Cards revealed! Time to pitch.',
+        submittedCards: state.submittedCards ?? {},
+        submittedRevealed: true,
       })}
       ${renderHand([], { footer: `
         <button class="btn btn--primary" onclick="window.game.startPitching()">
