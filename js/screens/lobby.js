@@ -260,7 +260,7 @@ export function render(state) {
     </div>
     <div class="lobby__settings-section">
       <div class="lobby__settings-divider"></div>
-      <h2 class="lobby__heading">Game Settings</h2>
+      <h2 class="lobby__heading">Game Modes</h2>
       ${(() => {
         const pc = state.players.length;
         const isQuick     = !ultraQuickMode && rounds === 1 && !optionalCardPlay;
