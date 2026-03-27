@@ -1,8 +1,7 @@
 // CarkedIt Online — Phase 2/3 Screen (Live / Bye Decks — shared layout)
 'use strict';
 
-import { render as renderPhaseHeader } from '../components/phase-header.js';
-import { render as renderPlayerList } from '../components/player-list.js';
+import { render as renderPhaseLayout } from '../components/phase-layout.js';
 import { render as renderGameboard, renderActiveCard } from '../components/gameboard.js';
 import { render as renderHand, renderInspectOverlay } from '../components/hand.js';
 import { render as renderCard } from '../components/card.js';
@@ -14,6 +13,19 @@ const PHASE_CONFIG = {
   live: { number: '2', label: 'Phase 2 - LIVE', deckType: 'live', nextScreen: 'phase3' },
   bye:  { number: '3', label: 'Phase 3 - BYE',  deckType: 'bye',  nextScreen: 'phase4' },
 };
+
+/**
+ * Shorthand for wrapping phase content in the standard layout.
+ */
+function layout(config, state, playerListOptions, children) {
+  return renderPhaseLayout({
+    phase: config.number,
+    label: config.label,
+    players: state.players,
+    playerListOptions,
+    children,
+  });
+}
 
 /**
  * @param {'live'|'bye'} phase
@@ -93,28 +105,24 @@ function renderLivingDeadScreen(config, state, playerListOptions, livingDeadName
   const round = state.phase23Round + 1;
   const hint = `Round ${round} — ${livingDeadName} is The Living Dead`;
 
-  return `
-    <div class="screen screen--phase" data-phase="${config.number}">
-      ${renderPhaseHeader({ phase: config.number, label: config.label })}
-      ${renderPlayerList(state.players, playerListOptions)}
-      ${renderLivingDeadProfile({
-        player: livingDead,
-        dieCard,
-        chosenCards,
-        profileInspectCard: state.profileInspectCard ?? null,
-        deckType: config.deckType,
-        hint,
-      })}
-      ${renderHand([], {
-        livingDeadMessage: `You are The Living Dead this round.\nSit back and relax! 👑`,
-        footer: `
-          <button class="btn btn--primary" onclick="window.game.showPlayerHand()">
-            Start Round
-          </button>
-        `,
-      })}
-    </div>
-  `;
+  return layout(config, state, playerListOptions, `
+    ${renderLivingDeadProfile({
+      player: livingDead,
+      dieCard,
+      chosenCards,
+      profileInspectCard: state.profileInspectCard ?? null,
+      deckType: config.deckType,
+      hint,
+    })}
+    ${renderHand([], {
+      livingDeadMessage: `You are The Living Dead this round.\nSit back and relax! 👑`,
+      footer: `
+        <button class="btn btn--primary" onclick="window.game.showPlayerHand()">
+          Start Round
+        </button>
+      `,
+    })}
+  `);
 }
 
 function renderPassPhoneScreen(config, state, playerListOptions, nonDeadIndices) {
@@ -122,13 +130,9 @@ function renderPassPhoneScreen(config, state, playerListOptions, nonDeadIndices)
   const player = state.players[playerIndex];
   const playerName = player?.name ?? 'Next Player';
 
-  return `
-    <div class="screen screen--phase" data-phase="${config.number}">
-      ${renderPhaseHeader({ phase: config.number, label: config.label })}
-      ${renderPlayerList(state.players, playerListOptions)}
-      ${renderPassPhone({ playerName, onReady: 'window.game.readyToSelect()' })}
-    </div>
-  `;
+  return layout(config, state, playerListOptions,
+    renderPassPhone({ playerName, onReady: 'window.game.readyToSelect()' }),
+  );
 }
 
 function renderSelectingScreen(config, state, playerListOptions) {
@@ -162,74 +166,62 @@ function renderSelectingScreen(config, state, playerListOptions) {
     ? `<div class="${playCardTimerClass}"><span class="pitch-timer__time">${formatTime(playCardSeconds)}</span></div>`
     : '';
 
-  return `
-    <div class="screen screen--phase" data-phase="${config.number}">
-      ${renderPhaseHeader({ phase: config.number, label: config.label })}
-      ${renderPlayerList(state.players, playerListOptions)}
-      ${renderLivingDeadProfile({
-        player: livingDead,
-        dieCard,
-        chosenCards,
-        profileInspectCard: state.profileInspectCard ?? null,
-        deckType: config.deckType,
-        hint,
-        submittedCards: state.submittedCards ?? {},
-      })}
-      ${playCardTimerHtml}
-      ${renderHand(state.hand ?? [], { selectedCard: state.selectedCard, deckType: config.deckType, footer: redrawButton })}
-    </div>
-  `;
+  return layout(config, state, playerListOptions, `
+    ${renderLivingDeadProfile({
+      player: livingDead,
+      dieCard,
+      chosenCards,
+      profileInspectCard: state.profileInspectCard ?? null,
+      deckType: config.deckType,
+      hint,
+      submittedCards: state.submittedCards ?? {},
+    })}
+    ${playCardTimerHtml}
+    ${renderHand(state.hand ?? [], { selectedCard: state.selectedCard, deckType: config.deckType, footer: redrawButton })}
+  `);
 }
 
 function renderAllSubmittedScreen(config, state, playerListOptions) {
   const livingDead = state.players[state.livingDeadIndex];
 
-  return `
-    <div class="screen screen--phase" data-phase="${config.number}">
-      ${renderPhaseHeader({ phase: config.number, label: config.label })}
-      ${renderPlayerList(state.players, playerListOptions)}
-      ${renderLivingDeadProfile({
-        player: livingDead,
-        dieCard: null,
-        chosenCards: [],
-        profileInspectCard: null,
-        deckType: config.deckType,
-        hint: 'All cards are in!',
-        submittedCards: state.submittedCards ?? {},
-      })}
-      ${renderHand([], { footer: `
-        <button class="btn btn--primary" onclick="window.game.revealCards()">
-          Reveal Cards
-        </button>
-      ` })}
-    </div>
-  `;
+  return layout(config, state, playerListOptions, `
+    ${renderLivingDeadProfile({
+      player: livingDead,
+      dieCard: null,
+      chosenCards: [],
+      profileInspectCard: null,
+      deckType: config.deckType,
+      hint: 'All cards are in!',
+      submittedCards: state.submittedCards ?? {},
+    })}
+    ${renderHand([], { footer: `
+      <button class="btn btn--primary" onclick="window.game.revealCards()">
+        Reveal Cards
+      </button>
+    ` })}
+  `);
 }
 
 function renderRevealedScreen(config, state, playerListOptions) {
   const livingDead = state.players[state.livingDeadIndex];
 
-  return `
-    <div class="screen screen--phase" data-phase="${config.number}">
-      ${renderPhaseHeader({ phase: config.number, label: config.label })}
-      ${renderPlayerList(state.players, playerListOptions)}
-      ${renderLivingDeadProfile({
-        player: livingDead,
-        dieCard: null,
-        chosenCards: [],
-        profileInspectCard: null,
-        deckType: config.deckType,
-        hint: 'Cards revealed! Time to pitch.',
-        submittedCards: state.submittedCards ?? {},
-        submittedRevealed: true,
-      })}
-      ${renderHand([], { footer: `
-        <button class="btn btn--primary" onclick="window.game.startPitching()">
-          Start Pitching
-        </button>
-      ` })}
-    </div>
-  `;
+  return layout(config, state, playerListOptions, `
+    ${renderLivingDeadProfile({
+      player: livingDead,
+      dieCard: null,
+      chosenCards: [],
+      profileInspectCard: null,
+      deckType: config.deckType,
+      hint: 'Cards revealed! Time to pitch.',
+      submittedCards: state.submittedCards ?? {},
+      submittedRevealed: true,
+    })}
+    ${renderHand([], { footer: `
+      <button class="btn btn--primary" onclick="window.game.startPitching()">
+        Start Pitching
+      </button>
+    ` })}
+  `);
 }
 
 function formatTime(seconds) {
@@ -248,24 +240,20 @@ function renderPitchingScreen(config, state, playerListOptions, nonDeadPlayers) 
     ? `<div class="${timerClass}"><span class="pitch-timer__time">${formatTime(seconds)}</span></div>`
     : '';
 
-  return `
-    <div class="screen screen--phase" data-phase="${config.number}">
-      ${renderPhaseHeader({ phase: config.number, label: config.label })}
-      ${renderPlayerList(state.players, { ...playerListOptions, pitchingPlayer: pitcherName })}
-      ${renderGameboard('', `${pitcherName} is pitching`, {
-        playedCards: state.submittedCards ?? {},
-        revealed: true,
-        deckType: config.deckType,
-        pitchingPlayer: pitcherName,
-      })}
-      ${timerHtml}
-      ${renderHand([], { footer: `
-        <button class="btn btn--primary" onclick="window.game.donePitching()">
-          Done Pitching
-        </button>
-      ` })}
-    </div>
-  `;
+  return layout(config, state, { ...playerListOptions, pitchingPlayer: pitcherName }, `
+    ${renderGameboard('', `${pitcherName} is pitching`, {
+      playedCards: state.submittedCards ?? {},
+      revealed: true,
+      deckType: config.deckType,
+      pitchingPlayer: pitcherName,
+    })}
+    ${timerHtml}
+    ${renderHand([], { footer: `
+      <button class="btn btn--primary" onclick="window.game.donePitching()">
+        Done Pitching
+      </button>
+    ` })}
+  `);
 }
 
 function renderJudgingScreen(config, state, playerListOptions, nonDeadPlayers) {
@@ -295,17 +283,13 @@ function renderJudgingScreen(config, state, playerListOptions, nonDeadPlayers) {
       })
     : '';
 
-  return `
-    <div class="screen screen--phase" data-phase="${config.number}">
-      ${renderPhaseHeader({ phase: config.number, label: config.label })}
-      ${renderPlayerList(state.players, playerListOptions)}
-      <div class="judging">
-        <h2 class="judging__title">${livingDeadName}, pick your favourite!</h2>
-        ${renderCardGrid(entries)}
-      </div>
-      ${inspectOverlay}
+  return layout(config, state, playerListOptions, `
+    <div class="judging">
+      <h2 class="judging__title">${livingDeadName}, pick your favourite!</h2>
+      ${renderCardGrid(entries)}
     </div>
-  `;
+    ${inspectOverlay}
+  `);
 }
 
 function renderWinnerScreen(config, state, playerListOptions) {
@@ -315,23 +299,19 @@ function renderWinnerScreen(config, state, playerListOptions) {
     ? renderActiveCard(renderCard({ ...winnerCard, deckType: winnerCard.deckType || config.deckType }))
     : '';
 
-  return `
-    <div class="screen screen--phase" data-phase="${config.number}">
-      ${renderPhaseHeader({ phase: config.number, label: config.label })}
-      ${renderPlayerList(state.players, playerListOptions)}
-      ${activeCardHtml}
-      <div class="winner-announcement">
-        <div class="winner-announcement__card">
-          <h2 class="winner-announcement__title">🎉</h2>
-          <p class="winner-announcement__name">${winnerName} wins this round!</p>
-          <p class="winner-announcement__points">+1 point</p>
-        </div>
-        <button class="btn btn--primary" onclick="window.game.nextRound()">
-          Next Round
-        </button>
+  return layout(config, state, playerListOptions, `
+    ${activeCardHtml}
+    <div class="winner-announcement">
+      <div class="winner-announcement__card">
+        <h2 class="winner-announcement__title">🎉</h2>
+        <p class="winner-announcement__name">${winnerName} wins this round!</p>
+        <p class="winner-announcement__points">+1 point</p>
       </div>
+      <button class="btn btn--primary" onclick="window.game.nextRound()">
+        Next Round
+      </button>
     </div>
-  `;
+  `);
 }
 
 function renderPhaseCompleteScreen(config, state) {
@@ -353,20 +333,16 @@ function renderPhaseCompleteScreen(config, state) {
     </div>
   `).join('');
 
-  return `
-    <div class="screen screen--phase" data-phase="${config.number}">
-      ${renderPhaseHeader({ phase: config.number, label: config.label })}
-      ${renderPlayerList(state.players, { funeralDirector: state.funeralDirector })}
-      <div class="winner-announcement">
-        <div class="winner-announcement__card">
-          <h2 class="winner-announcement__title">Phase ${config.number} Complete!</h2>
-          <p class="winner-announcement__name">${phaseName} phase is done.</p>
-          <div class="scoreboard">${scoreRows}</div>
-        </div>
-        <button class="btn btn--primary" onclick="${nextAction}">
-          ${nextLabel} &rarr;
-        </button>
+  return layout(config, state, { funeralDirector: state.funeralDirector }, `
+    <div class="winner-announcement">
+      <div class="winner-announcement__card">
+        <h2 class="winner-announcement__title">Phase ${config.number} Complete!</h2>
+        <p class="winner-announcement__name">${phaseName} phase is done.</p>
+        <div class="scoreboard">${scoreRows}</div>
       </div>
+      <button class="btn btn--primary" onclick="${nextAction}">
+        ${nextLabel} &rarr;
+      </button>
     </div>
-  `;
+  `);
 }

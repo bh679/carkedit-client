@@ -1,14 +1,27 @@
 // CarkedIt Online — Phase 4 Screen (Eulogy Wildcard + Winner)
 'use strict';
 
-import { render as renderPhaseHeader } from '../components/phase-header.js';
-import { render as renderPlayerList } from '../components/player-list.js';
+import { render as renderPhaseLayout } from '../components/phase-layout.js';
 import { render as renderGameboard, renderActiveCard } from '../components/gameboard.js';
 import { render as renderCard } from '../components/card.js';
 import { render as renderCardBack } from '../components/cardBack.js';
 import { render as renderPassPhone } from '../components/pass-phone.js';
+import { render as renderPhaseHeader } from '../components/phase-header.js';
 
 const PHASE_LABEL = 'Phase 4 - EULOGY';
+
+/**
+ * Shorthand for wrapping phase 4 content in the standard layout.
+ */
+function layout(state, playerListOptions, children) {
+  return renderPhaseLayout({
+    phase: '4',
+    label: PHASE_LABEL,
+    players: state.players,
+    playerListOptions,
+    children,
+  });
+}
 
 /**
  * Renders the Living Dead's tableau — their chosen Live and Bye cards from Phases 2/3.
@@ -90,17 +103,13 @@ function renderWildcardIntro(state) {
     ? `<button class="btn btn--primary" onclick="window.game.startEulogyRound()">Start Eulogy Round</button>`
     : `<button class="btn btn--primary" onclick="window.game.revealWinner()">Reveal Winner</button>`;
 
-  return `
-    <div class="screen screen--phase" data-phase="4">
-      ${renderPhaseHeader({ phase: '4', label: PHASE_LABEL })}
-      ${renderPlayerList(state.players, { funeralDirector: state.funeralDirector })}
-      ${renderGameboard(wildcardCardHtml, 'Wildcard Eulogy Round')}
-      ${playerListHtml}
-      <div class="phase-actions">
-        ${actionBtn}
-      </div>
+  return layout(state, { funeralDirector: state.funeralDirector }, `
+    ${renderGameboard(wildcardCardHtml, 'Wildcard Eulogy Round')}
+    ${playerListHtml}
+    <div class="phase-actions">
+      ${actionBtn}
     </div>
-  `;
+  `);
 }
 
 function renderPickEulogists(state) {
@@ -134,34 +143,30 @@ function renderPickEulogists(state) {
 
   const canConfirm = selected.length === requiredCount;
 
-  return `
-    <div class="screen screen--phase" data-phase="4">
-      ${renderPhaseHeader({ phase: '4', label: PHASE_LABEL })}
-      ${renderPlayerList(state.players, {
-        funeralDirector: state.funeralDirector,
-        livingDeadName: wildcardPlayerName,
-      })}
-      <div class="gameboard">
-        <div class="${cardAreaClass}">
-          ${dieCardHtml}
-          ${tableauHtml}
-        </div>
-      </div>
-      <div class="phase4__pick-eulogists">
-        <h2 class="phase4__pick-title">${wildcardPlayerName}, pick ${requiredCount} player${requiredCount === 1 ? '' : 's'} to give your eulogy</h2>
-        <div class="phase4__eulogist-chips">
-          ${selectionChips}
-        </div>
-      </div>
-      <div class="phase-actions">
-        <button class="btn btn--primary${canConfirm ? '' : ' btn--disabled'}"
-                onclick="window.game.confirmEulogists()"
-                ${canConfirm ? '' : 'disabled'}>
-          Confirm (${selected.length}/${requiredCount})
-        </button>
+  return layout(state, {
+    funeralDirector: state.funeralDirector,
+    livingDeadName: wildcardPlayerName,
+  }, `
+    <div class="gameboard">
+      <div class="${cardAreaClass}">
+        ${dieCardHtml}
+        ${tableauHtml}
       </div>
     </div>
-  `;
+    <div class="phase4__pick-eulogists">
+      <h2 class="phase4__pick-title">${wildcardPlayerName}, pick ${requiredCount} player${requiredCount === 1 ? '' : 's'} to give your eulogy</h2>
+      <div class="phase4__eulogist-chips">
+        ${selectionChips}
+      </div>
+    </div>
+    <div class="phase-actions">
+      <button class="btn btn--primary${canConfirm ? '' : ' btn--disabled'}"
+              onclick="window.game.confirmEulogists()"
+              ${canConfirm ? '' : 'disabled'}>
+        Confirm (${selected.length}/${requiredCount})
+      </button>
+    </div>
+  `);
 }
 
 function renderPassPhoneEulogist(state) {
@@ -169,20 +174,14 @@ function renderPassPhoneEulogist(state) {
   const eulogistName = eulogists[state.currentEulogistIndex] ?? 'Next Player';
   const wildcardPlayerName = state.wildcardPlayers[state.currentWildcardIndex];
 
-  return `
-    <div class="screen screen--phase" data-phase="4">
-      ${renderPhaseHeader({ phase: '4', label: PHASE_LABEL })}
-      ${renderPlayerList(state.players, {
-        funeralDirector: state.funeralDirector,
-        livingDeadName: wildcardPlayerName,
-      })}
-      ${renderPassPhone({
-        playerName: eulogistName,
-        onReady: 'window.game.startEulogy()',
-        subtitle: `Time to give ${wildcardPlayerName}'s eulogy!`,
-      })}
-    </div>
-  `;
+  return layout(state, {
+    funeralDirector: state.funeralDirector,
+    livingDeadName: wildcardPlayerName,
+  }, renderPassPhone({
+    playerName: eulogistName,
+    onReady: 'window.game.startEulogy()',
+    subtitle: `Time to give ${wildcardPlayerName}'s eulogy!`,
+  }));
 }
 
 function renderEulogyScreen(state) {
@@ -202,32 +201,28 @@ function renderEulogyScreen(state) {
     ? 'gameboard__card-area gameboard__card-area--has-played'
     : 'gameboard__card-area';
 
-  return `
-    <div class="screen screen--phase" data-phase="4">
-      ${renderPhaseHeader({ phase: '4', label: PHASE_LABEL })}
-      ${renderPlayerList(state.players, {
-        funeralDirector: state.funeralDirector,
-        livingDeadName: wildcardPlayerName,
-        pitchingPlayer: eulogistName,
-      })}
-      <div class="gameboard">
-        <div class="${cardAreaClass}">
-          ${dieCardHtml}
-          ${tableauHtml}
-        </div>
-      </div>
-      <div class="phase4__eulogy">
-        <h2 class="phase4__eulogy-title">${eulogistName}'s Eulogy</h2>
-        <p class="phase4__eulogy-subtitle">Eulogy ${eulogistNumber} of ${eulogists.length} for ${wildcardPlayerName}</p>
-        <p class="phase4__eulogy-prompt">Celebrate, honour, and roast ${wildcardPlayerName}!</p>
-      </div>
-      <div class="phase-actions">
-        <button class="btn btn--primary" onclick="window.game.doneEulogy()">
-          Done
-        </button>
+  return layout(state, {
+    funeralDirector: state.funeralDirector,
+    livingDeadName: wildcardPlayerName,
+    pitchingPlayer: eulogistName,
+  }, `
+    <div class="gameboard">
+      <div class="${cardAreaClass}">
+        ${dieCardHtml}
+        ${tableauHtml}
       </div>
     </div>
-  `;
+    <div class="phase4__eulogy">
+      <h2 class="phase4__eulogy-title">${eulogistName}'s Eulogy</h2>
+      <p class="phase4__eulogy-subtitle">Eulogy ${eulogistNumber} of ${eulogists.length} for ${wildcardPlayerName}</p>
+      <p class="phase4__eulogy-prompt">Celebrate, honour, and roast ${wildcardPlayerName}!</p>
+    </div>
+    <div class="phase-actions">
+      <button class="btn btn--primary" onclick="window.game.doneEulogy()">
+        Done
+      </button>
+    </div>
+  `);
 }
 
 function renderJudgeScreen(state) {
@@ -244,21 +239,17 @@ function renderJudgeScreen(state) {
     `;
   }).join('');
 
-  return `
-    <div class="screen screen--phase" data-phase="4">
-      ${renderPhaseHeader({ phase: '4', label: PHASE_LABEL })}
-      ${renderPlayerList(state.players, {
-        funeralDirector: state.funeralDirector,
-        livingDeadName: wildcardPlayerName,
-      })}
-      <div class="phase4__judge">
-        <h2 class="phase4__judge-title">${wildcardPlayerName}, pick your favourite eulogy!</h2>
-        <div class="phase4__judge-options">
-          ${eulogistButtons}
-        </div>
+  return layout(state, {
+    funeralDirector: state.funeralDirector,
+    livingDeadName: wildcardPlayerName,
+  }, `
+    <div class="phase4__judge">
+      <h2 class="phase4__judge-title">${wildcardPlayerName}, pick your favourite eulogy!</h2>
+      <div class="phase4__judge-options">
+        ${eulogistButtons}
       </div>
     </div>
-  `;
+  `);
 }
 
 function renderPointsAwarded(state) {
@@ -270,41 +261,37 @@ function renderPointsAwarded(state) {
   const isLastWildcard = (state.currentWildcardIndex + 1) >= state.wildcardPlayers.length;
   const nextLabel = isLastWildcard ? 'Reveal Winner' : 'Next Eulogy Round';
 
-  return `
-    <div class="screen screen--phase" data-phase="4">
-      ${renderPhaseHeader({ phase: '4', label: PHASE_LABEL })}
-      ${renderPlayerList(state.players, {
-        funeralDirector: state.funeralDirector,
-        livingDeadName: wildcardPlayerName,
-      })}
-      <div class="phase4__points">
-        <h2 class="phase4__points-title">Points Awarded!</h2>
-        <div class="phase4__points-breakdown">
-          <div class="phase4__points-row phase4__points-row--best">
-            <span class="phase4__points-name">${bestEulogist}</span>
-            <span class="phase4__points-label">Best Eulogy</span>
-            <span class="phase4__points-value">+2</span>
-          </div>
-          ${runnerUp ? `
-          <div class="phase4__points-row">
-            <span class="phase4__points-name">${runnerUp}</span>
-            <span class="phase4__points-label">Runner-up</span>
-            <span class="phase4__points-value">+1</span>
-          </div>` : ''}
-          <div class="phase4__points-row">
-            <span class="phase4__points-name">${wildcardPlayerName}</span>
-            <span class="phase4__points-label">Played Wildcard</span>
-            <span class="phase4__points-value">+1</span>
-          </div>
+  return layout(state, {
+    funeralDirector: state.funeralDirector,
+    livingDeadName: wildcardPlayerName,
+  }, `
+    <div class="phase4__points">
+      <h2 class="phase4__points-title">Points Awarded!</h2>
+      <div class="phase4__points-breakdown">
+        <div class="phase4__points-row phase4__points-row--best">
+          <span class="phase4__points-name">${bestEulogist}</span>
+          <span class="phase4__points-label">Best Eulogy</span>
+          <span class="phase4__points-value">+2</span>
+        </div>
+        ${runnerUp ? `
+        <div class="phase4__points-row">
+          <span class="phase4__points-name">${runnerUp}</span>
+          <span class="phase4__points-label">Runner-up</span>
+          <span class="phase4__points-value">+1</span>
+        </div>` : ''}
+        <div class="phase4__points-row">
+          <span class="phase4__points-name">${wildcardPlayerName}</span>
+          <span class="phase4__points-label">Played Wildcard</span>
+          <span class="phase4__points-value">+1</span>
         </div>
       </div>
-      <div class="phase-actions">
-        <button class="btn btn--primary" onclick="window.game.nextWildcard()">
-          ${nextLabel} &rarr;
-        </button>
-      </div>
     </div>
-  `;
+    <div class="phase-actions">
+      <button class="btn btn--primary" onclick="window.game.nextWildcard()">
+        ${nextLabel} &rarr;
+      </button>
+    </div>
+  `);
 }
 
 function renderWinnerScreen(state) {
@@ -323,6 +310,7 @@ function renderWinnerScreen(state) {
     `;
   }).join('');
 
+  // Winner screen uses renderPhaseHeader directly (no player list)
   return `
     <div class="screen screen--phase" data-phase="4">
       ${renderPhaseHeader({ phase: '4', label: PHASE_LABEL })}

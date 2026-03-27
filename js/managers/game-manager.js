@@ -47,12 +47,10 @@ export function doneDying() {
   }
 }
 
-// ── Phase 2 (LIVE) ──────────────────────────────────────
+// ── Phase 2/3 shared init state ─────────────────────────
 
-export function startPhase2() {
-  setState({
-    screen: 'phase2',
-    phase: 2,
+function createPhase23InitState() {
+  return {
     phaseComplete: false,
     phase2SubState: 'living-dead',
     livingDeadIndex: 0,
@@ -68,7 +66,13 @@ export function startPhase2() {
     hand: [],
     handRedrawnPlayers: {},
     hasPlayedCardPlayers: {},
-  });
+  };
+}
+
+// ── Phase 2 (LIVE) ──────────────────────────────────────
+
+export function startPhase2() {
+  setState({ screen: 'phase2', phase: 2, ...createPhase23InitState() });
 
   currentPhaseManager = createPhase23Manager({
     deckType: 'live',
@@ -88,26 +92,7 @@ export function startPhase2() {
 // ── Phase 3 (BYE) ──────────────────────────────────────
 
 export function startPhase3() {
-  // Discard remaining LIVE hands
-  setState({
-    screen: 'phase3',
-    phase: 3,
-    phaseComplete: false,
-    phase2SubState: 'living-dead',
-    livingDeadIndex: 0,
-    phase23Round: 0,
-    playerHands: {},
-    submittedCards: {},
-    revealedCards: false,
-    pitchingPlayerIndex: 0,
-    selectedCard: null,
-    currentNonDeadIndex: 0,
-    roundWinner: null,
-    currentCard: null,
-    hand: [],
-    handRedrawnPlayers: {},
-    hasPlayedCardPlayers: {},
-  });
+  setState({ screen: 'phase3', phase: 3, ...createPhase23InitState() });
 
   // Apply wildcard count setting to bye deck
   const { forceWildcards, wildcardCount } = getState().gameSettings;
