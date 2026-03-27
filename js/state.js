@@ -37,6 +37,7 @@ let _state = {
     timerVisible: true,
     timerAutoAdvance: true,
     ultraQuickMode: false,
+    optionalCardPlay: false,
   },
   showAdvancedSettings: false,
 

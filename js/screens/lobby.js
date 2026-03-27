@@ -50,7 +50,7 @@ function formatPitchDuration(seconds) {
 
 export function renderAdvancedPanel(state) {
   if (!state.showAdvancedSettings) return '';
-  const { rounds, handSize, enableLive, enableBye, enableEulogy, forceWildcards, wildcardCount, eulogistCount, handRedraws = 'once_per_phase', timerEnabled, pitchTimerEnabled, playCardTimerEnabled, timerCountUp, pitchDuration, timerVisible, timerAutoAdvance, ultraQuickMode } = state.gameSettings;
+  const { rounds, handSize, enableLive, enableBye, enableEulogy, forceWildcards, wildcardCount, eulogistCount, handRedraws = 'once_per_phase', timerEnabled, pitchTimerEnabled, playCardTimerEnabled, timerCountUp, pitchDuration, timerVisible, timerAutoAdvance, ultraQuickMode, optionalCardPlay } = state.gameSettings;
   const playerCount = Math.max(state.players.length, 2);
   const maxHandSize = Math.max(1, Math.floor(68 / playerCount));
   const estimate = timeEstimate(playerCount, rounds);
@@ -168,6 +168,13 @@ export function renderAdvancedPanel(state) {
           ${handSize >= maxHandSize ? 'disabled' : ''}>+</button>
       </div>
       <p class="lobby__setting-meta">Max ${maxHandSize} cards with ${playerCount} players</p>
+      <div class="lobby__stepper-row">
+        <span class="lobby__stepper-label">Optional Card Play <span class="lobby__stepper-hint">(players may pass instead of playing a card)</span></span>
+        <button class="btn lobby__stepper-btn ${optionalCardPlay ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('optionalCardPlay')">
+          ${optionalCardPlay ? 'On' : 'Off'}
+        </button>
+      </div>
       <div class="lobby__stepper-row">
         <span class="lobby__stepper-label">Timer</span>
         <button class="btn lobby__stepper-btn ${timerEnabled ? 'btn--primary' : 'btn--secondary'}"

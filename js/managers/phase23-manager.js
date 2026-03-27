@@ -284,6 +284,35 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     }
   }
 
+  function passCard() {
+    clearPlayCardTimer();
+    const state = getState();
+    const nonDeadIndices = getNonDeadPlayerIndices();
+    const nextNonDeadIndex = state.currentNonDeadIndex + 1;
+    const allDone = nextNonDeadIndex >= nonDeadIndices.length;
+
+    if (allDone) {
+      const submittedCount = Object.keys(state.submittedCards ?? {}).length;
+      if (submittedCount === 0) {
+        nextRound();
+      } else {
+        onStateChange({
+          selectedCard: null,
+          hand: [],
+          currentNonDeadIndex: nextNonDeadIndex,
+          phase2SubState: 'all-submitted',
+        });
+      }
+    } else {
+      onStateChange({
+        selectedCard: null,
+        hand: [],
+        currentNonDeadIndex: nextNonDeadIndex,
+        phase2SubState: 'pass-phone',
+      });
+    }
+  }
+
   function submitCard(cardId) {
     clearPlayCardTimer();
     const state = getState();
@@ -403,12 +432,12 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
   function donePitching() {
     clearPitchTimer();
     const state = getState();
-    const nonDeadPlayers = getNonDeadPlayers();
+    const submittedPlayerNames = Object.keys(state.submittedCards ?? {});
     const nextIndex = state.pitchingPlayerIndex + 1;
     const countUp = state.gameSettings?.timerCountUp ?? false;
     const duration = state.gameSettings?.pitchDuration ?? DEFAULT_PITCH_DURATION;
 
-    if (nextIndex >= nonDeadPlayers.length) {
+    if (nextIndex >= submittedPlayerNames.length) {
       onStateChange({
         phase2SubState: 'judging',
       });
@@ -548,6 +577,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     prevCard,
     nextCard,
     dismissInspect,
+    passCard,
     submitCard,
     revealCards,
     startPitching,

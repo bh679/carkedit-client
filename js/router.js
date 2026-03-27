@@ -12,7 +12,7 @@ import {
   startPhase1, doneDying, revealCard,
   startPhase2, startPhase3,
   showPlayerHand, readyToSelect, redrawHand,
-  inspectCard, prevCard, nextCard, dismissInspect, submitCard,
+  inspectCard, prevCard, nextCard, dismissInspect, passCard, submitCard,
   revealCards, startPitching, donePitching,
   pickWinner, nextRound,
   inspectJudgingCard, prevJudgingCard, nextJudgingCard, confirmWinner,
@@ -245,6 +245,7 @@ const DEFAULT_GAME_SETTINGS = {
   timerVisible: true,
   timerAutoAdvance: true,
   ultraQuickMode: false,
+  optionalCardPlay: false,
 };
 
 function resetSettings() {
@@ -317,6 +318,7 @@ window.game = {
   prevCard,
   nextCard,
   dismissInspect,
+  passCard,
   submitCard,
   revealCards,
   startPitching,
