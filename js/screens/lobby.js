@@ -90,17 +90,6 @@ export function render(state) {
           ${rounds >= 10 ? 'disabled' : ''}>+</button>
       </div>
       <p class="lobby__setting-meta">${estimate} &mdash; ${prompt}</p>
-      <div class="lobby__stepper-row">
-        <span class="lobby__stepper-label">Cards in Hand</span>
-        <button class="btn btn--secondary lobby__stepper-btn"
-          onclick="window.game.updateSetting('handSize', ${handSize - 1})"
-          ${handSize <= 1 ? 'disabled' : ''}>&minus;</button>
-        <span class="lobby__stepper-value">${handSize}</span>
-        <button class="btn btn--secondary lobby__stepper-btn"
-          onclick="window.game.updateSetting('handSize', ${handSize + 1})"
-          ${handSize >= maxHandSize ? 'disabled' : ''}>+</button>
-      </div>
-      <p class="lobby__setting-meta">Max ${maxHandSize} cards with ${playerCount} players</p>
       <div class="lobby__advanced-divider"></div>
       <p class="lobby__advanced-section-label">Phases</p>
       <div class="lobby__stepper-row lobby__stepper-row--disabled">
@@ -141,6 +130,17 @@ export function render(state) {
           `).join('')}
         </div>
       </div>
+      <div class="lobby__stepper-row">
+        <span class="lobby__stepper-label">Cards in Hand</span>
+        <button class="btn btn--secondary lobby__stepper-btn"
+          onclick="window.game.updateSetting('handSize', ${handSize - 1})"
+          ${handSize <= 1 ? 'disabled' : ''}>&minus;</button>
+        <span class="lobby__stepper-value">${handSize}</span>
+        <button class="btn btn--secondary lobby__stepper-btn"
+          onclick="window.game.updateSetting('handSize', ${handSize + 1})"
+          ${handSize >= maxHandSize ? 'disabled' : ''}>+</button>
+      </div>
+      <p class="lobby__setting-meta">Max ${maxHandSize} cards with ${playerCount} players</p>
       <div class="lobby__stepper-row">
         <span class="lobby__stepper-label">Pitch Timer</span>
         <button class="btn lobby__stepper-btn ${timerEnabled ? 'btn--primary' : 'btn--secondary'}"
@@ -183,6 +183,10 @@ export function render(state) {
         </button>
       </div>
       ` : ''}
+      <div class="lobby__advanced-divider"></div>
+      <button class="btn btn--secondary lobby__reset-btn" onclick="window.game.resetSettings()">
+        Default Settings
+      </button>
     </div>
   ` : '';
 
@@ -201,7 +205,7 @@ export function render(state) {
   const boardContent = `
     <div class="lobby__board-content">
     <div class="lobby__setup">
-      <h2 class="lobby__heading">Player Setup</h2>
+      <h2 class="lobby__heading">Add Player</h2>
       <div class="lobby__add-player">
         <input
           type="text"
@@ -213,11 +217,11 @@ export function render(state) {
       </div>
       <div class="lobby__birthday-row">
         <select id="player-birth-month" class="input lobby__birthday-select">
-          <option value="">Month</option>
+          <option value="">Birth Month</option>
           ${monthOptions}
         </select>
         <select id="player-birth-day" class="input lobby__birthday-select">
-          <option value="">Day</option>
+          <option value="">Birth Day</option>
           ${dayOptions}
         </select>
         <button class="btn btn--secondary lobby__add-btn" onclick="window.game.addPlayer()">
@@ -225,24 +229,28 @@ export function render(state) {
         </button>
       </div>
     </div>
-    <div class="lobby__mode-toggle">
-      <button
-        class="btn lobby__mode-btn ${rounds === 1 ? 'btn--primary' : 'btn--secondary'}"
-        onclick="window.game.setGameMode('quick')"
-      >Quick</button>
-      <button
-        class="btn lobby__mode-btn ${rounds !== 1 ? 'btn--primary' : 'btn--secondary'}"
-        onclick="window.game.setGameMode('normal')"
-      >Normal</button>
-    </div>
-    <div class="lobby__advanced">
-      <button
-        class="btn btn--secondary lobby__advanced-toggle"
-        onclick="window.game.toggleAdvancedSettings()"
-      >
-        Advanced Settings ${state.showAdvancedSettings ? '▲' : '▼'}
-      </button>
-      ${advancedPanel}
+    <div class="lobby__settings-section">
+      <div class="lobby__settings-divider"></div>
+      <h2 class="lobby__heading">Game Settings</h2>
+      <div class="lobby__mode-toggle">
+        <button
+          class="btn lobby__mode-btn ${rounds === 1 ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.setGameMode('quick')"
+        >Quick</button>
+        <button
+          class="btn lobby__mode-btn ${rounds !== 1 ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.setGameMode('normal')"
+        >Normal</button>
+      </div>
+      <div class="lobby__advanced">
+        <button
+          class="btn btn--secondary lobby__advanced-toggle"
+          onclick="window.game.toggleAdvancedSettings()"
+        >
+          Advanced Settings ${state.showAdvancedSettings ? '▲' : '▼'}
+        </button>
+        ${advancedPanel}
+      </div>
     </div>
   `;
 
