@@ -49,7 +49,7 @@ function formatPitchDuration(seconds) {
 }
 
 export function render(state) {
-  const { rounds, handSize, enableLive, enableBye, enableEulogy, forceWildcards, wildcardCount, handRedraws = 'once_per_phase', timerEnabled, timerCountUp, pitchDuration, timerVisible, timerAutoAdvance } = state.gameSettings;
+  const { rounds, handSize, enableLive, enableBye, enableEulogy, forceWildcards, wildcardCount, eulogistCount, handRedraws = 'once_per_phase', timerEnabled, timerCountUp, pitchDuration, timerVisible, timerAutoAdvance } = state.gameSettings;
   const playerCount = Math.max(state.players.length, 2);
   const maxHandSize = Math.max(1, Math.floor(68 / playerCount));
   const estimate = timeEstimate(playerCount, rounds);
@@ -73,6 +73,16 @@ export function render(state) {
         <button class="btn btn--secondary lobby__stepper-btn"
           onclick="window.game.updateSetting('wildcardCount', ${wildcardCount + 1})"
           ${wildcardCount >= 10 || forceWildcards ? 'disabled' : ''}>+</button>
+      </div>
+      <div class="lobby__stepper-row">
+        <span class="lobby__stepper-label">Eulogists per Round</span>
+        <button class="btn btn--secondary lobby__stepper-btn"
+          onclick="window.game.updateSetting('eulogistCount', ${eulogistCount - 1})"
+          ${eulogistCount <= 1 ? 'disabled' : ''}>&minus;</button>
+        <span class="lobby__stepper-value">${eulogistCount}</span>
+        <button class="btn btn--secondary lobby__stepper-btn"
+          onclick="window.game.updateSetting('eulogistCount', ${eulogistCount + 1})"
+          ${eulogistCount >= state.players.length - 1 ? 'disabled' : ''}>+</button>
       </div>
     </div>
   ` : '';
