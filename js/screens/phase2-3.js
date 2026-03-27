@@ -162,7 +162,8 @@ function renderSelectingScreen(config, state, playerListOptions) {
     </button>
   ` : '';
 
-  const optionalCardPlay = state.gameSettings?.optionalCardPlay ?? false;
+  const isForced = (state.forcedPlayerNames ?? []).length > 0;
+  const optionalCardPlay = (state.gameSettings?.optionalCardPlay ?? false) && !isForced;
   const passButton = optionalCardPlay ? `
     <button class="btn btn--secondary" onclick="window.game.passCard()">
       Pass

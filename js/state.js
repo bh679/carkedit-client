@@ -56,6 +56,7 @@ let _state = {
   roundWinnerCard: null,
   handRedrawnPlayers: {},
   hasPlayedCardPlayers: {},
+  forcedPlayerNames: [],
 
   // Profile card inspect overlay (living-dead / selecting sub-states)
   profileInspectCard: null,

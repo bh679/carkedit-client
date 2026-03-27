@@ -168,10 +168,11 @@ export function renderAdvancedPanel(state) {
           ${handSize >= maxHandSize ? 'disabled' : ''}>+</button>
       </div>
       <p class="lobby__setting-meta">Max ${maxHandSize} cards with ${playerCount} players</p>
-      <div class="lobby__stepper-row">
-        <span class="lobby__stepper-label">Optional Card Play <span class="lobby__stepper-hint">(players may pass instead of playing a card)</span></span>
+      <div class="lobby__stepper-row ${playerCount <= 3 ? 'lobby__stepper-row--disabled' : ''}">
+        <span class="lobby__stepper-label">Optional Card Play <span class="lobby__stepper-hint">${playerCount <= 3 ? '(needs 4+ players)' : '(players may pass instead of playing a card)'}</span></span>
         <button class="btn lobby__stepper-btn ${optionalCardPlay ? 'btn--primary' : 'btn--secondary'}"
-          onclick="window.game.toggleSetting('optionalCardPlay')">
+          onclick="window.game.toggleSetting('optionalCardPlay')"
+          ${playerCount <= 3 ? 'disabled' : ''}>
           ${optionalCardPlay ? 'On' : 'Off'}
         </button>
       </div>
