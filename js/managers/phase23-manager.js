@@ -295,6 +295,9 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
 
     if (!card) return;
 
+    // Block wildcard submission if setting is off
+    if (deckType === 'bye' && card.special === 'Wildcard' && !(state.gameSettings?.playableWildcards ?? true)) return;
+
     const newHand = hand.filter(c => String(c.id) !== String(cardId));
     const newSubmitted = { ...state.submittedCards, [player.name]: card };
     const newHands = { ...state.playerHands, [player.name]: newHand };
@@ -451,6 +454,14 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     const handSize = state.gameSettings?.handSize ?? 5;
     const hands = { ...state.playerHands };
     const wildcardCards = { ...(state.wildcardCards ?? {}) };
+
+    // Transfer wildcard ownership to Living Dead if they picked a wildcard
+    if (deckType === 'bye' && winningCard?.special === 'Wildcard') {
+      const pitcherWildcards = wildcardCards[playerName] ?? [];
+      wildcardCards[playerName] = pitcherWildcards.filter(c => String(c.id) !== String(winningCard.id));
+      const deadWildcards = wildcardCards[livingDeadName] ?? [];
+      wildcardCards[livingDeadName] = [...deadWildcards, winningCard];
+    }
     for (const player of players) {
       const currentHand = hands[player.name] ?? [];
       const needed = handSize - currentHand.length;

@@ -50,7 +50,7 @@ function formatPitchDuration(seconds) {
 
 export function renderAdvancedPanel(state) {
   if (!state.showAdvancedSettings) return '';
-  const { rounds, handSize, enableLive, enableBye, enableEulogy, forceWildcards, wildcardCount, eulogistCount, handRedraws = 'once_per_phase', timerEnabled, pitchTimerEnabled, playCardTimerEnabled, timerCountUp, pitchDuration, timerVisible, timerAutoAdvance, ultraQuickMode } = state.gameSettings;
+  const { rounds, handSize, enableLive, enableBye, enableEulogy, forceWildcards, playableWildcards = true, wildcardCount, eulogistCount, handRedraws = 'once_per_phase', timerEnabled, pitchTimerEnabled, playCardTimerEnabled, timerCountUp, pitchDuration, timerVisible, timerAutoAdvance, ultraQuickMode } = state.gameSettings;
   const playerCount = Math.max(state.players.length, 2);
   const maxHandSize = Math.max(1, Math.floor(68 / playerCount));
   const estimate = timeEstimate(playerCount, rounds);
@@ -90,6 +90,13 @@ export function renderAdvancedPanel(state) {
               ${effectiveEulogistCount >= maxEulogists ? 'disabled' : ''}>+</button>
           `;
         })()}
+      </div>
+      <div class="lobby__stepper-row">
+        <span class="lobby__stepper-label">Playable Wildcards <span class="lobby__stepper-hint">(can be pitched in Phase 3)</span></span>
+        <button class="btn lobby__stepper-btn ${playableWildcards ? 'btn--primary' : 'btn--secondary'}"
+          onclick="window.game.toggleSetting('playableWildcards')">
+          ${playableWildcards ? 'On' : 'Off'}
+        </button>
       </div>
     </div>
   ` : '';
