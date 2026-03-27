@@ -186,6 +186,8 @@ function updateSetting(key, rawValue) {
   } else if (key === 'handSize') {
     const playerCount = Math.max(state.players.length, 2);
     max = Math.max(1, Math.floor(68 / playerCount)); min = 1;
+  } else if (key === 'eulogistCount') {
+    max = 10; min = 1;
   } else {
     max = 68; min = 1;
   }
@@ -195,9 +197,10 @@ function updateSetting(key, rawValue) {
 }
 
 function setGameMode(mode) {
-  const rounds = mode === 'quick' ? 1 : 2;
+  const rounds = (mode === 'quick' || mode === 'ultra-quick') ? 1 : 2;
+  const ultraQuickMode = mode === 'ultra-quick';
   const state = getState();
-  setState({ gameSettings: { ...state.gameSettings, rounds } });
+  setState({ gameSettings: { ...state.gameSettings, rounds, ultraQuickMode } });
   refreshAdvancedPanel();
 }
 
@@ -225,6 +228,7 @@ const DEFAULT_GAME_SETTINGS = {
   enableEulogy: true,
   forceWildcards: false,
   wildcardCount: 2,
+  eulogistCount: 2,
   handRedraws: 'once_per_phase',
   timerEnabled: false,
   pitchTimerEnabled: true,
@@ -233,6 +237,7 @@ const DEFAULT_GAME_SETTINGS = {
   pitchDuration: 120,
   timerVisible: true,
   timerAutoAdvance: true,
+  ultraQuickMode: false,
 };
 
 function resetSettings() {
@@ -244,6 +249,19 @@ function toggleSetting(key) {
   const state = getState();
   setState({ gameSettings: { ...state.gameSettings, [key]: !state.gameSettings[key] } });
   refreshAdvancedPanel();
+}
+
+function toggleUltraQuickMode() {
+  const state = getState();
+  const enabling = !state.gameSettings.ultraQuickMode;
+  setState({
+    gameSettings: {
+      ...state.gameSettings,
+      ultraQuickMode: enabling,
+      rounds: enabling ? 1 : state.gameSettings.rounds,
+    },
+  });
+  showScreen('lobby');
 }
 
 function cyclePitchDuration(dir) {
@@ -271,6 +289,7 @@ window.game = {
   removePlayer,
   updateSetting,
   toggleSetting,
+  toggleUltraQuickMode,
   setGameMode,
   toggleAdvancedSettings,
   setHandRedraws,

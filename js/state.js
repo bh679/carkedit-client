@@ -27,6 +27,7 @@ let _state = {
     enableEulogy: true,
     forceWildcards: false,
     wildcardCount: 2,
+    eulogistCount: 2,
     handRedraws: 'once_per_phase',
     timerEnabled: false,
     pitchTimerEnabled: true,
@@ -35,6 +36,7 @@ let _state = {
     pitchDuration: 120,
     timerVisible: true,
     timerAutoAdvance: true,
+    ultraQuickMode: false,
   },
   showAdvancedSettings: false,
 
