@@ -55,6 +55,20 @@ export function createPhase4Manager({ onStateChange, onPhaseComplete }) {
   function startEulogyRound() {
     const state = getState();
     const wildcardPlayerName = state.wildcardPlayers[state.currentWildcardIndex];
+    const otherPlayers = state.players.filter(p => p.name !== wildcardPlayerName);
+    const requiredCount = Math.min(state.gameSettings?.eulogistCount ?? 2, otherPlayers.length);
+
+    // If no choice to be made, auto-select all eligible players and skip picking
+    if (otherPlayers.length === requiredCount) {
+      onStateChange({
+        phase4SubState: 'pass-phone-eulogist',
+        selectedEulogists: otherPlayers.map(p => p.name),
+        currentEulogistIndex: 0,
+        bestEulogist: null,
+        currentCard: getWildcardPlayerDieCard(state, wildcardPlayerName),
+      });
+      return;
+    }
 
     onStateChange({
       phase4SubState: 'pick-eulogists',
