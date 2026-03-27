@@ -98,7 +98,8 @@ export function render({
   const submittedPlayerNames = Object.keys(submittedCards);
   let submittedHtml = '';
   if (submittedPlayerNames.length > 0) {
-    const colClass = submittedPlayerNames.length >= 4 ? 'ld-profile__submitted--cols-4' : '';
+    const cols = Math.min(submittedPlayerNames.length, 4);
+    const colClass = `ld-profile__submitted--cols-${cols}`;
     const cardEls = submittedPlayerNames.map(name => {
       const cardHtml = submittedRevealed
         ? renderCard({ ...submittedCards[name], deckType: submittedCards[name].deckType || deckType })
