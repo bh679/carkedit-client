@@ -46,6 +46,11 @@
   width: 100%;
 }
 
+.menu__site-link {
+  text-decoration: none;
+  text-align: center;
+}
+
 .menu__version {
   position: absolute;
   bottom: var(--space-md);
