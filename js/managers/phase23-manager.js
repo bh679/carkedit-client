@@ -219,13 +219,15 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     const state = getState();
     const player = state.players[state.livingDeadIndex];
     if (!player) return [];
-    const cards = [];
     const dieCard = state.playerDieCards[player.name];
-    if (dieCard) cards.push({ ...dieCard, deckType: 'die' });
     const chosen = state.playerChosenCards?.[player.name] ?? [];
-    for (const card of chosen) {
-      cards.push({ ...card });
-    }
+    const liveCards = chosen.filter(c => c.deckType === 'live').map(c => ({ ...c }));
+    const byeCards = chosen.filter(c => c.deckType === 'bye').map(c => ({ ...c }));
+    const cards = [
+      ...liveCards,
+      ...(dieCard ? [{ ...dieCard, deckType: 'die' }] : []),
+      ...byeCards,
+    ];
     return cards;
   }
 
