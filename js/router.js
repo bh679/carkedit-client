@@ -195,6 +195,28 @@ function setHandRedraws(value) {
 
 const PITCH_DURATIONS = [30, 60, 120, 180, 240, 300, 600, 900, 1800, 3600];
 
+const DEFAULT_GAME_SETTINGS = {
+  rounds: 2,
+  handSize: 5,
+  enableDie: true,
+  enableLive: true,
+  enableBye: true,
+  enableEulogy: true,
+  forceWildcards: false,
+  wildcardCount: 2,
+  handRedraws: 'once_per_phase',
+  timerEnabled: false,
+  timerCountUp: false,
+  pitchDuration: 120,
+  timerVisible: true,
+  timerAutoAdvance: true,
+};
+
+function resetSettings() {
+  setState({ gameSettings: { ...DEFAULT_GAME_SETTINGS } });
+  showScreen('lobby');
+}
+
 function cyclePitchDuration(dir) {
   const state = getState();
   const current = state.gameSettings.pitchDuration ?? 120;
@@ -224,6 +246,7 @@ window.game = {
   toggleAdvancedSettings,
   setHandRedraws,
   cyclePitchDuration,
+  resetSettings,
   startPhase1,
   doneDying,
   revealCard,
