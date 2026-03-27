@@ -76,13 +76,19 @@ export function render(state) {
       </div>
       <div class="lobby__stepper-row">
         <span class="lobby__stepper-label">Eulogists per Round</span>
-        <button class="btn btn--secondary lobby__stepper-btn"
-          onclick="window.game.updateSetting('eulogistCount', ${eulogistCount - 1})"
-          ${eulogistCount <= 1 ? 'disabled' : ''}>&minus;</button>
-        <span class="lobby__stepper-value">${eulogistCount}</span>
-        <button class="btn btn--secondary lobby__stepper-btn"
-          onclick="window.game.updateSetting('eulogistCount', ${eulogistCount + 1})"
-          ${eulogistCount >= state.players.length - 1 ? 'disabled' : ''}>+</button>
+        ${(() => {
+          const maxEulogists = Math.max(1, state.players.length - 1);
+          const effectiveEulogistCount = Math.min(eulogistCount, maxEulogists);
+          return `
+            <button class="btn btn--secondary lobby__stepper-btn"
+              onclick="window.game.updateSetting('eulogistCount', ${effectiveEulogistCount - 1})"
+              ${effectiveEulogistCount <= 1 ? 'disabled' : ''}>&minus;</button>
+            <span class="lobby__stepper-value">${effectiveEulogistCount}</span>
+            <button class="btn btn--secondary lobby__stepper-btn"
+              onclick="window.game.updateSetting('eulogistCount', ${effectiveEulogistCount + 1})"
+              ${effectiveEulogistCount >= maxEulogists ? 'disabled' : ''}>+</button>
+          `;
+        })()}
       </div>
     </div>
   ` : '';
