@@ -48,9 +48,9 @@ export function render(players = [], {
     `;
   }
 
-  const chips = players.map((p, index) => {
+  const chips = players.filter(p => p.name !== livingDeadName).map((p, index) => {
     const isDirector = p.name === funeralDirector;
-    const isLivingDead = p.name === livingDeadName;
+    const isLivingDead = false;
     const isSubmitted = submittedPlayers.includes(p.name);
     const isPitching = p.name === pitchingPlayer;
     const isActive = index === activePlayerIndex;
