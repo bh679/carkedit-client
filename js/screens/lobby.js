@@ -104,7 +104,7 @@ function renderStepper(label, value, onDec, onInc, decDisabled, incDisabled, { d
 
 export function renderAdvancedPanel(state) {
   if (!state.showAdvancedSettings) return '';
-  const { rounds, handSize, enableLive, enableBye, enableEulogy, forceWildcards, wildcardCount, eulogistCount, handRedraws = 'once_per_phase', timerEnabled, pitchTimerEnabled, playCardTimerEnabled, timerCountUp, pitchDuration, timerVisible, timerAutoAdvance, ultraQuickMode } = state.gameSettings;
+  const { rounds, handSize, enableLive, enableBye, enableEulogy, forceWildcards, playableWildcards = true, wildcardCount, eulogistCount, handRedraws = 'once_per_phase', timerEnabled, pitchTimerEnabled, playCardTimerEnabled, timerCountUp, pitchDuration, timerVisible, timerAutoAdvance, ultraQuickMode } = state.gameSettings;
   const playerCount = Math.max(state.players.length, 2);
   const maxHandSize = Math.max(1, Math.floor(68 / playerCount));
   const estimate = timeEstimate(playerCount, rounds);
@@ -132,6 +132,11 @@ export function renderAdvancedPanel(state) {
         `window.game.updateSetting('eulogistCount', ${effectiveEulogistCount - 1})`,
         `window.game.updateSetting('eulogistCount', ${effectiveEulogistCount + 1})`,
         effectiveEulogistCount <= 1, effectiveEulogistCount >= maxEulogists,
+      )}
+      ${renderToggle(
+        'Playable Wildcards <span class="lobby__stepper-hint">(can be pitched in Phase 3)</span>',
+        playableWildcards,
+        "window.game.toggleSetting('playableWildcards')",
       )}
     </div>
   ` : '';
