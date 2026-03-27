@@ -6,6 +6,7 @@ import { getState } from '../state.js';
 const DEFAULT_PITCH_DURATION = 120; // seconds — overridable via state.pitchDuration
 
 let _pitchTimer = null;
+let _playCardTimer = null;
 
 /**
  * @param {{ deckType: 'live'|'bye', onStateChange: (updates: object) => void, onPhaseComplete: () => void }} config
@@ -70,6 +71,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
       revealedCards: false,
       pitchingPlayerIndex: 0,
       selectedCard: null,
+      profileInspectCard: null,
       phase2SubState: 'living-dead',
       currentNonDeadIndex: 0,
       roundWinner: null,
@@ -145,6 +147,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     onStateChange({
       phase2SubState: 'pass-phone',
       currentNonDeadIndex: 0,
+      profileInspectCard: null,
     });
   }
 
@@ -154,12 +157,19 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     const playerIndex = nonDeadIndices[state.currentNonDeadIndex];
     const player = state.players[playerIndex];
 
+    const countUp = state.gameSettings?.timerCountUp ?? false;
+    const duration = state.gameSettings?.pitchDuration ?? DEFAULT_PITCH_DURATION;
     onStateChange({
       phase2SubState: 'selecting',
       hand: state.playerHands[player.name] ?? [],
       currentPlayerIndex: playerIndex,
       selectedCard: null,
+      playCardTimerSeconds: countUp ? 0 : duration,
     });
+
+    if (state.gameSettings?.timerEnabled && state.gameSettings?.playCardTimerEnabled) {
+      startPlayCardTimer();
+    }
   }
 
   function inspectCard(cardId) {
@@ -193,6 +203,31 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
 
   function dismissInspect() {
     onStateChange({ selectedCard: null });
+  }
+
+  function getProfileCards() {
+    const state = getState();
+    const player = state.players[state.livingDeadIndex];
+    if (!player) return [];
+    const cards = [];
+    const dieCard = state.playerDieCards[player.name];
+    if (dieCard) cards.push({ ...dieCard, deckType: 'die' });
+    const chosen = state.playerChosenCards?.[player.name] ?? [];
+    for (const card of chosen) {
+      cards.push({ ...card });
+    }
+    return cards;
+  }
+
+  function inspectProfileCard(index) {
+    const card = getProfileCards()[index];
+    if (card) {
+      onStateChange({ profileInspectCard: card });
+    }
+  }
+
+  function dismissProfileCard() {
+    onStateChange({ profileInspectCard: null });
   }
 
   function getJudgingCardList() {
@@ -240,6 +275,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
   }
 
   function submitCard(cardId) {
+    clearPlayCardTimer();
     const state = getState();
     const nonDeadIndices = getNonDeadPlayerIndices();
     const playerIndex = nonDeadIndices[state.currentNonDeadIndex];
@@ -277,7 +313,6 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
 
   function startPitchTimer() {
     clearPitchTimer();
-    const countUp = getState().gameSettings?.timerCountUp ?? false;
     _pitchTimer = setInterval(() => {
       const state = getState();
       if (state.gameSettings?.timerCountUp ?? false) {
@@ -305,7 +340,43 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     }
   }
 
+  function startPlayCardTimer() {
+    clearPlayCardTimer();
+    _playCardTimer = setInterval(() => {
+      const state = getState();
+      if (state.gameSettings?.timerCountUp ?? false) {
+        onStateChange({ playCardTimerSeconds: state.playCardTimerSeconds + 1 });
+      } else {
+        const remaining = state.playCardTimerSeconds - 1;
+        if (remaining <= 0) {
+          clearPlayCardTimer();
+          if (state.gameSettings?.timerAutoAdvance ?? true) {
+            // Auto-submit: use selected card or first card in hand
+            const cardToSubmit = state.selectedCard ?? (state.hand ?? [])[0];
+            if (cardToSubmit) {
+              submitCard(cardToSubmit.id);
+            } else {
+              onStateChange({ playCardTimerSeconds: 0 });
+            }
+          } else {
+            onStateChange({ playCardTimerSeconds: 0 });
+          }
+        } else {
+          onStateChange({ playCardTimerSeconds: remaining });
+        }
+      }
+    }, 1000);
+  }
+
+  function clearPlayCardTimer() {
+    if (_playCardTimer !== null) {
+      clearInterval(_playCardTimer);
+      _playCardTimer = null;
+    }
+  }
+
   function startPitching() {
+    clearPlayCardTimer();
     const state = getState();
     const countUp = state.gameSettings?.timerCountUp ?? false;
     const duration = state.gameSettings?.pitchDuration ?? DEFAULT_PITCH_DURATION;
@@ -314,7 +385,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
       pitchingPlayerIndex: 0,
       pitchTimerSeconds: countUp ? 0 : duration,
     });
-    if (state.gameSettings?.timerEnabled) {
+    if (state.gameSettings?.timerEnabled && state.gameSettings?.pitchTimerEnabled) {
       startPitchTimer();
     }
   }
@@ -336,7 +407,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
         pitchingPlayerIndex: nextIndex,
         pitchTimerSeconds: countUp ? 0 : duration,
       });
-      if (getState().gameSettings?.timerEnabled) {
+      if (getState().gameSettings?.timerEnabled && getState().gameSettings?.pitchTimerEnabled) {
         startPitchTimer();
       }
     }
@@ -404,6 +475,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
 
   function nextRound() {
     clearPitchTimer();
+    clearPlayCardTimer();
     const state = getState();
     const nextLivingDead = state.livingDeadIndex + 1;
     const handRedraws = state.gameSettings?.handRedraws ?? 'once_per_phase';
@@ -432,6 +504,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
         revealedCards: false,
         pitchingPlayerIndex: 0,
         selectedCard: null,
+        profileInspectCard: null,
         roundWinner: null,
         currentCard: getLivingDeadDieCard(state, 0),
         phase2SubState: 'living-dead',
@@ -446,6 +519,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
         revealedCards: false,
         pitchingPlayerIndex: 0,
         selectedCard: null,
+        profileInspectCard: null,
         roundWinner: null,
         currentCard: getLivingDeadDieCard(state, nextLivingDead),
         phase2SubState: 'living-dead',
@@ -473,5 +547,7 @@ export function createPhase23Manager({ deckType, onStateChange, onPhaseComplete 
     prevJudgingCard,
     nextJudgingCard,
     confirmWinner,
+    inspectProfileCard,
+    dismissProfileCard,
   };
 }

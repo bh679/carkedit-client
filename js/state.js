@@ -30,6 +30,8 @@ let _state = {
     eulogistCount: 2,
     handRedraws: 'once_per_phase',
     timerEnabled: false,
+    pitchTimerEnabled: true,
+    playCardTimerEnabled: true,
     timerCountUp: false,
     pitchDuration: 120,
     timerVisible: true,
@@ -53,8 +55,13 @@ let _state = {
   handRedrawnPlayers: {},
   hasPlayedCardPlayers: {},
 
+  // Profile card inspect overlay (living-dead / selecting sub-states)
+  profileInspectCard: null,
+
   // Pitching timer (live countdown — not a setting)
   pitchTimerSeconds: 120,
+  // Play card timer (live countdown — not a setting)
+  playCardTimerSeconds: 60,
 
   // Wildcard cards held aside during Phase 3
   wildcardCards: {},
