@@ -118,16 +118,17 @@
 /* ── Submitted cards face-down row ── */
 
 .ld-profile__submitted {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 6px;
+  justify-content: center;
   width: 100%;
   flex-shrink: 0;
-  max-height: 80px;
 }
 
 .ld-profile__submitted--cols-4 {
-  grid-template-columns: repeat(4, 1fr);
+  /* no override needed — flex wraps automatically */
 }
 
 .ld-profile__submitted-card {
@@ -137,12 +138,14 @@
   justify-content: center;
   border-radius: 6px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .ld-profile__submitted-card .card-back {
-  max-height: 80px;
+  height: 80px;
+  width: auto;
   border-radius: 6px;
-  width: 100%;
+  margin: 0 auto;
 }
 
 .ld-profile__submitted-label {
