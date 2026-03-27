@@ -44,18 +44,24 @@ export function renderInspectOverlay({ selectedCard, deckType, submitLabel, onSu
  * @returns {string} HTML string
  */
 export function render(cards = [], { dimmed = false, selectedCard = null, livingDeadMessage = null, deckType = 'live', footer = '' } = {}) {
+  const footerHtml = footer
+    ? `<div class="hand__footer">${footer}</div>`
+    : '';
+
   if (livingDeadMessage) {
     return `
       <div class="hand hand--living-dead-container">
         <div class="living-dead-message">
           <p class="living-dead-message__text">${livingDeadMessage}</p>
         </div>
+        ${footerHtml}
       </div>
     `;
   }
 
   if (!cards.length) {
-    return '<div class="hand hand--empty"></div>';
+    if (!footer) return '<div class="hand hand--empty"></div>';
+    return `<div class="hand">${footerHtml}</div>`;
   }
 
   const dimmedClass = dimmed ? ' hand--dimmed' : '';
@@ -90,7 +96,7 @@ export function render(cards = [], { dimmed = false, selectedCard = null, living
       <div class="hand__fan">
         ${cardEls}
       </div>
-      ${footer}
+      ${footerHtml}
     </div>
     ${inspectOverlay}
   `;

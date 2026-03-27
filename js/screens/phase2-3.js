@@ -94,12 +94,12 @@ function renderLivingDeadScreen(config, state, playerListOptions, livingDeadName
       ${renderGameboard(promptCardHtml, hint)}
       ${renderHand([], {
         livingDeadMessage: `You are The Living Dead this round.\nSit back and relax! 👑`,
+        footer: `
+          <button class="btn btn--primary" onclick="window.game.showPlayerHand()">
+            Start Round
+          </button>
+        `,
       })}
-      <div class="phase-actions">
-        <button class="btn btn--primary" onclick="window.game.showPlayerHand()">
-          Start Round
-        </button>
-      </div>
     </div>
   `;
 }
@@ -141,7 +141,7 @@ function renderSelectingScreen(config, state, playerListOptions) {
     && (handRedraws === 'unlimited' || !hasRedrawn)
     && (handRedraws === 'once_per_round' || handRedraws === 'unlimited' || !hasPlayed);
   const redrawButton = showRedraw ? `
-    <button class="btn btn--secondary hand__redraw-btn" onclick="window.game.redrawHand()">
+    <button class="btn btn--secondary" onclick="window.game.redrawHand()">
       Redraw Hand
     </button>
   ` : '';
@@ -173,11 +173,11 @@ function renderAllSubmittedScreen(config, state, playerListOptions) {
         revealed: false,
         deckType: config.deckType,
       })}
-      <div class="phase-actions">
+      ${renderHand([], { footer: `
         <button class="btn btn--primary" onclick="window.game.revealCards()">
           Reveal Cards
         </button>
-      </div>
+      ` })}
     </div>
   `;
 }
@@ -192,11 +192,11 @@ function renderRevealedScreen(config, state, playerListOptions) {
         revealed: true,
         deckType: config.deckType,
       })}
-      <div class="phase-actions">
+      ${renderHand([], { footer: `
         <button class="btn btn--primary" onclick="window.game.startPitching()">
           Start Pitching
         </button>
-      </div>
+      ` })}
     </div>
   `;
 }
@@ -228,11 +228,11 @@ function renderPitchingScreen(config, state, playerListOptions, nonDeadPlayers) 
         pitchingPlayer: pitcherName,
       })}
       ${timerHtml}
-      <div class="phase-actions">
+      ${renderHand([], { footer: `
         <button class="btn btn--primary" onclick="window.game.donePitching()">
           Done Pitching
         </button>
-      </div>
+      ` })}
     </div>
   `;
 }
