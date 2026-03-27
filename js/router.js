@@ -125,6 +125,9 @@ const DEV_NAME_POOL = [
   { name: 'Lowe',      birthMonth: 1,  birthDay: 30 },
   { name: 'Hatton',    birthMonth: 5,  birthDay: 12 },
   { name: 'Sanderson', birthMonth: 9,  birthDay: 4  },
+  { name: 'Will',      birthMonth: 4,  birthDay: 17 },
+  { name: 'Rae',       birthMonth: 7,  birthDay: 23 },
+  { name: 'Roy',       birthMonth: 2,  birthDay: 8  },
 ];
 
 function addPlayer() {
